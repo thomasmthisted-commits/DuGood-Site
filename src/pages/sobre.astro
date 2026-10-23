@@ -14,8 +14,11 @@ import coracao from '../assets/mascotes/coracao.png';
 import presente from '../assets/mascotes/presente.png';
 import trofeu from '../assets/mascotes/trofeu.png';
 import abraco from '../assets/mascotes/abraco.png';
+import jornada from '../assets/jornada.png';
 
 const fotos = import.meta.glob<{ default: ImageMetadata }>('../assets/fundadores/*.jpg', { eager: true });
+// A mesma imagem da jornada da página Quem somos do app; o texto dela vai no alt e no .md
+const altJornada = `Jornada da DuGood: ${c.trajetoria.map((t) => `${t.quando}, ${t.titulo.toLowerCase()}: ${t.texto}`).join(' ')}`;
 const foto = (nome: string) => fotos[`../assets/fundadores/${nome}.jpg`]?.default;
 const mascotesEcossistema = [celular, coracao, presente];
 
@@ -77,17 +80,9 @@ const pessoas = fundadores.map((f) => ({
         <span class="rotulo">Nossa jornada</span>
         <h2 id="trajetoria-titulo">Marcos principais.</h2>
       </div>
-      <ol class="linha" data-r>
-        {
-          c.trajetoria.map((t) => (
-            <li>
-              <span class="linha__quando">{t.quando}</span>
-              <h3>{t.titulo}</h3>
-              <p>{t.texto}</p>
-            </li>
-          ))
-        }
-      </ol>
+      <figure class="jornada" data-r>
+        <Image src={jornada} alt={altJornada} width={600} densities={[1, 1.7]} />
+      </figure>
     </div>
   </section>
 
@@ -216,57 +211,19 @@ const pessoas = fundadores.map((f) => ({
     width: 160px;
     height: auto;
   }
-  .linha {
-    list-style: none;
-    padding: 0;
+  .jornada {
+    max-width: 600px;
     margin: 0 auto;
-    max-width: 760px;
-    position: relative;
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
   }
-  .linha::before {
-    content: '';
-    position: absolute;
-    left: 15px;
-    top: 8px;
-    bottom: 8px;
-    width: 2px;
-    background: var(--verde-claro-2);
-  }
-  .linha li {
-    position: relative;
-    padding: 0 0 36px 56px;
-  }
-  .linha li:last-child {
-    padding-bottom: 0;
-  }
-  .linha li::before {
-    content: '';
-    position: absolute;
-    left: 6px;
-    top: 4px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--verde);
-    border: 4px solid #fff;
-    box-shadow: 0 0 0 2px var(--verde-claro-2);
-  }
-  .linha__quando {
-    display: inline-block;
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #fff;
-    background: var(--verde-escuro);
-    border-radius: 999px;
-    padding: 3px 12px;
-    margin-bottom: 8px;
-  }
-  .linha h3 {
-    margin-bottom: 4px;
-  }
-  .linha p {
-    color: var(--tinta-suave);
-    margin: 0;
+  .jornada img {
+    display: block;
+    width: 100%;
+    height: auto;
   }
   .ecossistema {
     display: grid;
