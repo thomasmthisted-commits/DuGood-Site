@@ -19,6 +19,9 @@ export const caminhos = {
   seta: 'M5 12h14M12 5l7 7-7 7',
   pin: 'M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0ZM12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z',
   times: 'M4 22V4a1 1 0 0 1 .4-.8A6 6 0 0 1 8 2c3 0 5 2 7.3 2a6 6 0 0 0 4-1.2.5.5 0 0 1 .7.4v9.6a1 1 0 0 1-.4.8 6 6 0 0 1-4.3 1.4c-2.3 0-4.3-2-7.3-2a6 6 0 0 0-4 1.3',
+  email: 'M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2ZM22 7l-10 6L2 7',
+  mensagem: 'M7.9 20A9 9 0 1 0 4 16.1L2 22Z',
+  fechar: 'M18 6 6 18M6 6l12 12',
 } as const;
 
 export type NomeIcone = keyof typeof caminhos;

@@ -1,0 +1,291 @@
+---
+// Diagnóstico rápido para empresas: setor, descrição curta, site e CNPJ (opcionais) vão para
+// /api/diagnostico, que devolve o perfil, o público, as áreas e QUANTAS causas e projetos têm fit
+// (nunca os nomes). O resultado leva ao contato, com o resumo já na mensagem (dugood:mensagem).
+// Sem JS, o formulário não aparece e fica só a chamada para falar com a DuGood.
+import { Image } from 'astro:assets';
+import Onda from './Onda.astro';
+import { setores, textos } from '../conteudo/diagnostico';
+import lupa from '../assets/mascotes/lupa.png';
+---
+
+<div class="diag" data-diagnostico>
+  <form class="diag__form" hidden novalidate>
+    <label>
+      <span>Setor da empresa</span>
+      <select name="setor">
+        <option value="">Escolha o setor</option>
+        {setores.map((s) => <option value={s.id}>{s.nome}</option>)}
+      </select>
+    </label>
+    <label>
+      <span>Em poucas palavras, o que a empresa faz e para quem?</span>
+      <textarea name="descricao" rows="3" maxlength="600" placeholder="Ex.: rede de academias para quem treina perto de casa, com público jovem"></textarea>
+    </label>
+    <div class="diag__par">
+      <label>
+        <span>Site <small>(opcional)</small></span>
+        <input name="site" type="text" inputmode="url" placeholder="suaempresa.com.br" autocomplete="url" />
+      </label>
+      <label>
+        <span>CNPJ <small>(opcional)</small></span>
+        <input name="cnpj" type="text" inputmode="numeric" placeholder="00.000.000/0000-00" />
+      </label>
+    </div>
+    <button class="botao" type="submit">{textos.botao}</button>
+    <p class="diag__erro" role="alert" hidden></p>
+    <p class="diag__nota">{textos.nota}</p>
+  </form>
+
+  <div class="diag__resultado onda onda--cartao" aria-live="polite">
+    <Onda sizes="(min-width: 900px) 520px, 100vw" />
+    <div class="diag__vazio" data-vazio>
+      <Image class="mascote diag__mascote" src={lupa} alt="" width={150} densities={[1, 2]} />
+      <p class="diag__titulo">O seu diagnóstico aparece aqui.</p>
+      <p>Perfil da empresa, o público que combina com ela e quantas causas e projetos da DuGood têm fit.</p>
+      <a class="botao" href="#contato" data-interesse="incentivada">Prefiro falar direto com a DuGood</a>
+    </div>
+    <div class="diag__relatorio" data-relatorio hidden>
+      <span class="rotulo" data-quem>Seu diagnóstico</span>
+      <p class="diag__titulo" data-perfil></p>
+      <p data-publico></p>
+      <div class="diag__numero">
+        <strong data-total></strong>
+        <span data-total-texto></span>
+      </div>
+      <p data-areas></p>
+      <p class="diag__aviso" data-aviso hidden></p>
+      <p class="diag__sigilo">Os nomes e os detalhes dos projetos, apresentamos numa conversa.</p>
+      <a class="botao" href="#contato" data-interesse="incentivada" data-diag-contato>Fale com a DuGood</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  type Resultado = {
+    perfis: { nome: string; publico: string }[];
+    areas: { id: string; nome: string; lei: string }[];
+    causas: number;
+    incentivados: number;
+    com_marca: number;
+    empresa: { nome: string; regime: string; atividade: string } | null;
+  };
+
+  const plural = (n: number, um: string, varios: string) => `${n} ${n === 1 ? um : varios}`;
+  const juntar = (itens: string[]) => (itens.length > 1 ? `${itens.slice(0, -1).join(', ')} e ${itens.at(-1)}` : itens[0] ?? '');
+
+  for (const caixa of document.querySelectorAll<HTMLElement>('[data-diagnostico]')) {
+    const form = caixa.querySelector('form')!;
+    const erro = caixa.querySelector<HTMLElement>('.diag__erro')!;
+    const vazio = caixa.querySelector<HTMLElement>('[data-vazio]')!;
+    const relatorio = caixa.querySelector<HTMLElement>('[data-relatorio]')!;
+    const campo = (nome: string) => relatorio.querySelector<HTMLElement>(`[data-${nome}]`)!;
+    const botao = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    let resumo = '';
+    let regime = '';
+    form.hidden = false;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const dados = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      erro.hidden = true;
+      if (!dados.setor && !dados.descricao.trim() && !dados.site.trim()) {
+        erro.textContent = 'Escolha o setor ou conte em poucas palavras o que a empresa faz.';
+        erro.hidden = false;
+        return;
+      }
+      botao.disabled = true;
+      botao.textContent = 'Analisando…';
+      try {
+        const r = await fetch('/api/diagnostico', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(dados),
+        });
+        if (!r.ok) throw new Error();
+        mostrar((await r.json()) as Resultado, dados);
+      } catch {
+        erro.textContent = 'Não deu para fazer o diagnóstico agora. Tente de novo, ou fale direto com a DuGood.';
+        erro.hidden = false;
+      } finally {
+        botao.disabled = false;
+        botao.textContent = 'Refazer o diagnóstico';
+      }
+    });
+
+    function mostrar(d: Resultado, dados: Record<string, string>) {
+      const perfis = juntar(d.perfis.map((p) => p.nome));
+      campo('quem').textContent = d.empresa?.nome ? `Perfil da ${d.empresa.nome}` : 'Perfil da sua empresa';
+      campo('perfil').textContent = `${perfis[0].toUpperCase()}${perfis.slice(1)}.`;
+      campo('publico').textContent = `Público que combina com a marca: ${juntar(d.perfis.map((p) => p.publico))}.`;
+
+      const total = d.causas + d.incentivados;
+      campo('total').textContent = total ? String(total) : '';
+      campo('total').hidden = !total;
+      const partes = [
+        d.incentivados ? plural(d.incentivados, 'projeto incentivado em captação', 'projetos incentivados em captação') : '',
+        d.causas ? plural(d.causas, 'causa no app', 'causas no app') : '',
+      ].filter(Boolean);
+      const oque = partes.length > 1 ? `causas e projetos da DuGood têm fit com a sua empresa (${juntar(partes)})` : `${partes[0]?.replace(/^\d+ /, '')} ${total === 1 ? 'tem' : 'têm'} fit com a sua empresa`;
+      campo('total-texto').textContent = total
+        ? `${oque}: não só para abater imposto, mas para criar presença num público que faz sentido.${d.com_marca ? ` ${plural(d.com_marca, 'deles tem', 'deles têm')} forte apelo para patrocínio de marca.` : ''}`
+        : 'Ainda não temos uma causa em captação com esse perfil, mas a curadoria da DuGood busca projetos com você.';
+
+      campo('areas').textContent = d.areas.length
+        ? `Combina com projetos de ${juntar(d.areas.map((a) => `${a.nome} (${a.lei})`))}.`
+        : 'As leis de incentivo federais não têm uma linha específica para essa área: o caminho mais natural é ser apoiador da plataforma, com causas que conversam com o seu público.';
+
+      const aviso = campo('aviso');
+      regime = d.empresa?.regime ?? '';
+      aviso.hidden = !regime || regime === 'Lucro real';
+      if (!aviso.hidden) {
+        aviso.textContent = `Pelo cadastro público, a empresa está no ${regime}. A dedução das leis de incentivo vale para o lucro real; mesmo assim, dá para participar como apoiador da plataforma ou patrocinar direto.`;
+      }
+
+      vazio.hidden = true;
+      relatorio.hidden = false;
+      // No celular o resultado fica abaixo do formulário: leva a pessoa até ele
+      const topo = relatorio.getBoundingClientRect().top;
+      if (topo > innerHeight * 0.6) relatorio.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'center' });
+      resumo = [
+        'Fiz o diagnóstico rápido no site.',
+        dados.setor ? `Setor: ${form.querySelector<HTMLSelectElement>('select')!.selectedOptions[0].text}.` : '',
+        dados.descricao.trim() ? `Sobre a empresa: ${dados.descricao.trim()}` : '',
+        dados.site.trim() ? `Site: ${dados.site.trim()}` : '',
+        `Resultado: ${perfis}; ${total ? `${total} causas e projetos com fit` : 'sem causa em captação com esse perfil ainda'}.`,
+        'Quero saber quais projetos fazem mais sentido para a minha marca.',
+      ]
+        .filter(Boolean)
+        .join('\n');
+    }
+
+    caixa.querySelector('[data-diag-contato]')!.addEventListener('click', () => {
+      document.dispatchEvent(new CustomEvent('dugood:mensagem', { detail: { texto: resumo, interesses: ['incentivada'], regime } }));
+    });
+  }
+</script>
+
+<style>
+  .diag {
+    display: grid;
+    gap: 24px;
+    align-items: stretch;
+  }
+  @media (min-width: 900px) {
+    .diag {
+      grid-template-columns: 1.1fr 1fr;
+    }
+  }
+  .diag__form {
+    display: grid;
+    gap: 16px;
+    align-content: start;
+    background: var(--branco);
+    border-radius: var(--raio);
+    padding: clamp(24px, 4vw, 36px);
+    box-shadow: var(--sombra);
+  }
+  .diag__form label {
+    display: grid;
+    gap: 6px;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--tinta);
+  }
+  .diag__form small {
+    font-weight: 400;
+    color: var(--tinta-fraca);
+  }
+  .diag__form select,
+  .diag__form input,
+  .diag__form textarea {
+    font: inherit;
+    font-weight: 400;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio-p);
+    background: var(--nevoa);
+    color: var(--tinta);
+  }
+  .diag__form textarea {
+    resize: vertical;
+  }
+  .diag__par {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  }
+  .diag__form .botao {
+    justify-self: start;
+  }
+  .diag__erro {
+    margin: 0;
+    color: var(--verde-escuro);
+    font-weight: 600;
+  }
+  .diag__nota {
+    margin: 0;
+    font-size: 0.82rem;
+    color: var(--tinta-fraca);
+  }
+  .diag__resultado {
+    padding: clamp(28px, 4vw, 40px);
+    display: grid;
+    align-content: center;
+    min-height: 360px;
+  }
+  .diag__vazio {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+    gap: 4px;
+  }
+  .diag__mascote {
+    width: 120px;
+    height: auto;
+    margin-bottom: 12px;
+  }
+  .diag__titulo {
+    font: 700 clamp(1.25rem, 2.2vw, 1.5rem) / 1.3 var(--titulo);
+    margin: 0 0 8px;
+  }
+  .diag__resultado .diag__titulo {
+    color: var(--branco);
+  }
+  .diag__vazio[hidden],
+  .diag__relatorio[hidden],
+  .diag__form[hidden] {
+    display: none;
+  }
+  .diag__relatorio p {
+    margin: 0 0 12px;
+  }
+  .diag__numero {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: rgb(255 255 255 / 0.12);
+    border-radius: var(--raio-p);
+    padding: 16px 18px;
+    margin: 8px 0 16px;
+  }
+  .diag__numero strong {
+    font: 800 3rem / 1 var(--titulo);
+  }
+  .diag__numero strong[hidden] {
+    display: none;
+  }
+  .diag__aviso {
+    font-size: 0.9rem;
+    border-left: 3px solid var(--verde-claro-2);
+    padding-left: 12px;
+  }
+  .diag__sigilo {
+    font-size: 0.88rem;
+    opacity: 0.85;
+  }
+  .diag .botao {
+    margin-top: 8px;
+  }
+</style>

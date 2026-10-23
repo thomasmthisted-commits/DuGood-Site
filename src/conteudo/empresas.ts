@@ -1,6 +1,7 @@
 import type { Aba, Item, ItemIcone, Pagina, Secao } from './tipos';
 import { politica, pontos } from './comum';
 import { leisIncentivo, niveis } from '../config';
+import { setores, textos as diagnostico } from './diagnostico';
 import { cabecalho, juntar, lista, numerada, perguntas, secao } from '../lib/markdown';
 
 export const pagina: Pagina = {
@@ -30,6 +31,14 @@ export const pagina: Pagina = {
     {
       p: 'Por que fazer a doação incentivada pela DuGood?',
       r: 'Porque a DuGood faz a curadoria dos projetos, confere a aprovação e a organização por trás de cada um, mostra para onde vai o dinheiro e cuida do caminho até o recibo. A DuGood acompanha a empresa em todo o passo a passo burocrático, e a empresa ganha tempo e segurança na escolha.',
+    },
+    {
+      p: 'Na doação incentivada, a marca da empresa aparece?',
+      r: 'Pode aparecer. No patrocínio incentivado, muitos projetos oferecem cotas de patrocínio com contrapartidas de marca, como presença em eventos, materiais e divulgação. O que cada cota oferece depende do projeto e da lei; na doação, sem patrocínio, não há divulgação da marca.',
+    },
+    {
+      p: 'Como funciona o diagnóstico rápido?',
+      r: 'Na página de empresas, você informa o setor, descreve a empresa em poucas palavras e, se quiser, o site e o CNPJ. O diagnóstico indica o perfil e o público da empresa, as áreas de projeto que combinam e quantas causas e projetos da DuGood têm fit. Os projetos em si, a equipe apresenta numa conversa.',
     },
     {
       p: 'Minha empresa não é do lucro real. Ainda dá para participar?',
@@ -88,7 +97,7 @@ export const caminhos = {
       rotulo: 'Caminho 2 · Incentivo fiscal',
       titulo: 'Doação incentivada',
       texto: 'Para empresas do lucro real que querem destinar parte do IRPJ a projetos sociais aprovados, com a DuGood do lado em cada etapa.',
-      pontos: ['Curadoria de projetos aprovados', 'Apoio em todo o passo a passo burocrático', 'Segurança e transparência do início ao recibo'],
+      pontos: ['Curadoria de projetos aprovados', 'Presença de marca com cotas de patrocínio', 'Apoio em todo o passo a passo burocrático'],
       botao: 'Quero doar via incentivo',
     },
   ],
@@ -137,28 +146,47 @@ export const exemplos: Secao & { itens: ItemIcone[] } = {
 export const incentivada: Secao & { itens: Item[] } = {
   rotulo: 'Caminho 2 · Doação incentivada',
   titulo: `Você sabia que é possível destinar até ${limiteTotal} do IRPJ a projetos aprovados?`,
-  lead: 'Empresas do lucro real podem direcionar parte do imposto de renda devido a projetos aprovados pelo governo: esporte, cultura, infância, pessoa idosa e saúde. A empresa não só escolhe para onde vai uma parte do imposto que já pagaria: ela associa a marca a um projeto de impacto.',
+  lead: 'Empresas do lucro real podem direcionar parte do imposto de renda devido a projetos aprovados pelo governo: esporte, cultura, infância, pessoa idosa e saúde. Faça a conta ao lado com o lucro estimado da sua empresa.',
   itens: [
     { titulo: 'Imposto que vira impacto.', texto: 'O valor financia um projeto que a empresa escolhe e acompanha, dentro do limite de cada lei.' },
-    { titulo: 'Presença de marca.', texto: 'No patrocínio incentivado, a marca pode aparecer nas contrapartidas do projeto. O que é possível depende de cada projeto e de cada lei.' },
     { titulo: 'O dinheiro vai para o projeto.', texto: 'A DuGood não recebe nem guarda o valor: ele segue para a organização responsável.' },
     { titulo: 'Prazo.', texto: 'Para abater no imposto do ano, o aporte precisa ser feito até 31 de dezembro.' },
   ],
 };
 
-/** O papel consultivo da DuGood na doação incentivada */
-export const consultivo: Secao = {
-  rotulo: 'Consultivo',
-  titulo: 'Não só encontramos o projeto: estamos com você em cada passo.',
-  lead: 'Na DuGood, ajudamos a empresa a encontrar o projeto certo e acompanhamos todo o passo a passo burocrático, com curadoria, segurança e transparência. Se o objetivo também é presença de marca, buscamos o projeto que melhor conecta o seu imposto aos valores da empresa.',
+/** Mais que abatimento: a marca associada ao projeto pelo patrocínio */
+export const marca: Secao & { itens: ItemIcone[]; exemplo: { rotulo: string; titulo: string; texto: string; nota: string }; botao: string } = {
+  rotulo: 'Mais que abatimento',
+  titulo: 'Você não só deixa de pagar imposto: você gera valor para a sua marca.',
+  lead: 'O valor sai do imposto que a empresa já pagaria. Em vez de virar só arrecadação, ele pode associar a sua marca a eventos, projetos e causas sociais, por meio do patrocínio e das cotas de patrocínio. O que cada cota oferece depende do projeto.',
+  itens: [
+    { icone: 'estrela', titulo: 'Cotas de patrocínio', texto: 'Muitos projetos aprovados oferecem cotas de patrocínio, cada uma com as suas contrapartidas de marca, definidas no próprio projeto.' },
+    { icone: 'calendario', titulo: 'Eventos e projetos', texto: 'Corridas, torneios, festivais e programas contínuos: a marca aparece onde o projeto acontece e onde ele é divulgado.' },
+    { icone: 'coracao', titulo: 'Uma causa com a sua cara', texto: 'A empresa se associa a uma causa social que conversa com o seu público e pode comunicar esse apoio.' },
+  ],
+  exemplo: {
+    rotulo: 'Exemplo',
+    titulo: 'Uma cota de patrocínio numa corrida beneficente.',
+    texto: 'Uma empresa do lucro real patrocina, pela Lei de Incentivo ao Esporte, uma corrida aprovada no Ministério do Esporte. Com a cota de patrocínio, a marca aparece na camiseta, no kit dos corredores e na divulgação do evento, conforme as contrapartidas do projeto. O valor sai do imposto devido, e a marca ganha presença num público que valoriza esporte e saúde.',
+    nota: 'Exemplo ilustrativo: as contrapartidas e os limites dependem de cada projeto e de cada lei.',
+  },
+  botao: 'Quero associar a minha marca',
 };
 
-/** Por que doar via DuGood: o que a DuGood garante na doação incentivada */
+/** O papel consultivo da DuGood na doação incentivada */
+export const consultivo: Secao & { botao: string } = {
+  rotulo: 'Consultivo',
+  titulo: 'Não só encontramos o projeto: estamos com você em cada passo.',
+  lead: 'Na DuGood, ajudamos a empresa a encontrar o projeto e acompanhamos todo o passo a passo burocrático, com transparência e segurança. E, como também falamos de presença de marca, entendemos em que contexto a sua empresa se sai melhor: o público, a causa e a cota que trazem o maior ganho para ela.',
+  botao: 'Quero apoiar o que faz mais sentido para mim',
+};
+
+/** O que a DuGood faz na doação incentivada */
 export const pilares: ItemIcone[] = [
-  { icone: 'busca', titulo: 'Curadoria', texto: 'Selecionamos projetos aprovados e em captação e apresentamos os que combinam com o setor, a região e os valores da empresa.' },
-  { icone: 'escudo', titulo: 'Segurança', texto: 'Só projetos com aprovação no órgão responsável e organizações verificadas, com cadastro e documentos conferidos.' },
-  { icone: 'grafico', titulo: 'Transparência', texto: 'O dinheiro vai para o projeto, não para a DuGood. A empresa acompanha a execução pelas atualizações da ONG.' },
-  { icone: 'recibo', titulo: 'Facilidade', texto: 'Cálculo do potencial, escolha, aporte e recibo assinado digitalmente, tudo com a DuGood do lado.' },
+  { icone: 'busca', titulo: 'Encontrar o projeto', texto: 'Curadoria de projetos aprovados e em captação, com a organização por trás de cada um verificada.' },
+  { icone: 'recibo', titulo: 'Todo o passo a passo', texto: 'Do enquadramento na lei ao aporte e ao recibo assinado digitalmente, sem a empresa se perder na burocracia.' },
+  { icone: 'escudo', titulo: 'Segurança e transparência', texto: 'Só projetos com aprovação no órgão responsável. O dinheiro vai para o projeto, e a empresa acompanha a execução.' },
+  { icone: 'megafone', titulo: 'Presença de marca', texto: 'Entendemos o público e o contexto em que a sua marca se sai melhor, e indicamos as cotas que fazem sentido.' },
 ];
 
 export const passos: Secao & { itens: Item[] } = {
@@ -247,8 +275,13 @@ export const markdown = (site: URL | undefined) =>
       lista(leisIncentivo.map((l) => `${l.nome}: até ${(l.limite * 100).toLocaleString('pt-BR')}% do IRPJ (${l.nota})`)),
       'Exemplo: com lucro real de R$ 10 milhões, o IRPJ a 15% é R$ 1,5 milhão, e o potencial somado das leis acima é de R$ 150 mil por ano. É uma estimativa: as regras mudam conforme o projeto, e a contabilidade da empresa confirma os valores.',
     ),
+    secao(marca.titulo, marca.lead, lista(marca.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto }))), `**${marca.exemplo.rotulo}: ${marca.exemplo.titulo}** ${marca.exemplo.texto} (${marca.exemplo.nota})`),
     secao(consultivo.titulo, consultivo.lead, lista(pilares.map((p) => ({ titulo: `${p.titulo}:`, texto: p.texto })))),
     secao(passos.titulo, numerada(passos.itens)),
+    secao(
+      diagnostico.titulo,
+      `${diagnostico.lead} Ferramenta em ${new URL('/empresas#diagnostico', site).href}; perfis de empresa considerados: ${setores.filter((x) => x.id !== 'outro').map((x) => x.nome.toLowerCase()).join(', ')}.`,
+    ),
     secao(outras.titulo, lista(outras.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto })))),
     secao(secaoPolitica.titulo, lista(secaoPolitica.itens)),
     perguntas(pagina.perguntas),

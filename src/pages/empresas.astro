@@ -12,6 +12,9 @@ import LeiaTambem from '../components/LeiaTambem.astro';
 import { postsDaCategoria } from '../lib/blog';
 import Contato from '../components/Contato.astro';
 import Onda from '../components/Onda.astro';
+import Diagnostico from '../components/Diagnostico.astro';
+import { textos as diag } from '../conteudo/diagnostico';
+import trofeu from '../assets/mascotes/trofeu.png';
 import { niveis, termosLink } from '../config';
 import * as c from '../conteudo/empresas';
 import presente from '../assets/mascotes/presente.png';
@@ -139,7 +142,29 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
     </div>
   </section>
 
-  <section class="secao secao--nevoa" id="consultivo">
+  <section class="secao secao--nevoa" id="marca" aria-labelledby="marca-titulo">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">{c.marca.rotulo}</span>
+        <h2 id="marca-titulo">{c.marca.titulo}</h2>
+        <p class="lead">{c.marca.lead}</p>
+      </div>
+      <Cartoes itens={c.marca.itens} />
+      <div class="exemplo onda onda--cartao" data-r>
+        <Onda sizes="(min-width: 1200px) 1100px, 100vw" />
+        <div class="exemplo__texto">
+          <span class="rotulo">{c.marca.exemplo.rotulo}</span>
+          <h3>{c.marca.exemplo.titulo}</h3>
+          <p>{c.marca.exemplo.texto}</p>
+          <p class="exemplo__nota">{c.marca.exemplo.nota}</p>
+          <a class="botao" href="#contato" data-interesse="incentivada">{c.marca.botao}</a>
+        </div>
+        <Image class="mascote exemplo__mascote" src={trofeu} alt="" width={200} densities={[1, 2]} />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao" id="consultivo">
     <div class="conteiner">
       <div class="cabeca-secao" data-r>
         <span class="rotulo">{c.consultivo.rotulo}</span>
@@ -163,9 +188,21 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
           }
         </ol>
       </div>
-      <div class="chamada-linha" data-r>
-        <a class="botao" href="#contato" data-interesse="incentivada">Falar com a DuGood</a>
+      <div class="chamada-linha botoes" data-r>
+        <a class="botao" href="#contato" data-interesse="incentivada">{c.consultivo.botao}</a>
+        <a class="botao botao--claro" href="#diagnostico">Fazer o diagnóstico rápido</a>
       </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa" id="diagnostico" aria-labelledby="diagnostico-titulo">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">{diag.rotulo}</span>
+        <h2 id="diagnostico-titulo">{diag.titulo}</h2>
+        <p class="lead">{diag.lead}</p>
+      </div>
+      <Diagnostico />
     </div>
   </section>
 
@@ -239,6 +276,37 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
   .subtitulo {
     font-size: clamp(1.4rem, 2.6vw, 1.8rem);
     margin: 0;
+  }
+  .exemplo {
+    margin-top: 24px;
+    padding: clamp(28px, 4vw, 48px);
+    display: grid;
+    gap: 24px;
+    align-items: center;
+  }
+  @media (min-width: 900px) {
+    .exemplo {
+      grid-template-columns: 1fr auto;
+    }
+  }
+  .exemplo h3 {
+    font-size: clamp(1.4rem, 2.6vw, 1.8rem);
+    margin: 4px 0 12px;
+  }
+  .exemplo__texto p {
+    max-width: 62ch;
+  }
+  .exemplo .exemplo__nota {
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+  .exemplo__mascote {
+    width: 170px;
+    height: auto;
+    justify-self: center;
+  }
+  .chamada-linha.botoes {
+    justify-content: center;
   }
   .chamada-linha {
     margin-top: 40px;

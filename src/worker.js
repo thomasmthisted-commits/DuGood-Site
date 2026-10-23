@@ -5,13 +5,19 @@
 // entidade SiteLead e avisa os admins. O token SITE_LEAD_TOKEN (segredo nos dois lados) impede
 // que a função do Base44 seja usada por fora do site.
 //
-// GET /api/cnpj/<14 dígitos> → nome, razão social, cidade e regime tributário na base pública
-// (BrasilAPI, dados da Receita Federal), guardados em cache por um dia.
+// GET /api/cnpj/<14 dígitos> → nome, razão social, cidade, regime tributário e atividade na base
+// pública (BrasilAPI, dados da Receita Federal), guardados em cache por um dia.
+//
+// POST /api/diagnostico → diagnóstico rápido da página de empresas (src/conteudo/diagnostico.ts):
+// perfil, público, áreas de projeto e QUANTAS causas e projetos têm fit, sem nomes. As contagens
+// vêm da função siteDiagnostico do Base44 (BASE44_DIAGNOSTICO_URL, com o mesmo SITE_LEAD_TOKEN);
+// sem ela, só das causas ativas do app (BASE44_CAUSAS_URL, públicas).
 //
 // Páginas: quem pede Accept: text/markdown (agentes de IA) recebe a versão .md; as respostas HTML
 // levam o cabeçalho Link apontando para ela.
 
 import { cnpjValido } from './scripts/cnpj.ts';
+import { areas, classificar, contem, normalizar, unir } from './conteudo/diagnostico.ts';
 
 const PUBLICOS = new Set(['empresa', 'ong', 'organizador']);
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -116,17 +122,21 @@ const nomeFantasia = (texto = '') => (/^[A-Z0-9]{2,5}$/.test(texto.trim()) ? tex
 
 const REGIMES = { 'LUCRO REAL': 'Lucro real', 'LUCRO PRESUMIDO': 'Lucro presumido' };
 
-/** @param {string} digitos @param {ExecutionContext} ctx */
-async function consultarCnpj(digitos, ctx) {
-  if (!cnpjValido(digitos)) return Response.json({ erro: 'CNPJ inválido' }, { status: 400 });
+/**
+ * Dados públicos de um CNPJ (BrasilAPI), guardados em cache por um dia.
+ * @param {string} digitos @param {ExecutionContext} ctx
+ * @returns {Promise<{ status: number, dados?: Record<string, string>, erro?: string }>}
+ */
+async function dadosCnpj(digitos, ctx) {
+  if (!cnpjValido(digitos)) return { status: 400, erro: 'CNPJ inválido' };
 
-  const chave = new Request(`https://cache.dugood-site/cnpj/v2/${digitos}`);
+  const chave = new Request(`https://cache.dugood-site/cnpj/v3/${digitos}`);
   const guardado = await caches.default.match(chave);
-  if (guardado) return guardado;
+  if (guardado) return { status: 200, dados: await guardado.json() };
 
   const r = await fetch(`https://brasilapi.com.br/api/cnpj/v1/${digitos}`, { headers: { accept: 'application/json' } }).catch(() => null);
-  if (r?.status === 404) return Response.json({ erro: 'CNPJ não encontrado' }, { status: 404 });
-  if (!r?.ok) return Response.json({ erro: 'Base de CNPJ indisponível' }, { status: 502 });
+  if (r?.status === 404) return { status: 404, erro: 'CNPJ não encontrado' };
+  if (!r?.ok) return { status: 502, erro: 'Base de CNPJ indisponível' };
 
   const d = await r.json();
   const ultimoRegime = [...(d.regime_tributario ?? [])].sort((a, b) => b.ano - a.ano)[0]?.forma_de_tributacao;
@@ -136,10 +146,118 @@ async function consultarCnpj(digitos, ctx) {
     cidade: d.municipio ? `${titulo(d.municipio)}/${d.uf}` : '',
     regime: d.opcao_pelo_simples ? 'Simples Nacional' : (REGIMES[ultimoRegime] ?? ''),
     situacao: titulo(d.descricao_situacao_cadastral),
+    // Atividade principal (CNAE): ajuda o diagnóstico a entender o setor
+    atividade: d.cnae_fiscal_descricao ?? '',
   };
-  const resposta = Response.json(dados, { headers: { 'cache-control': 'public, max-age=86400' } });
-  ctx.waitUntil(caches.default.put(chave, resposta.clone()));
-  return resposta;
+  ctx.waitUntil(caches.default.put(chave, Response.json(dados, { headers: { 'cache-control': 'public, max-age=86400' } })));
+  return { status: 200, dados };
+}
+
+/** @param {string} digitos @param {ExecutionContext} ctx */
+async function consultarCnpj(digitos, ctx) {
+  const { status, dados, erro } = await dadosCnpj(digitos, ctx);
+  return Response.json(dados ?? { erro }, { status, headers: status === 200 ? { 'cache-control': 'public, max-age=86400' } : {} });
+}
+
+const LIMITE_SITE = 300_000;
+
+/** Título, descrição e títulos de seção do site da empresa, para o diagnóstico. @param {string} endereco */
+async function lerSite(endereco) {
+  let url;
+  try {
+    url = new URL(/^https?:\/\//i.test(endereco) ? endereco : `https://${endereco}`);
+  } catch {
+    return '';
+  }
+  if (!/^https?:$/.test(url.protocol) || !url.hostname.includes('.')) return '';
+  const r = await fetch(url, {
+    headers: { accept: 'text/html', 'user-agent': 'DuGoodSite/1.0 (diagnostico)' },
+    redirect: 'follow',
+    signal: AbortSignal.timeout(5000),
+  }).catch(() => null);
+  if (!r?.ok || !(r.headers.get('content-type') ?? '').includes('text/html')) return '';
+  const html = (await r.text()).slice(0, LIMITE_SITE);
+  const meta = (nome) => html.match(new RegExp(`<meta[^>]+(?:name|property)=["']${nome}["'][^>]*content=["']([^"']*)`, 'i'))?.[1] ?? '';
+  const titulos = [...html.matchAll(/<h[12][^>]*>([\s\S]*?)<\/h[12]>/gi)].slice(0, 12).map((m) => m[1]);
+  return [html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)?.[1], meta('description'), meta('og:description'), meta('keywords'), ...titulos]
+    .join(' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&[a-z#0-9]+;/gi, ' ')
+    .slice(0, 4000);
+}
+
+/**
+ * Quantas causas e projetos têm fit: pela função siteDiagnostico do Base44 (causas do app e a
+ * carteira de projetos incentivados) ou, sem ela, só pelas causas ativas, que são públicas.
+ * Guarda a resposta por uma hora.
+ * @param {{ areas: string[], causas: string[], palavras: string[] }} pedido
+ * @param {Record<string, any>} env @param {ExecutionContext} ctx
+ */
+async function contarFit(pedido, env, ctx) {
+  const chave = new Request(`https://cache.dugood-site/fit/v1/${encodeURIComponent(JSON.stringify(pedido)).slice(0, 1500)}`);
+  const guardado = await caches.default.match(chave);
+  if (guardado) return guardado.json();
+
+  let contagem = null;
+  if (env.BASE44_DIAGNOSTICO_URL && env.SITE_LEAD_TOKEN) {
+    const r = await fetch(env.BASE44_DIAGNOSTICO_URL, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'x-site-token': env.SITE_LEAD_TOKEN },
+      body: JSON.stringify(pedido),
+      signal: AbortSignal.timeout(8000),
+    }).catch(() => null);
+    if (r?.ok) contagem = await r.json().catch(() => null);
+  }
+  if (!contagem && env.BASE44_CAUSAS_URL) {
+    const r = await fetch(`${env.BASE44_CAUSAS_URL}?q=${encodeURIComponent('{"status":"active"}')}&limit=1000`, {
+      signal: AbortSignal.timeout(8000),
+    }).catch(() => null);
+    const ativas = r?.ok ? await r.json().catch(() => []) : [];
+    const categorias = new Set(pedido.causas);
+    contagem = {
+      causas: (Array.isArray(ativas) ? ativas : []).filter((c) => !c.is_sample && categorias.has(c.category)).length,
+      incentivados: 0,
+      com_marca: 0,
+    };
+  }
+  contagem ??= { causas: 0, incentivados: 0, com_marca: 0 };
+  ctx.waitUntil(caches.default.put(chave, Response.json(contagem, { headers: { 'cache-control': 'public, max-age=3600' } })));
+  return contagem;
+}
+
+/** POST /api/diagnostico → perfil, público, áreas e quantas causas e projetos têm fit */
+async function diagnostico(request, env, ctx) {
+  if (request.method !== 'POST') return new Response('Método não permitido', { status: 405, headers: { allow: 'POST' } });
+  const d = await request.json().catch(() => ({}));
+  const corta = (v, n) => String(v ?? '').trim().slice(0, n);
+  const setor = corta(d.setor, 40);
+  const descricao = corta(d.descricao, 600);
+  const site = corta(d.site, 200);
+  const digitos = corta(d.cnpj, 20).replace(/\D/g, '');
+  if (!setor && !descricao && !site && !digitos) return Response.json({ erro: 'Conte um pouco sobre a empresa.' }, { status: 400 });
+
+  const [textoSite, cnpj] = await Promise.all([
+    site ? lerSite(site).catch(() => '') : '',
+    digitos.length === 14 ? dadosCnpj(digitos, ctx).catch(() => ({})) : {},
+  ]);
+  const empresa = cnpj.dados ?? null;
+  const texto = [descricao, textoSite, empresa?.atividade, empresa?.nome].filter(Boolean).join(' ');
+  const encontrados = classificar(setor, texto);
+  const areasFit = unir(encontrados.map((p) => p.areas));
+  const causasFit = unir(encontrados.map((p) => p.causas));
+  const t = normalizar(texto);
+  const palavras = unir(encontrados.map((p) => p.palavras)).filter((w) => contem(t, w)).map((w) => w.trim());
+
+  const contagem = await contarFit({ areas: areasFit, causas: causasFit, palavras }, env, ctx);
+  return Response.json({
+    perfis: encontrados.map((p) => ({ nome: p.nome, publico: p.publico })),
+    areas: areasFit.map((a) => ({ id: a, ...areas[a] })),
+    causas: Number(contagem.causas) || 0,
+    incentivados: Number(contagem.incentivados) || 0,
+    com_marca: Number(contagem.com_marca) || 0,
+    empresa: empresa ? { nome: empresa.nome, regime: empresa.regime, atividade: empresa.atividade } : null,
+    leu_site: Boolean(textoSite),
+  });
 }
 
 /** Endereço da versão Markdown de uma página, ou null para arquivos (com extensão) */
@@ -153,6 +271,7 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     if (url.pathname === '/api/contato') return contato(request, env);
+    if (url.pathname === '/api/diagnostico') return diagnostico(request, env, ctx);
     const cnpj = url.pathname.match(/^\/api\/cnpj\/(\d{14})$/);
     if (cnpj && request.method === 'GET') return consultarCnpj(cnpj[1], ctx);
     if (url.pathname.startsWith('/api/')) return new Response('Não encontrado', { status: 404 });

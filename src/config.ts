@@ -5,6 +5,8 @@ export const dugood = {
   descricao:
     'A DuGood é uma plataforma de doações onde doadores, ONGs e marcas se conectam: quem doa acumula pontos e desbloqueia benefícios em lojas parceiras, e as ONGs recebem doações direcionadas, com transparência.',
   email: 'comercial@dugood.com.br',
+  // WhatsApp comercial só com DDI e DDD, ex.: '5511999999999'. Vazio: o botão de WhatsApp não aparece.
+  whatsapp: '',
   instagram: 'dugood.br',
   app: 'https://dugood.com.br',
 };

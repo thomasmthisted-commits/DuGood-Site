@@ -22,6 +22,8 @@
   "vars": {
     // Função do Base44 que grava o contato (entidade SiteLead) e avisa os admins
     "BASE44_CONTATO_URL": "https://dugood.base44.app/functions/submitSiteLead",
+    "BASE44_DIAGNOSTICO_URL": "https://dugood.base44.app/functions/siteDiagnostico",
+    "BASE44_CAUSAS_URL": "https://dugood.base44.app/api/apps/6966a6eb978f08f2caed1cef/entities/Cause",
     // Domínio próprio que deve abrir direto numa página, ex.: { "ongs.exemplo.com.br": "/ongs" }
     "INICIO_POR_DOMINIO": {}
   }

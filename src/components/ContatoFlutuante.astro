@@ -1,0 +1,121 @@
+---
+// Botões de contato que acompanham a página (canto inferior direito): mensagem pelo formulário,
+// e-mail e, quando houver número em config.ts, WhatsApp. Aparecem depois da abertura e somem
+// quando a seção de contato está na tela, para não cobrir o formulário.
+import Icone from './Icone.astro';
+import { dugood } from '../config';
+
+interface Props {
+  /** Endereço do formulário: a seção #contato da própria página ou de outra */
+  contato: string;
+}
+
+const { contato } = Astro.props;
+const whatsapp = dugood.whatsapp
+  ? `https://wa.me/${dugood.whatsapp}?text=${encodeURIComponent('Olá, DuGood! Vim pelo site e quero saber mais.')}`
+  : '';
+---
+
+<aside class="flutuante" aria-label="Fale com a DuGood" data-flutuante>
+  {
+    whatsapp && (
+      <a class="flutuante__botao flutuante__botao--whats" href={whatsapp} target="_blank" rel="noopener" data-rotulo="WhatsApp">
+        <Icone nome="mensagem" />
+        <span class="visualmente-oculto">Conversar pelo WhatsApp</span>
+      </a>
+    )
+  }
+  <a class="flutuante__botao" href={`mailto:${dugood.email}`} data-rotulo={dugood.email}>
+    <Icone nome="email" />
+    <span class="visualmente-oculto">Mandar um e-mail para {dugood.email}</span>
+  </a>
+  <a class="flutuante__principal" href={contato}>
+    <Icone nome="mensagem" />
+    <span>Fale com a DuGood</span>
+  </a>
+</aside>
+
+<script>
+  const caixa = document.querySelector<HTMLElement>('[data-flutuante]');
+  if (caixa) {
+    const contato = document.getElementById('contato');
+    let noContato = false;
+    const atualizar = () => caixa.classList.toggle('flutuante--escondido', scrollY < 400 || noContato);
+    if (contato) {
+      new IntersectionObserver(([e]) => {
+        noContato = e.isIntersecting;
+        atualizar();
+      }, { rootMargin: '0px 0px -30% 0px' }).observe(contato);
+    }
+    addEventListener('scroll', atualizar, { passive: true });
+    atualizar();
+  }
+</script>
+
+<style>
+  .flutuante {
+    position: fixed;
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+    z-index: 40;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: opacity 0.25s, transform 0.25s var(--curva);
+  }
+  .flutuante--escondido {
+    opacity: 0;
+    transform: translateY(16px);
+    pointer-events: none;
+  }
+  .flutuante__botao,
+  .flutuante__principal {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 52px;
+    border-radius: 999px;
+    text-decoration: none;
+    box-shadow: 0 6px 20px rgb(23 36 28 / 0.18);
+    transition: transform 0.2s var(--curva), background 0.2s;
+  }
+  .flutuante__botao {
+    width: 52px;
+    background: var(--branco);
+    color: var(--verde-escuro);
+  }
+  .flutuante__botao--whats {
+    background: var(--verde);
+    color: var(--branco);
+  }
+  .flutuante__principal {
+    padding: 0 20px 0 16px;
+    background: var(--verde-escuro);
+    color: var(--branco);
+    font-weight: 600;
+  }
+  .flutuante a:hover {
+    transform: translateY(-2px);
+  }
+  @media (max-width: 560px) {
+    .flutuante__principal span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      white-space: nowrap;
+    }
+    .flutuante__principal {
+      width: 52px;
+      padding: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .flutuante,
+    .flutuante a {
+      transition: none;
+    }
+  }
+</style>
