@@ -22,8 +22,8 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
 
 <Base pagina={c.pagina}>
   <Heroi {...c.heroi}>
-    <a class="botao" href="#incentivada">Doar via incentivo fiscal</a>
-    <a class="botao botao--claro" href="#beneficios">Ser marca parceira</a>
+    <a class="botao" href="#apoiador">Ser apoiador</a>
+    <a class="botao botao--claro" href="#incentivada">Doação incentivada</a>
     <Fragment slot="visual">
       <Print nome="beneficios-lista" alt="Tela de benefícios do app DuGood, com descontos de lojas parceiras por nível" revelar={false} prioridade />
       <Image class="mascote heroi__mascote" src={presente} alt="" width={220} loading="eager" />
@@ -50,8 +50,8 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
                 ))}
               </ul>
               <div class="botoes">
-                <a class="botao" href={k.id === 'incentivada' ? '#incentivada' : '#beneficios'}>Saiba mais</a>
-                <a class="botao botao--claro" href="#contato" data-interesse={k.id === 'incentivada' ? 'incentivada' : 'beneficios'}>{k.botao}</a>
+                <a class="botao" href={`#${k.id}`}>Saiba mais</a>
+                <a class="botao botao--claro" href="#contato" data-interesse={k.interesse}>{k.botao}</a>
               </div>
             </div>
           ))
@@ -64,56 +64,25 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
     </div>
   </section>
 
-  <section class="secao secao--nevoa" id="incentivada" aria-labelledby="incentivada-titulo">
-    <div class="conteiner duo">
-      <div data-r>
-        <span class="rotulo">{c.incentivada.rotulo}</span>
-        <h2 id="incentivada-titulo">{c.incentivada.titulo}</h2>
-        <p class="lead">{c.incentivada.lead}</p>
-        <Lista itens={c.incentivada.itens} />
-      </div>
-      <div data-r>
-        <Simulador />
-      </div>
-    </div>
-    <div class="conteiner pilares">
-      <div class="cabeca-secao" data-r>
-        <span class="rotulo">Por que doar via DuGood</span>
-        <h3 class="pilares__titulo">Curadoria, segurança, transparência e facilidade.</h3>
-      </div>
-      <Cartoes itens={c.pilares} />
-    </div>
-  </section>
-
-  <section class="secao" id="como-funciona">
-    <div class="conteiner">
-      <div class="cabeca-secao" data-r>
-        <span class="rotulo">{c.passos.rotulo}</span>
-        <h2>{c.passos.titulo}</h2>
-      </div>
-      <ol class="passos" data-r>
-        {
-          c.passos.itens.map((p) => (
-            <li>
-              <h3>{p.titulo}</h3>
-              <p>{p.texto}</p>
-            </li>
-          ))
-        }
-      </ol>
-    </div>
-  </section>
-
-  <section class="secao secao--nevoa" id="beneficios">
+  <section class="secao secao--nevoa" id="apoiador" aria-labelledby="apoiador-titulo">
     <div class="conteiner duo duo--inverso">
       <div data-r>
-        <span class="rotulo">{c.beneficios.rotulo}</span>
-        <h2>{c.beneficios.titulo}</h2>
-        <p class="lead">{c.beneficios.lead}</p>
+        <span class="rotulo">{c.apoiador.rotulo}</span>
+        <h2 id="apoiador-titulo">{c.apoiador.titulo}</h2>
+        <p class="lead">{c.apoiador.lead}</p>
+        <ol class="ciclo">
+          {
+            c.apoiador.ciclo.map((e) => (
+              <li>
+                <strong>{e.titulo}</strong>
+                <span>{e.texto}</span>
+              </li>
+            ))
+          }
+        </ol>
         <ul class="niveis">
           {niveis.map((n) => <li><strong>{n.nome}</strong><span>{n.pontos}</span></li>)}
         </ul>
-        <a class="botao botao--claro beneficios__botao" href="#contato" data-interesse="beneficios">Quero oferecer benefícios</a>
       </div>
       <div class="par-prints">
         <Print nome="beneficio-detalhe" alt="Detalhe de um benefício no app: desconto, categoria e nível exigido" legenda="O benefício dentro do app" />
@@ -122,9 +91,24 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
     </div>
   </section>
 
-  <section class="secao">
+  <section class="secao" id="ganhos">
     <div class="conteiner">
-      <Cartoes itens={c.vantagens} />
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">{c.ganhos.rotulo}</span>
+        <h2>{c.ganhos.titulo}</h2>
+      </div>
+      <Cartoes itens={c.ganhos.itens} />
+      <div class="exemplos">
+        <div class="cabeca-secao" data-r>
+          <span class="rotulo">{c.exemplos.rotulo}</span>
+          <h3 class="subtitulo">{c.exemplos.titulo}</h3>
+          <p class="lead">{c.exemplos.lead}</p>
+        </div>
+        <Cartoes itens={c.exemplos.itens} />
+      </div>
+      <div class="chamada-linha" data-r>
+        <a class="botao" href="#contato" data-interesse="beneficios">{c.apoiador.chamada}</a>
+      </div>
     </div>
   </section>
 
@@ -136,6 +120,50 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
         <p class="lead">{c.painel.lead}</p>
       </div>
       <GaleriaAbas id="lojista" painel="Painel do lojista" abas={c.painel.abas} />
+    </div>
+  </section>
+
+  <section class="secao" id="incentivada" aria-labelledby="incentivada-titulo">
+    <div class="conteiner duo">
+      <div data-r>
+        <span class="rotulo">{c.incentivada.rotulo}</span>
+        <h2 id="incentivada-titulo">{c.incentivada.titulo}</h2>
+        <p class="lead">{c.incentivada.lead}</p>
+        <Lista itens={c.incentivada.itens} />
+      </div>
+      <div data-r>
+        <Simulador />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa" id="consultivo">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">{c.consultivo.rotulo}</span>
+        <h2>{c.consultivo.titulo}</h2>
+        <p class="lead">{c.consultivo.lead}</p>
+      </div>
+      <Cartoes itens={c.pilares} />
+      <div class="passo-a-passo">
+        <div class="cabeca-secao" data-r>
+          <span class="rotulo">{c.passos.rotulo}</span>
+          <h3 class="subtitulo">{c.passos.titulo}</h3>
+        </div>
+        <ol class="passos" data-r>
+          {
+            c.passos.itens.map((p) => (
+              <li>
+                <h3>{p.titulo}</h3>
+                <p>{p.texto}</p>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+      <div class="chamada-linha" data-r>
+        <a class="botao" href="#contato" data-interesse="incentivada">Falar com a DuGood</a>
+      </div>
     </div>
   </section>
 
@@ -205,12 +233,65 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
     font-family: var(--titulo);
     font-size: 1.2rem;
   }
-  .pilares {
+  .exemplos,
+  .passo-a-passo {
     margin-top: clamp(48px, 6vw, 72px);
   }
-  .pilares__titulo {
+  .subtitulo {
     font-size: clamp(1.4rem, 2.6vw, 1.8rem);
     margin: 0;
+  }
+  .chamada-linha {
+    margin-top: 40px;
+    text-align: center;
+  }
+  .ciclo {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  .ciclo li {
+    position: relative;
+    display: grid;
+    gap: 4px;
+    align-content: start;
+    background: var(--verde-claro);
+    border-radius: var(--raio-p);
+    padding: 14px 16px;
+    color: var(--verde-escuro);
+  }
+  .ciclo li:not(:last-child)::after {
+    content: '→';
+    position: absolute;
+    z-index: 1;
+    right: -16px;
+    top: 13px;
+    width: 14px;
+    text-align: center;
+    color: var(--verde);
+    font-weight: 700;
+  }
+  .ciclo strong {
+    font-family: var(--titulo);
+  }
+  .ciclo span {
+    font-size: 0.85rem;
+    opacity: 0.85;
+  }
+  @media (max-width: 560px) {
+    .ciclo {
+      grid-template-columns: 1fr;
+    }
+    .ciclo li:not(:last-child)::after {
+      content: '↓';
+      right: auto;
+      left: 16px;
+      top: auto;
+      bottom: -18px;
+    }
   }
   .niveis {
     list-style: none;

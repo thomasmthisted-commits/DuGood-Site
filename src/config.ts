@@ -46,7 +46,7 @@ export type Publico = 'empresa' | 'ong' | 'organizador';
 export const interesses: Record<Publico, { id: string; texto: string }[]> = {
   empresa: [
     { id: 'incentivada', texto: 'Doação incentivada (leis de incentivo)' },
-    { id: 'beneficios', texto: 'Oferecer benefícios aos doadores' },
+    { id: 'beneficios', texto: 'Ser apoiador da plataforma (benefícios aos doadores)' },
     { id: 'eventos', texto: 'Patrocinar um evento social' },
     { id: 'api', texto: 'Integrar doações ao nosso app ou site (API)' },
   ],

@@ -41,7 +41,7 @@ export const heroi = {
 };
 
 export const publicos = [
-  { pagina: empresas, botao: 'Sou empresa', rotulo: 'Para empresas', titulo: 'Doação incentivada e benefícios', texto: 'Doação incentivada com curadoria e segurança, ou patrocínio e benefícios para quem doa. Sem custo para a empresa.' },
+  { pagina: empresas, botao: 'Sou empresa', rotulo: 'Para empresas', titulo: 'Doação incentivada e benefícios', texto: 'Apoiador da plataforma, com benefícios para quem doa, ou doação incentivada com curadoria e segurança. Sem custo para a empresa.' },
   { pagina: ongs, botao: 'Sou uma ONG', rotulo: 'Para ONGs', titulo: 'Doações, eventos e recibos', texto: 'Taxa zero da DuGood, com CRM de captação, gestão de doadores e gestão financeira grátis.' },
   { pagina: eventos, botao: 'Organizo eventos', rotulo: 'Para organizadores', titulo: 'Eventos sociais', texto: 'Corridas, torneios e jantares em que a inscrição vira doação, sem comissão da DuGood.' },
 ];
