@@ -10,6 +10,7 @@ import Perguntas from '../components/Perguntas.astro';
 import LeiaTambem from '../components/LeiaTambem.astro';
 import { postsDaCategoria } from '../lib/blog';
 import Contato from '../components/Contato.astro';
+import Onda from '../components/Onda.astro';
 import { termosLink } from '../config';
 import * as c from '../conteudo/ongs';
 import lupa from '../assets/mascotes/lupa.png';
@@ -88,7 +89,8 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
         <Lista itens={c.incentivados.itens} />
         <a class="botao botao--claro" href="#contato" data-interesse="incentivado">Tenho um projeto incentivado</a>
       </div>
-      <div class="cartao destaque" data-r>
+      <div class="destaque onda onda--cartao" data-r>
+        <Onda sizes="(min-width: 900px) 560px, 100vw" />
         <Image class="mascote destaque__mascote" src={coracao} alt="" width={120} />
         <h3>{c.incentivados.destaque.titulo}</h3>
         <p>{c.incentivados.destaque.texto}</p>
@@ -173,18 +175,11 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
     margin-top: 8px;
   }
   .destaque {
-    position: relative;
-    background: var(--verde-claro);
-    border: 0;
     padding: 40px 32px 32px;
   }
   .destaque h3 {
     font-size: 1.5rem;
     max-width: 18ch;
-  }
-  .destaque p {
-    color: var(--verde-escuro);
-    opacity: 0.8;
   }
   .destaque .destaque__mascote {
     width: 96px;

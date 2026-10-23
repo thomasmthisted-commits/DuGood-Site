@@ -7,9 +7,11 @@ import onda from '../assets/onda-verde.png';
 interface Props {
   /** true na abertura da página: carrega junto com o resto do topo */
   prioridade?: boolean;
+  /** tamanho em que a imagem aparece (num cartão, bem menor que a tela) */
+  sizes?: string;
 }
 
-const { prioridade = false } = Astro.props;
+const { prioridade = false, sizes = '100vw' } = Astro.props;
 ---
 
 <Image
@@ -18,6 +20,6 @@ const { prioridade = false } = Astro.props;
   alt=""
   aria-hidden="true"
   widths={[640, 1200, 1800]}
-  sizes="100vw"
+  sizes={sizes}
   loading={prioridade ? 'eager' : 'lazy'}
 />

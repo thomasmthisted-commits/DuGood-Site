@@ -362,6 +362,14 @@ p {
   background: linear-gradient(100deg, var(--onda-veu) 0%, rgb(17 62 17 / 0.28) 55%, rgb(17 62 17 / 0) 100%);
 }
 
+.onda--cartao {
+  border-radius: var(--raio);
+}
+
+.onda--cartao::before {
+  background: linear-gradient(120deg, var(--onda-veu) 0%, rgb(17 62 17 / 0.4) 100%);
+}
+
 .onda h1,
 .onda h2,
 .onda h3 {

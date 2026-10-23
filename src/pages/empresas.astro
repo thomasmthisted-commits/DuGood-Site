@@ -11,6 +11,7 @@ import Perguntas from '../components/Perguntas.astro';
 import LeiaTambem from '../components/LeiaTambem.astro';
 import { postsDaCategoria } from '../lib/blog';
 import Contato from '../components/Contato.astro';
+import Onda from '../components/Onda.astro';
 import { niveis, termosLink } from '../config';
 import * as c from '../conteudo/empresas';
 import presente from '../assets/mascotes/presente.png';
@@ -57,7 +58,8 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
           ))
         }
       </div>
-      <div class="custo" data-r>
+      <div class="custo onda onda--cartao" data-r>
+        <Onda sizes="(min-width: 1200px) 1100px, 100vw" />
         <strong>{c.caminhos.custo.titulo}</strong>
         <span>{c.caminhos.custo.texto}</span>
       </div>
@@ -224,10 +226,7 @@ const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
     flex-wrap: wrap;
     gap: 6px 14px;
     align-items: baseline;
-    background: var(--verde-claro);
-    border-radius: var(--raio);
-    padding: 20px 28px;
-    color: var(--verde-escuro);
+    padding: 22px 28px;
   }
   .custo strong {
     font-family: var(--titulo);

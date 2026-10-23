@@ -1,11 +1,13 @@
 ---
 // Missão, visão e valores (início e Sobre nós)
 import Icone from './Icone.astro';
+import Onda from './Onda.astro';
 import { proposito } from '../conteudo/comum';
 ---
 
 <div class="proposito" data-r>
-  <div class="proposito__missao">
+  <div class="proposito__missao onda onda--cartao">
+    <Onda sizes="(min-width: 900px) 640px, 100vw" />
     <span class="proposito__rotulo">Missão</span>
     <p class="proposito__frase">{proposito.missao}</p>
   </div>
@@ -63,10 +65,6 @@ import { proposito } from '../conteudo/comum';
     letter-spacing: -0.01em;
     margin: 0;
     text-wrap: balance;
-  }
-  .proposito__missao {
-    background: var(--verde-escuro);
-    color: var(--branco);
   }
   .proposito__missao .proposito__rotulo {
     color: var(--verde-claro-2);
