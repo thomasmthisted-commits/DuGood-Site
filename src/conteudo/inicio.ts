@@ -1,5 +1,5 @@
 import type { Item, Pagina } from './tipos';
-import { pontos } from './comum';
+import { pontos, propositoMarkdown } from './comum';
 import { dugood, fundadores } from '../config';
 import { cabecalho, juntar, lista, perguntas, secao } from '../lib/markdown';
 import { pagina as empresas } from './empresas';
@@ -43,7 +43,7 @@ export const heroi = {
 export const publicos = [
   { pagina: empresas, botao: 'Sou empresa', rotulo: 'Para empresas', titulo: 'Doação incentivada e benefícios', texto: 'Apoiador da plataforma, com benefícios para quem doa, ou doação incentivada com curadoria e segurança. Sem custo para a empresa.' },
   { pagina: ongs, botao: 'Sou uma ONG', rotulo: 'Para ONGs', titulo: 'Doações, eventos e recibos', texto: 'Taxa zero da DuGood, com CRM de captação, gestão de doadores e gestão financeira grátis.' },
-  { pagina: eventos, botao: 'Organizo eventos', rotulo: 'Para organizadores', titulo: 'Eventos sociais', texto: 'Corridas, torneios e jantares em que a inscrição vira doação, sem comissão da DuGood.' },
+  { pagina: eventos, botao: 'Organizo eventos', rotulo: 'Para organizadores', titulo: 'Eventos sociais', texto: 'Todos podem contribuir: de eventos pequenos a eventos de 20 mil pessoas, a inscrição vira doação, sem comissão da DuGood.' },
 ];
 
 export const rede: { titulo: string; rotulo: string; itens: Item[] } = {
@@ -59,11 +59,6 @@ export const rede: { titulo: string; rotulo: string; itens: Item[] } = {
 export const proposito = {
   rotulo: 'Quem somos',
   titulo: 'Simples, confiável e ainda mais recompensador.',
-  itens: [
-    { titulo: 'Missão', texto: 'Garantir que ajudar o próximo seja simples, confiável e ainda mais recompensador.' },
-    { titulo: 'Visão', texto: 'Um mundo onde ajudar o próximo faça parte da rotina de todos.' },
-    { titulo: 'Valores', texto: 'Transparência inegociável, impacto real e simplicidade.' },
-  ],
 };
 
 export const contato = {
@@ -79,7 +74,7 @@ export const markdown = (site: URL | undefined) =>
       lista(publicos.map((p) => `[${p.rotulo}](${new URL(`${p.pagina.rota}.md`, site).href}): ${p.pagina.resumo}`)),
     ),
     secao(rede.titulo, lista(rede.itens)),
-    secao(proposito.rotulo, lista(proposito.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto })))),
+    secao('Missão, visão e valores', propositoMarkdown()),
     secao('Fundadores', lista(fundadores.map((f) => `**${f.nome}**: ${f.bio} (${f.linkedin})`)), `História completa: ${new URL('/sobre.md', site).href}`),
     perguntas(pagina.perguntas),
   );

@@ -8,6 +8,7 @@ import Perguntas from '../components/Perguntas.astro';
 import LeiaTambem from '../components/LeiaTambem.astro';
 import { posts } from '../lib/blog';
 import Chamada from '../components/Chamada.astro';
+import Proposito from '../components/Proposito.astro';
 import * as c from '../conteudo/inicio';
 import acenando from '../assets/mascotes/acenando.png';
 import presente from '../assets/mascotes/presente.png';
@@ -73,16 +74,7 @@ const destaques = (await posts()).filter((p) => p.data.destaque).slice(0, 3);
         <h2>{c.proposito.titulo}</h2>
         <p class="lead">A DuGood nasceu numa competição beneficente de natação da Poli-USP. <a href="/sobre">Conheça a nossa história e os fundadores →</a></p>
       </div>
-      <div class="cartoes" data-r>
-        {
-          c.proposito.itens.map((i) => (
-            <div class="cartao">
-              <h3>{i.titulo}</h3>
-              <p>{i.texto}</p>
-            </div>
-          ))
-        }
-      </div>
+      <Proposito />
     </div>
   </section>
 

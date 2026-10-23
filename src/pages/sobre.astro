@@ -5,6 +5,7 @@ import Base from '../layouts/Base.astro';
 import Heroi from '../components/Heroi.astro';
 import Perguntas from '../components/Perguntas.astro';
 import Chamada from '../components/Chamada.astro';
+import Proposito from '../components/Proposito.astro';
 import { fundadores } from '../config';
 import * as c from '../conteudo/sobre';
 import acenando from '../assets/mascotes/acenando.png';
@@ -45,18 +46,13 @@ const pessoas = fundadores.map((f) => ({
     </Fragment>
   </Heroi>
 
-  <section class="secao secao--nevoa" aria-label="Missão, visão e valores">
+  <section class="secao secao--nevoa" aria-labelledby="proposito-titulo">
     <div class="conteiner">
-      <div class="cartoes" data-r>
-        {
-          c.proposito.map((i) => (
-            <div class="cartao">
-              <span class="rotulo">{i.titulo}</span>
-              <p class="proposito">{i.texto}</p>
-            </div>
-          ))
-        }
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">No que acreditamos</span>
+        <h2 id="proposito-titulo">Missão, visão e valores.</h2>
       </div>
+      <Proposito />
     </div>
   </section>
 
@@ -191,12 +187,6 @@ const pessoas = fundadores.map((f) => ({
     bottom: -6%;
     width: 34%;
     left: auto;
-  }
-  .proposito {
-    font-family: var(--titulo);
-    font-size: 1.15rem;
-    line-height: 1.4;
-    color: var(--verde-escuro);
   }
   .historia {
     display: grid;

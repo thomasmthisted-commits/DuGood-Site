@@ -27,6 +27,34 @@ const artigos = (await posts()).filter((p) => p.data.publico === 'organizador' |
     </Fragment>
   </Heroi>
 
+  <section class="secao" id="todos" aria-labelledby="todos-titulo">
+    <div class="conteiner">
+      <div class="cabeca-secao cabeca-secao--centro" data-r>
+        <span class="rotulo">{c.escala.rotulo}</span>
+        <h2 id="todos-titulo">{c.escala.titulo}</h2>
+        <p class="lead">{c.escala.lead}</p>
+      </div>
+      <ol class="escala" data-r>
+        {
+          c.escala.itens.map((i, n) => (
+            <li class={`escala__item escala__item--${n}`}>
+              <span class="escala__bolhas" aria-hidden="true">
+                {Array.from({ length: n * 2 + 1 }, () => <i />)}
+              </span>
+              <span class="rotulo">{i.tamanho}</span>
+              <h3>{i.titulo}</h3>
+              <p>{i.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <div class="quem" data-r>
+        <span>Quem pode organizar:</span>
+        {c.escala.quem.map((q) => <span class="quem__chip">{q}</span>)}
+      </div>
+    </div>
+  </section>
+
   <section class="secao secao--nevoa" id="como-funciona">
     <div class="conteiner">
       <div class="cabeca-secao" data-r>
@@ -83,6 +111,80 @@ const artigos = (await posts()).filter((p) => p.data.publico === 'organizador' |
 </Base>
 
 <style>
+  .escala {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    align-items: end;
+  }
+  .escala__item {
+    background: var(--nevoa);
+    border-radius: var(--raio);
+    padding: 28px;
+  }
+  .escala__item--2 {
+    background: var(--verde-claro);
+  }
+  .escala__item h3 {
+    font-size: 1.3rem;
+    margin: 4px 0 8px;
+  }
+  .escala__item p {
+    color: var(--tinta-suave);
+    margin: 0;
+  }
+  .escala__bolhas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 34px;
+    align-items: flex-end;
+    margin-bottom: 18px;
+  }
+  .escala__bolhas i {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--verde);
+    opacity: 0.85;
+  }
+  .escala__item--1 .escala__bolhas i {
+    width: 16px;
+    height: 16px;
+  }
+  .escala__item--2 .escala__bolhas i {
+    width: 18px;
+    height: 18px;
+    background: var(--verde-escuro);
+  }
+  @media (min-width: 900px) {
+    .escala__item--1 {
+      padding-top: 52px;
+    }
+    .escala__item--2 {
+      padding-top: 76px;
+    }
+  }
+  .quem {
+    margin-top: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    color: var(--tinta-suave);
+  }
+  .quem__chip {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-weight: 600;
+    color: var(--verde-escuro);
+  }
   .historia .mascote {
     width: 150px;
     height: auto;

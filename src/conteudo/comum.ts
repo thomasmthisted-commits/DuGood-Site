@@ -1,4 +1,4 @@
-import type { Item } from './tipos';
+import type { Item, ItemIcone } from './tipos';
 
 // Política da DuGood, conforme os Termos de Uso do app. Usada nas páginas de empresas e ONGs.
 export const politica: Record<string, Item> = {
@@ -31,3 +31,21 @@ export const politica: Record<string, Item> = {
 // Pontos e níveis do app (iguais aos do app: R$ 1 doado = 1 ponto)
 export const pontos =
   'Na DuGood, cada R$ 1 doado vira 1 ponto. Com os pontos, o doador sobe de nível (Bronze, Prata, Ouro e Platina), conquista badges e desbloqueia benefícios oferecidos por marcas parceiras.';
+
+// Missão, visão e valores (os mesmos da página Quem somos do app)
+export const proposito: { missao: string; visao: string; valores: ItemIcone[] } = {
+  missao: 'Garantir que ajudar o próximo seja simples, confiável e ainda mais recompensador.',
+  visao: 'Um mundo onde ajudar o próximo faça parte da rotina de todos.',
+  valores: [
+    { icone: 'escudo', titulo: 'Transparência inegociável', texto: 'Quem doa sabe para onde vai cada real.' },
+    { icone: 'coracao', titulo: 'Impacto real', texto: 'Doações direcionadas a causas de ONGs verificadas.' },
+    { icone: 'estrela', titulo: 'Simplicidade', texto: 'Doar, apoiar e organizar sem complicação.' },
+  ],
+};
+
+export const propositoMarkdown = () =>
+  [
+    `- **Missão:** ${proposito.missao}`,
+    `- **Visão:** ${proposito.visao}`,
+    `- **Valores:** ${proposito.valores.map((v) => `${v.titulo} (${v.texto.replace(/\.$/, '').toLowerCase()})`).join('; ')}.`,
+  ].join('\n');

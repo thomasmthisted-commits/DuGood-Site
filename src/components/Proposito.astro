@@ -1,0 +1,116 @@
+---
+// Missão, visão e valores (início e Sobre nós)
+import Icone from './Icone.astro';
+import { proposito } from '../conteudo/comum';
+---
+
+<div class="proposito" data-r>
+  <div class="proposito__missao">
+    <span class="proposito__rotulo">Missão</span>
+    <p class="proposito__frase">{proposito.missao}</p>
+  </div>
+  <div class="proposito__visao">
+    <span class="proposito__rotulo">Visão</span>
+    <p class="proposito__frase">{proposito.visao}</p>
+  </div>
+  <div class="proposito__valores">
+    <span class="proposito__rotulo">Valores</span>
+    <ul>
+      {
+        proposito.valores.map((v) => (
+          <li>
+            <span class="proposito__icone"><Icone nome={v.icone} /></span>
+            <span>
+              <strong>{v.titulo}</strong>
+              {v.texto}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</div>
+
+<style>
+  .proposito {
+    display: grid;
+    gap: 20px;
+  }
+  @media (min-width: 900px) {
+    .proposito {
+      grid-template-columns: 1.15fr 1fr;
+      grid-template-rows: auto auto;
+    }
+    .proposito__valores {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+  }
+  .proposito > div {
+    border-radius: var(--raio);
+    padding: clamp(28px, 4vw, 44px);
+  }
+  .proposito__rotulo {
+    display: block;
+    font: 700 0.78rem var(--titulo);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--verde);
+    margin-bottom: 14px;
+  }
+  .proposito__frase {
+    font: 600 clamp(1.3rem, 2.4vw, 1.75rem) / 1.3 var(--titulo);
+    letter-spacing: -0.01em;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .proposito__missao {
+    background: var(--verde-escuro);
+    color: var(--branco);
+  }
+  .proposito__missao .proposito__rotulo {
+    color: var(--verde-claro-2);
+  }
+  .proposito__visao {
+    background: var(--branco);
+    border: 1px solid var(--linha);
+    color: var(--verde-escuro);
+  }
+  .proposito__valores {
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+  }
+  .proposito__valores ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 14px;
+  }
+  .proposito__valores li {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: var(--branco);
+    border-radius: var(--raio-p);
+    padding: 18px 20px;
+    font-size: 0.95rem;
+    color: var(--tinta-suave);
+  }
+  .proposito__valores strong {
+    display: block;
+    font: 700 1.1rem var(--titulo);
+    color: var(--verde-escuro);
+    margin-bottom: 2px;
+  }
+  .proposito__icone {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--verde-claro);
+    color: var(--verde-escuro);
+  }
+</style>

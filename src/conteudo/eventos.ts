@@ -6,9 +6,9 @@ export const pagina: Pagina = {
   nome: 'Eventos sociais',
   titulo: 'Eventos sociais na DuGood: inscrição que vira doação',
   descricao:
-    'Organize corridas, torneios e jantares beneficentes: a inscrição é uma doação para a ONG escolhida, com ingresso por QR Code e check-in pelo celular.',
+    'Todos podem contribuir: torne o seu evento mais social, de encontros pequenos a eventos de 20 mil pessoas. A inscrição vira doação, com ingresso por QR Code.',
   resumo:
-    'Na DuGood, organizadores criam eventos sociais (corridas, torneios, jantares e festas beneficentes) em que cada inscrição é uma doação para a ONG escolhida, que recebe 100% do valor. O participante recebe o ingresso com QR Code por e-mail, e a entrada é validada pelo celular. Também dá para fazer competição de arrecadação entre times.',
+    'Na DuGood, qualquer pessoa, time, coletivo ou empresa pode tornar o seu evento mais social, de encontros pequenos a eventos de 20 mil pessoas: em corridas, torneios, jantares e festas, cada inscrição é uma doação para a ONG escolhida, que recebe 100% do valor. O participante recebe o ingresso com QR Code por e-mail, e a entrada é validada pelo celular. Também dá para fazer competição de arrecadação entre times.',
   servico: {
     nome: 'Eventos sociais com inscrição por doação',
     tipo: 'Gestão de inscrições e ingressos para eventos beneficentes',
@@ -17,6 +17,10 @@ export const pagina: Pagina = {
       'Criação de eventos beneficentes em favor de uma ONG da plataforma, com inscrição por doação, ingresso por QR Code, check-in pelo celular e doação por times.',
   },
   perguntas: [
+    {
+      p: 'Meu evento é pequeno. Vale a pena fazer pela DuGood?',
+      r: 'Vale. Todos podem contribuir, e tornar o seu evento mais social é uma ótima forma de fazer isso. A DuGood funciona do mesmo jeito para um encontro pequeno e para um evento de 20 mil pessoas: a inscrição vira doação e o ingresso chega por e-mail.',
+    },
     {
       p: 'Quanto custa organizar um evento na DuGood?',
       r: 'A DuGood não cobra comissão sobre as inscrições, diferente de muitas plataformas de ingressos. Em cada pagamento incidem só as tarifas do meio de pagamento (cartão ou Pix), e o evento pode deixar que o participante cubra essas tarifas.',
@@ -46,8 +50,21 @@ export const pagina: Pagina = {
 
 export const heroi = {
   rotulo: 'Eventos sociais',
-  titulo: 'Seu evento, 100% a favor de uma causa.',
-  lead: 'Corridas, torneios, jantares e festas beneficentes: o organizador cria o evento na DuGood, escolhe a ONG que recebe as doações e cuida das inscrições e da entrada, com ingresso por QR Code. Sem a comissão por inscrição cobrada por outras plataformas.',
+  titulo: 'Todos podem contribuir. Seu evento também.',
+  lead: 'Tornar o seu evento mais social é uma ótima forma de fazer o bem. Na DuGood, a inscrição vira doação para a ONG que você escolher, com ingresso por QR Code e check-in pelo celular. Sem a comissão por inscrição cobrada por outras plataformas.',
+};
+
+/** Todos podem contribuir: de eventos pequenos a eventos de 20 mil pessoas */
+export const escala: Secao & { itens: (Item & { tamanho: string })[]; quem: string[] } = {
+  rotulo: 'Do pequeno ao gigante',
+  titulo: 'De eventos pequenos a eventos de 20 mil pessoas.',
+  lead: 'Não precisa ser um grande evento beneficente para contribuir. Qualquer encontro pode ter uma causa, e na DuGood a inscrição funciona do mesmo jeito, seja qual for o tamanho.',
+  itens: [
+    { tamanho: 'Pequeno', titulo: 'Entre amigos e colegas', texto: 'Um jantar, um torneio da firma, um encontro do time ou da turma: a inscrição vira doação.' },
+    { tamanho: 'Médio', titulo: 'Na comunidade', texto: 'Festas, campeonatos e eventos de associações, escolas e coletivos, com times e metas de arrecadação.' },
+    { tamanho: 'Grande', titulo: 'Até 20 mil pessoas', texto: 'Corridas, competições e festivais: inscrições, ingressos e check-in na entrada, tudo pelo celular.' },
+  ],
+  quem: ['Pessoas', 'Times', 'Coletivos', 'Empresas', 'ONGs'],
 };
 
 export const passos: Secao & { itens: Item[] } = {
@@ -120,6 +137,7 @@ export const contato = {
 export const markdown = (site: URL | undefined) =>
   juntar(
     cabecalho(pagina, site),
+    secao(escala.titulo, escala.lead, lista(escala.itens.map((i) => ({ titulo: `${i.tamanho} (${i.titulo.toLowerCase()}):`, texto: i.texto }))), `Quem pode organizar: ${escala.quem.join(', ').toLowerCase()}.`),
     secao(passos.titulo, passos.lead, numerada(passos.itens)),
     secao('Recursos', lista(recursos.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto })))),
     secao(painel.titulo, lista(painel.abas.map((a) => ({ titulo: `${a.aba}:`, texto: a.texto })))),

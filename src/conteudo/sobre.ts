@@ -1,5 +1,6 @@
 import type { Item, Pagina } from './tipos';
 import { fundadores } from '../config';
+import { propositoMarkdown } from './comum';
 import { cabecalho, juntar, lista, perguntas, secao } from '../lib/markdown';
 
 // Textos da página Quem somos do app (história, trajetória, ecossistema e fundadores)
@@ -30,12 +31,6 @@ export const heroi = {
   titulo: 'Uma rede do bem que nasceu na beira da piscina.',
   lead: 'A DuGood começou numa competição beneficente de natação e virou uma plataforma que conecta quem doa, as ONGs e as marcas. Esta é a nossa história.',
 };
-
-export const proposito: Item[] = [
-  { titulo: 'Missão', texto: 'Garantir que ajudar o próximo seja simples, confiável e ainda mais recompensador.' },
-  { titulo: 'Visão', texto: 'Um mundo onde ajudar o próximo faça parte da rotina de todos.' },
-  { titulo: 'Valores', texto: 'Transparência inegociável, impacto real e simplicidade.' },
-];
 
 export const historia = {
   rotulo: 'Como foi',
@@ -80,7 +75,7 @@ export const contato = {
 export const markdown = (site: URL | undefined) =>
   juntar(
     cabecalho(pagina, site),
-    secao('Missão, visão e valores', lista(proposito.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto })))),
+    secao('Missão, visão e valores', propositoMarkdown()),
     secao(historia.titulo, ...historia.paragrafos),
     secao('Nossa trajetória', trajetoria.map((t) => `- **${t.quando}, ${t.titulo.toLowerCase()}:** ${t.texto}`).join('\n')),
     secao(ecossistema.titulo, ecossistema.lead, lista(ecossistema.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto })))),
