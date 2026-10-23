@@ -23,12 +23,24 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
 <Base pagina={c.pagina}>
   <Heroi {...c.heroi}>
     <a class="botao" href="#contato" data-interesse="captar">Quero levar minha ONG</a>
-    <a class="botao botao--claro" href="#no-app">Ver como funciona</a>
+    <a class="botao botao--claro" href="#taxa-zero">Como é a taxa zero</a>
     <Fragment slot="visual">
       <Print nome="ong-perfil" alt="Página de uma ONG no app DuGood, com total arrecadado, doadores, causas e eventos" revelar={false} prioridade />
       <Image class="mascote heroi__mascote" src={lupa} alt="" width={220} loading="eager" />
     </Fragment>
   </Heroi>
+
+  <section class="secao" id="taxa-zero" aria-labelledby="taxa-titulo">
+    <div class="conteiner">
+      <div class="cabeca-secao cabeca-secao--centro" data-r>
+        <span class="selo-taxa">Taxa zero</span>
+        <h2 id="taxa-titulo">{c.taxaZero.titulo}</h2>
+        <p class="lead">{c.taxaZero.lead}</p>
+      </div>
+      <Cartoes itens={c.taxaZero.itens} />
+      <p class="taxa__nota" data-r>{c.taxaZero.nota}</p>
+    </div>
+  </section>
 
   <section class="secao secao--nevoa" id="no-app">
     <div class="conteiner">
@@ -122,6 +134,24 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
 </Base>
 
 <style>
+  .selo-taxa {
+    display: inline-block;
+    font: 700 0.95rem var(--titulo);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #fff;
+    background: var(--verde-escuro);
+    border-radius: 999px;
+    padding: 6px 16px;
+    margin-bottom: 16px;
+  }
+  .taxa__nota {
+    max-width: 760px;
+    margin: 28px auto 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--tinta-fraca);
+  }
   .trio {
     display: grid;
     gap: 40px;

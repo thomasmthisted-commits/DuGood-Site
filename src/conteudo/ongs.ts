@@ -7,9 +7,9 @@ export const pagina: Pagina = {
   nome: 'Para ONGs',
   titulo: 'DuGood para ONGs: doações, eventos e recibos',
   descricao:
-    'Página da ONG no app, doações pontuais e mensais, eventos com ingresso, recibos de incentivo fiscal e captação com empresas. Leve sua ONG para a DuGood.',
+    'Taxa zero da DuGood para ONGs: causas, doações mensais e eventos sem taxa, com CRM de captação, gestão de doadores e gestão financeira grátis.',
   resumo:
-    'A DuGood é uma plataforma de doações para ONGs: a organização ganha uma página no app, recebe doações pontuais e mensais (cartão e Pix) direto na própria conta, cria eventos com ingresso por QR Code, gera recibos de incentivo fiscal com assinatura digital e acompanha os doadores num painel. Para projetos aprovados em lei de incentivo, a DuGood também apresenta o projeto a empresas.',
+    'A DuGood é taxa zero para ONGs: não cobra taxa sobre as doações às causas, sobre as doações mensais nem sobre as inscrições de eventos, e oferece de graça o CRM de captação, a gestão de doadores e a gestão financeira. Só incidem as tarifas do meio de pagamento (Stripe), que o doador pode cobrir. A ONG ganha uma página no app, eventos com ingresso por QR Code e recibos de incentivo fiscal, e a DuGood leva projetos incentivados até as empresas.',
   servico: {
     nome: 'Plataforma de captação de doações para ONGs',
     tipo: 'Captação de doações, eventos beneficentes e recibos de incentivo fiscal',
@@ -18,6 +18,10 @@ export const pagina: Pagina = {
       'Página da ONG no app, doações pontuais e recorrentes, eventos com ingresso por QR Code, recibos de incentivo fiscal com assinatura digital, painel de doadores e captação de projetos incentivados com empresas.',
   },
   perguntas: [
+    {
+      p: 'A DuGood cobra alguma taxa da ONG?',
+      r: 'Não sobre as causas, as doações mensais e os eventos: a DuGood é taxa zero, e as ferramentas do painel são gratuitas. Em cada pagamento incidem apenas as tarifas do meio de pagamento (cartão ou Pix), cobradas pelo Stripe, e a ONG pode deixar que o doador cubra essas tarifas. Nos projetos incentivados, a remuneração da DuGood é combinada com a ONG em contrato.',
+    },
     {
       p: 'Quem pode entrar na DuGood?',
       r: 'Organizações sem fins lucrativos com CNPJ e documentação em dia. Antes de aprovar, a DuGood faz uma verificação cadastral e documental da organização.',
@@ -42,9 +46,23 @@ export const pagina: Pagina = {
 };
 
 export const heroi = {
-  rotulo: 'DuGood para ONGs',
-  titulo: 'Mais doações, doadores que voltam e menos trabalho manual.',
-  lead: 'Sua ONG ganha uma página no app, doações pontuais e mensais, eventos com ingresso, recibos de incentivo fiscal e um painel para conhecer quem apoia a causa. E a DuGood leva seus projetos incentivados até as empresas.',
+  rotulo: 'DuGood para ONGs · Taxa zero',
+  titulo: 'Taxa zero para a sua ONG captar mais.',
+  lead: 'A DuGood não cobra taxa sobre as doações às suas causas, as doações mensais e os eventos. E o CRM de captação, a gestão de doadores e a gestão financeira são grátis.',
+};
+
+/** Taxa zero e ferramentas gratuitas */
+export const taxaZero: Secao & { itens: ItemIcone[]; nota: string } = {
+  rotulo: 'Taxa zero',
+  titulo: 'O que é doado fica com a causa.',
+  lead: 'Sem mensalidade, sem taxa sobre as doações e sem pagar pelas ferramentas. A ONG usa tudo de graça.',
+  itens: [
+    { icone: 'coracao', titulo: 'Doações sem taxa da DuGood', texto: 'A DuGood não fica com nenhuma parte das doações às suas causas, pontuais ou mensais.' },
+    { icone: 'usuarios', titulo: 'CRM de captação e de doadores', texto: 'Doadores com contato, histórico e anotações, filtros, análise do público, doações recorrentes, sorteios e importação do histórico.' },
+    { icone: 'grafico', titulo: 'Gestão financeira', texto: 'Arrecadação por causa, relatórios, previsão das doações mensais, recibos e acesso aos saldos e repasses da conta de recebimento.' },
+    { icone: 'calendario', titulo: 'Eventos sem comissão', texto: 'Inscrições e ingressos com QR Code sem a comissão sobre cada inscrição cobrada por muitas plataformas de ingressos.' },
+  ],
+  nota: 'Em cada pagamento incidem só as tarifas do meio de pagamento (cartão ou Pix), cobradas pelo Stripe, e a ONG pode deixar que o doador cubra essas tarifas. Nos projetos incentivados, a remuneração da DuGood é combinada com a ONG em contrato.',
 };
 
 export const noApp: Secao = {
@@ -139,7 +157,12 @@ export const secaoPolitica: Secao & { itens: Item[] } = {
   rotulo: 'Nossa política',
   titulo: 'A ONG continua dona da relação com quem doa.',
   lead: 'Regras claras, nos Termos de Uso da DuGood.',
-  itens: [politica.recebimento, { ...politica.semCusto, texto: 'O doador paga só o valor que escolheu.' }, politica.autonomia, politica.dados],
+  itens: [
+    politica.recebimento,
+    { titulo: 'Taxa zero.', texto: 'A DuGood não cobra taxa sobre as doações às causas, as doações mensais e os eventos, e as ferramentas do painel são gratuitas.' },
+    politica.autonomia,
+    politica.dados,
+  ],
 };
 
 export const contato = {
@@ -156,6 +179,7 @@ export const contato = {
 export const markdown = (site: URL | undefined) =>
   juntar(
     cabecalho(pagina, site),
+    secao(taxaZero.titulo, taxaZero.lead, lista(taxaZero.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto }))), taxaZero.nota),
     secao(noApp.titulo, noApp.lead),
     secao(voltam.titulo, voltam.lead, lista(voltam.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto })))),
     secao(painel.titulo, painel.lead, lista(painel.abas.map((a) => ({ titulo: `${a.aba}:`, texto: a.texto })))),

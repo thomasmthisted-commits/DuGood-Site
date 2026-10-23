@@ -18,6 +18,10 @@ export const pagina: Pagina = {
   },
   perguntas: [
     {
+      p: 'Quanto custa organizar um evento na DuGood?',
+      r: 'A DuGood não cobra comissão sobre as inscrições, diferente de muitas plataformas de ingressos. Em cada pagamento incidem só as tarifas do meio de pagamento (cartão ou Pix), e o evento pode deixar que o participante cubra essas tarifas.',
+    },
+    {
       p: 'Quem recebe o dinheiro das inscrições?',
       r: 'A ONG escolhida pelo organizador, que recebe 100% das doações. O evento só vai ao ar depois que a ONG aceita; se ela recusar, o organizador pode convidar outra.',
     },
@@ -43,7 +47,7 @@ export const pagina: Pagina = {
 export const heroi = {
   rotulo: 'Eventos sociais',
   titulo: 'Seu evento, 100% a favor de uma causa.',
-  lead: 'Corridas, torneios, jantares e festas beneficentes: o organizador cria o evento na DuGood, escolhe a ONG que recebe as doações e cuida das inscrições e da entrada, com ingresso por QR Code.',
+  lead: 'Corridas, torneios, jantares e festas beneficentes: o organizador cria o evento na DuGood, escolhe a ONG que recebe as doações e cuida das inscrições e da entrada, com ingresso por QR Code. Sem a comissão por inscrição cobrada por outras plataformas.',
 };
 
 export const passos: Secao & { itens: Item[] } = {
@@ -59,10 +63,10 @@ export const passos: Secao & { itens: Item[] } = {
 };
 
 export const recursos: ItemIcone[] = [
+  { icone: 'coracao', titulo: 'Sem comissão da DuGood', texto: 'A DuGood não cobra comissão sobre as inscrições. Incidem só as tarifas do meio de pagamento, que o participante pode cobrir.' },
   { icone: 'times', titulo: 'Times', texto: 'Doação por time: o participante escolhe o seu na inscrição, e a competição também é de arrecadação.' },
   { icone: 'qr', titulo: 'Quem valida', texto: 'O ingresso pode ser escaneado pelo organizador, pela ONG ou por um lojista parceiro que recebe o evento.' },
   { icone: 'megafone', titulo: 'Vitrine no app', texto: 'O evento aparece em Eventos Beneficentes, para os doadores da DuGood, e tem link próprio para divulgar.' },
-  { icone: 'coracao', titulo: 'Mensagem de quem organiza', texto: 'Um recado personalizado no e-mail de confirmação, com as instruções do dia.' },
 ];
 
 export const historia: Secao = {

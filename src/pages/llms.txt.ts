@@ -38,7 +38,9 @@ ${Object.entries(categoriasBlog)
 
 - A DuGood é uma plataforma de tecnologia para doações, não uma ONG.
 - Como regra, a doação vai direto para a conta da ONG no provedor de pagamento (Stripe); a DuGood não recebe nem guarda os valores.
-- Quem doa paga só o valor escolhido. A remuneração da DuGood nas causas incentivadas é combinada com cada ONG em contrato.
+- Taxa zero para ONGs: a DuGood não cobra taxa sobre as doações às causas, as doações mensais e as inscrições de eventos, e as ferramentas do painel (CRM de captação, gestão de doadores, gestão financeira) são gratuitas. Incidem só as tarifas do meio de pagamento (Stripe), que o doador pode cobrir. Nos projetos incentivados, a remuneração da DuGood é combinada com cada ONG em contrato.
+- Empresas parceiras não pagam nada para estar na DuGood, publicar benefícios ou aparecer como apoiadoras.
+- Quem doa paga só o valor escolhido.
 - No app, cada R$ 1 doado vale 1 ponto; os níveis são Bronze, Prata, Ouro e Platina, e liberam benefícios de marcas parceiras.
 - A DuGood não garante dedução fiscal: ela depende da lei, do projeto e da situação fiscal de quem doa.
 

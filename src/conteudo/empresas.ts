@@ -8,9 +8,9 @@ export const pagina: Pagina = {
   nome: 'Para empresas',
   titulo: 'DuGood para empresas: doação incentivada e benefícios',
   descricao:
-    'Direcione parte do imposto de renda da empresa a projetos sociais aprovados e ofereça benefícios a quem doa. Simule a doação incentivada e fale com a DuGood.',
+    'Doação incentivada com curadoria e segurança, ou patrocínio e benefícios para quem doa: dois caminhos para a sua empresa, sem custo para estar na DuGood.',
   resumo:
-    'A DuGood ajuda empresas do lucro real a direcionar parte do IRPJ para projetos sociais aprovados em leis de incentivo (esporte, cultura, infância, pessoa idosa e saúde), com curadoria dos projetos e recibo pela plataforma. Qualquer empresa também pode oferecer benefícios aos doadores do app como lojista parceira, patrocinar eventos sociais ou integrar doações ao próprio produto por API.',
+    'Empresas participam da DuGood por dois caminhos, sem pagar nada para estar na plataforma. Na doação incentivada, empresas do lucro real destinam parte do IRPJ a projetos sociais aprovados, com a DuGood como fonte de curadoria, segurança, transparência e facilidade até o recibo. Como marca parceira, qualquer empresa patrocina projetos e eventos e oferece benefícios aos doadores do app.',
   servico: {
     nome: 'Doação incentivada e benefícios para empresas',
     tipo: 'Captação de doação incentivada e programa de benefícios para marcas',
@@ -19,6 +19,14 @@ export const pagina: Pagina = {
       'Curadoria de projetos aprovados em leis de incentivo fiscal para empresas do lucro real, e programa de benefícios em que marcas parceiras oferecem descontos a quem doa pela DuGood.',
   },
   perguntas: [
+    {
+      p: 'Quanto custa para a empresa estar na DuGood?',
+      r: 'Nada. Empresas parceiras não pagam para estar na plataforma, publicar benefícios ou aparecer como apoiadoras. Na doação incentivada, o valor aportado vai para o projeto escolhido e é abatido do imposto de renda, dentro dos limites de cada lei.',
+    },
+    {
+      p: 'Por que fazer a doação incentivada pela DuGood?',
+      r: 'Porque a DuGood faz a curadoria dos projetos, confere a aprovação e a organização por trás de cada um, mostra para onde vai o dinheiro e cuida do caminho até o recibo. A empresa ganha tempo e segurança na escolha.',
+    },
     {
       p: 'Minha empresa não é do lucro real. Ainda dá para participar?',
       r: 'Dá. As deduções de IRPJ das leis de incentivo valem para empresas do lucro real, mas qualquer empresa pode ser lojista parceira, oferecendo benefícios aos doadores, patrocinar eventos sociais ou apoiar uma ONG diretamente.',
@@ -49,11 +57,48 @@ export const pagina: Pagina = {
 export const heroi = {
   rotulo: 'DuGood para empresas',
   titulo: 'Sua marca do lado de quem faz o bem.',
-  lead: 'Direcione parte do imposto de renda para projetos sociais aprovados, ofereça benefícios a quem doa e mostre, com dados, o impacto que a sua empresa ajuda a gerar.',
+  lead: 'Doe parte do imposto de renda a projetos aprovados com curadoria e segurança, ou patrocine projetos e ofereça benefícios a quem doa. Estar na DuGood não custa nada para a empresa.',
 };
 
+/** Os dois caminhos da empresa na DuGood */
+export const caminhos = {
+  rotulo: 'Dois caminhos',
+  titulo: 'Como a sua empresa quer participar?',
+  lead: 'Escolha um caminho, ou os dois. Em nenhum deles a empresa paga para estar na plataforma.',
+  itens: [
+    {
+      id: 'incentivada',
+      rotulo: 'Caminho 1',
+      titulo: 'Doar via incentivo fiscal',
+      texto: 'Para empresas do lucro real que querem destinar parte do IRPJ a projetos sociais aprovados, com segurança e sem complicação.',
+      pontos: ['Curadoria de projetos aprovados', 'Segurança e transparência do início ao recibo', 'Valor abatido do imposto, dentro dos limites de cada lei'],
+      botao: 'Quero doar via incentivo',
+    },
+    {
+      id: 'marca',
+      rotulo: 'Caminho 2',
+      titulo: 'Patrocinar e oferecer benefícios',
+      texto: 'Para qualquer empresa que quer associar a marca a causas de impacto e chegar a uma comunidade de pessoas que doam.',
+      pontos: ['Patrocínio de projetos e eventos sociais', 'Benefícios publicados no app para quem doa', 'Painel com resgates e perfil do público'],
+      botao: 'Quero ser marca parceira',
+    },
+  ],
+  custo: {
+    titulo: 'Custo zero para a empresa.',
+    texto: 'Empresas parceiras não pagam nada para estar na DuGood, publicar benefícios ou aparecer como apoiadoras. Elas fomentam uma comunidade do bem; quem doa e as ONGs saem ganhando.',
+  },
+};
+
+/** Por que doar via DuGood: o que a DuGood garante na doação incentivada */
+export const pilares: ItemIcone[] = [
+  { icone: 'busca', titulo: 'Curadoria', texto: 'Selecionamos projetos aprovados e em captação e apresentamos os que combinam com o setor, a região e os valores da empresa.' },
+  { icone: 'escudo', titulo: 'Segurança', texto: 'Só projetos com aprovação no órgão responsável e organizações verificadas, com cadastro e documentos conferidos.' },
+  { icone: 'grafico', titulo: 'Transparência', texto: 'O dinheiro vai para o projeto, não para a DuGood. A empresa acompanha a execução pelas atualizações da ONG.' },
+  { icone: 'recibo', titulo: 'Facilidade', texto: 'Cálculo do potencial, escolha, aporte e recibo assinado digitalmente, tudo com a DuGood do lado.' },
+];
+
 export const incentivada: Secao & { itens: Item[] } = {
-  rotulo: 'Em destaque · Doação incentivada',
+  rotulo: 'Caminho 1 · Doação incentivada',
   titulo: 'O imposto que já seria pago pode virar impacto.',
   lead: 'Empresas do lucro real podem destinar parte do IRPJ a projetos aprovados pelo governo: esporte, cultura, infância, pessoa idosa e saúde. Em vez de ir só para a arrecadação, o valor financia um projeto que a empresa escolhe e acompanha.',
   itens: [
@@ -76,9 +121,9 @@ export const passos: Secao & { itens: Item[] } = {
 };
 
 export const beneficios: Secao = {
-  rotulo: 'Marketing com propósito',
+  rotulo: 'Caminho 2 · Marca parceira',
   titulo: 'Sua marca na rotina de quem doa.',
-  lead: `${pontos} Sua empresa entra como lojista parceira, cria os benefícios e recebe clientes que chegam por uma boa causa.`,
+  lead: `Patrocine projetos e eventos sociais e publique benefícios no app, sem pagar nada para estar na plataforma. ${pontos} Sua empresa entra como marca parceira, cria os benefícios e recebe clientes que chegam por uma boa causa.`,
 };
 
 export const vantagens: ItemIcone[] = [
@@ -151,6 +196,8 @@ export const contato = {
 export const markdown = (site: URL | undefined) =>
   juntar(
     cabecalho(pagina, site),
+    secao(caminhos.titulo, caminhos.lead, caminhos.itens.map((c) => `### ${c.rotulo}: ${c.titulo}\n\n${c.texto}\n\n${lista(c.pontos)}`).join('\n\n'), `**${caminhos.custo.titulo}** ${caminhos.custo.texto}`),
+    secao('Por que doar via DuGood', lista(pilares.map((p) => ({ titulo: `${p.titulo}:`, texto: p.texto })))),
     secao(incentivada.titulo, incentivada.lead, lista(incentivada.itens)),
     secao(
       'Quanto a empresa pode direcionar',
