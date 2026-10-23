@@ -22,6 +22,8 @@ export const caminhos = {
   email: 'M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2ZM22 7l-10 6L2 7',
   mensagem: 'M7.9 20A9 9 0 1 0 4 16.1L2 22Z',
   fechar: 'M18 6 6 18M6 6l12 12',
+  whatsapp: 'M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1',
+  formulario: 'M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7M18.4 2.6a2.1 2.1 0 1 1 3 3L12 15l-4 1 1-4Z',
 } as const;
 
 export type NomeIcone = keyof typeof caminhos;

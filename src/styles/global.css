@@ -16,6 +16,8 @@
   --verde-hover: #078a5f;
   --verde-claro: #e6f6ee;
   --verde-claro-2: #d2efe0;
+  /* Verde oficial do WhatsApp, só no botão de WhatsApp */
+  --whatsapp: #25d366;
 
   /* Fundo verde ondulado do app (GreenHeader): gradiente + imagem das ondas */
   --onda-1: #7be83a;

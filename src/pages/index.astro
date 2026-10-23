@@ -9,6 +9,7 @@ import LeiaTambem from '../components/LeiaTambem.astro';
 import { posts } from '../lib/blog';
 import Chamada from '../components/Chamada.astro';
 import Proposito from '../components/Proposito.astro';
+import { appLink } from '../config';
 import * as c from '../conteudo/inicio';
 import acenando from '../assets/mascotes/acenando.png';
 import presente from '../assets/mascotes/presente.png';
@@ -24,7 +25,7 @@ const destaques = (await posts()).filter((p) => p.data.destaque).slice(0, 3);
 <Base pagina={c.pagina}>
   <Heroi {...c.heroi}>
     <a class="botao" href="#contato">Fale com a gente</a>
-    <a class="botao botao--claro" href="#para-quem">Para quem é</a>
+    <a class="botao botao--claro" href={appLink()} target="_blank" rel="noopener">Visitar o app</a>
     <Fragment slot="visual">
       <Print nome="inicio" alt="Tela inicial do app DuGood, com o total doado na plataforma e as causas populares" revelar={false} prioridade />
       <Image class="mascote heroi__mascote" src={acenando} alt="" width={220} loading="eager" />

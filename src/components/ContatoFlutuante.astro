@@ -20,7 +20,7 @@ const whatsapp = dugood.whatsapp
   {
     whatsapp && (
       <a class="flutuante__botao flutuante__botao--whats" href={whatsapp} target="_blank" rel="noopener" data-rotulo="WhatsApp">
-        <Icone nome="mensagem" />
+        <Icone nome="whatsapp" />
         <span class="visualmente-oculto">Conversar pelo WhatsApp</span>
       </a>
     )
@@ -30,7 +30,7 @@ const whatsapp = dugood.whatsapp
     <span class="visualmente-oculto">Mandar um e-mail para {dugood.email}</span>
   </a>
   <a class="flutuante__principal" href={contato}>
-    <Icone nome="mensagem" />
+    <Icone nome="formulario" />
     <span>Fale com a DuGood</span>
   </a>
 </aside>
@@ -86,7 +86,7 @@ const whatsapp = dugood.whatsapp
     color: var(--verde-escuro);
   }
   .flutuante__botao--whats {
-    background: var(--verde);
+    background: var(--whatsapp);
     color: var(--branco);
   }
   .flutuante__principal {
