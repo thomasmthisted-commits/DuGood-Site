@@ -4,6 +4,7 @@ descricao: 'Como empresas do lucro real e pessoas físicas destinam IR aos fundo
 resumo: 'Empresas do lucro real podem destinar até 1% do IRPJ devido a cada um destes mecanismos: Fundo da Infância e Adolescência (FIA), Fundo do Idoso, PRONON (oncologia) e PRONAS/PCD (pessoa com deficiência). Esses limites são próprios e não entram no teto de 4% da cultura. Pessoas físicas também podem destinar, inclusive direto na declaração para os fundos da criança e do idoso.'
 categoria: incentivo-fiscal
 nivel: intermediario
+mascote: abraco
 publico: empresa
 interesse: incentivada
 publicado: 2026-10-23

@@ -27,5 +27,5 @@ Simples e elegante: verde e branco, com cinzas bem claros para destacar, o fundo
 - Fundo verde ondulado (`Onda.astro`, classe `onda`): o mesmo do cabeçalho do app (gradiente + `src/assets/onda-verde.png`), com um véu verde escuro para o texto branco ter contraste. Só na abertura (`Heroi.astro`) e na seção final de contato (`Contato.astro` ou `Chamada.astro`).
 - Tipografia: Plus Jakarta Sans nos títulos, Inter no resto (a mesma do app).
 - Ritmo: abertura ondulada, seções brancas (`secao`) e cinza bem claro (`secao--nevoa`) alternadas, e uma única seção final ondulada com o contato.
-- Mascotes em `src/assets/mascotes/`, sempre decorativos (`alt=""`, classe `mascote`), no máximo um por seção.
+- Mascotes em `src/assets/mascotes/`, sempre decorativos (`alt=""`, classe `mascote`), no máximo um por seção. Exceção: no blog, cada artigo tem o seu (campo `mascote` do frontmatter, nome do arquivo sem `.png`; sem ele, vale o do tema em `src/lib/blog.ts`), que aparece no cartão e na abertura do artigo.
 - Animação: só o fade de entrada (`data-r`, `src/scripts/revelar.ts`), que respeita `prefers-reduced-motion` e funciona sem JS. Nada de fade na abertura (atrasa a primeira imagem).

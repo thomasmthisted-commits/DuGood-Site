@@ -4,6 +4,7 @@ descricao: 'ISO 14001, 26000, 45001, 37001, 50001 e 20400: o que cada norma cobr
 resumo: 'As normas ISO mais ligadas à sustentabilidade cobrem gestão ambiental (ISO 14001), saúde e segurança no trabalho (ISO 45001), antissuborno (ISO 37001) e energia (ISO 50001), todas certificáveis. Já a ISO 26000 (responsabilidade social) e a ISO 20400 (compras sustentáveis) são diretrizes e não têm certificação. A ISO 14001 ganhou nova versão em abril de 2026, com transição até 2029.'
 categoria: certificacoes
 nivel: intermediario
+mascote: livro
 publico: empresa
 publicado: 2026-10-23
 destaque: true

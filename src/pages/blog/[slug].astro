@@ -7,7 +7,8 @@ import Perguntas from '../../components/Perguntas.astro';
 import LeiaTambem from '../../components/LeiaTambem.astro';
 import Chamada from '../../components/Chamada.astro';
 import { categoriasBlog, niveisBlog, type Publico } from '../../config';
-import { dataLonga, leitura, posts, relacionados, type Post } from '../../lib/blog';
+import { Image } from 'astro:assets';
+import { dataLonga, leitura, mascoteDo, posts, relacionados, type Post } from '../../lib/blog';
 import { paginaPost } from '../../conteudo/blog';
 import abraco from '../../assets/mascotes/abraco.png';
 import acenando from '../../assets/mascotes/acenando.png';
@@ -75,6 +76,7 @@ const artigo = {
         </span>
       </p>
     </div>
+    <Image class="mascote artigo__mascote" src={mascoteDo(post)} alt="" width={220} densities={[1, 2]} loading="eager" />
   </header>
 
   <div class="secao artigo">
@@ -147,8 +149,34 @@ const artigo = {
   .artigo__topo {
     padding-bottom: clamp(48px, 6vw, 80px);
   }
+  .artigo__topo {
+    position: relative;
+  }
   .artigo__topo-conteudo {
     max-width: 900px;
+  }
+  .artigo__mascote {
+    position: absolute;
+    right: max(var(--gutter), calc((100% - var(--largura)) / 2 + var(--gutter)));
+    bottom: 24px;
+    width: auto;
+    height: clamp(120px, 16vw, 200px);
+    max-width: 240px;
+    object-fit: contain;
+    z-index: 1;
+  }
+  @media (min-width: 1000px) {
+    .artigo__topo-conteudo {
+      padding-right: 260px;
+    }
+  }
+  @media (max-width: 999px) {
+    .artigo__mascote {
+      position: static;
+      display: block;
+      margin: 8px auto 0;
+      height: 130px;
+    }
   }
   .artigo__topo h1 {
     font-size: clamp(2rem, 4.4vw, 3rem);

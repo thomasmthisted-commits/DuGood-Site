@@ -1,6 +1,7 @@
 ---
 // Cartão de artigo do blog: tema, nível, título, descrição e tempo de leitura
-import { leitura, nomeCategoria, nomeNivel, type Post } from '../lib/blog';
+import { Image } from 'astro:assets';
+import { leitura, mascoteDo, nomeCategoria, nomeNivel, type Post } from '../lib/blog';
 
 interface Props {
   post: Post;
@@ -13,6 +14,9 @@ const { titulo, descricao, categoria, nivel } = post.data;
 ---
 
 <a class="post" href={`/blog/${post.id}`} data-nivel={nivel} data-categoria={categoria}>
+  <div class={`post__capa post__capa--${categoria}`}>
+    <Image class="mascote post__mascote" src={mascoteDo(post)} alt="" width={130} densities={[1, 2]} />
+  </div>
   <div class="post__meta">
     {mostrarCategoria && <span class="post__tema">{nomeCategoria(categoria)}</span>}
     <span class:list={['nivel', `nivel--${nivel}`]}>{nomeNivel(nivel)}</span>
@@ -43,6 +47,29 @@ const { titulo, descricao, categoria, nivel } = post.data;
   :global(.secao--nevoa) .post {
     border-color: transparent;
     box-shadow: var(--sombra);
+  }
+  .post__capa {
+    display: grid;
+    place-items: center;
+    height: 150px;
+    margin: -24px -24px 6px;
+    border-radius: calc(var(--raio) - 1px) calc(var(--raio) - 1px) 0 0;
+    background: radial-gradient(circle at 50% 110%, var(--verde-claro-2), var(--verde-claro) 70%);
+    overflow: hidden;
+  }
+  .post__capa--sustentabilidade,
+  .post__capa--certificacoes {
+    background: radial-gradient(circle at 50% 110%, var(--cinza-1), var(--nevoa) 70%);
+  }
+  .post__mascote {
+    width: auto;
+    height: 118px;
+    max-width: 70%;
+    object-fit: contain;
+    transition: transform 0.3s var(--curva);
+  }
+  .post:hover .post__mascote {
+    transform: translateY(-4px) rotate(-3deg);
   }
   .post__meta {
     display: flex;

@@ -4,6 +4,7 @@ descricao: 'Do cálculo do potencial à governança e à comunicação: como a e
 resumo: 'Uma estratégia de doação incentivada bem feita começa pelo cálculo do potencial sobre o IRPJ devido, combina leis com limites próprios (esporte, cultura, fundos da criança e do idoso, saúde), define critérios de escolha dos projetos e cria uma rotina de governança, documentação e comunicação. Combinando todas as leis, o potencial pode chegar a cerca de 10% do IRPJ devido.'
 categoria: incentivo-fiscal
 nivel: avancado
+mascote: presente
 publico: empresa
 interesse: incentivada
 publicado: 2026-10-23

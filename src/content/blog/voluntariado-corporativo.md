@@ -4,6 +4,7 @@ descricao: 'Do diagnóstico à medição de resultados: como montar um programa 
 resumo: 'Um programa de voluntariado corporativo funciona quando nasce de uma causa alinhada à empresa e às pessoas, tem formatos variados de participação, parceria com organizações sociais sérias e indicadores simples de resultado. No Brasil, a Lei 9.608/1998 define o serviço voluntário e prevê o termo de adesão entre a organização e o voluntário.'
 categoria: impacto-social
 nivel: intermediario
+mascote: abraco
 publico: empresa
 publicado: 2026-10-23
 fontes:

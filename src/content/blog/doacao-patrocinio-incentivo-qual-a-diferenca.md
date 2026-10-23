@@ -4,6 +4,7 @@ descricao: 'Três formas de a empresa apoiar causas sociais, com regras, vantage
 resumo: 'Na doação, a empresa apoia uma causa sem esperar contrapartida; no patrocínio, apoia e recebe divulgação da marca; e o incentivo fiscal é o mecanismo legal que permite abater do imposto de renda parte das doações e patrocínios feitos a projetos aprovados. Uma mesma ação pode combinar mais de uma dessas formas.'
 categoria: impacto-social
 nivel: basico
+mascote: balao
 publico: empresa
 interesse: incentivada
 publicado: 2026-10-23

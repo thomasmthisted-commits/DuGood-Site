@@ -4,6 +4,7 @@ descricao: 'Entenda em poucos minutos como empresas e pessoas físicas podem dir
 resumo: 'Doação incentivada é quando uma empresa ou pessoa física direciona parte do imposto de renda que já pagaria para um projeto social aprovado pelo governo, como projetos de esporte, cultura, infância, pessoa idosa e saúde. O valor é abatido do imposto devido, dentro dos limites de cada lei.'
 categoria: incentivo-fiscal
 nivel: basico
+mascote: lupa
 publico: empresa
 interesse: incentivada
 publicado: 2026-10-23

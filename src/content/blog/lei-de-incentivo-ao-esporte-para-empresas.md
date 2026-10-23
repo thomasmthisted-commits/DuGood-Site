@@ -4,6 +4,7 @@ descricao: 'Limites de dedução, quem pode usar, como escolher o projeto e o qu
 resumo: 'Empresas do lucro real podem deduzir do IRPJ até 2% do imposto devido com patrocínios e doações a projetos esportivos aprovados pelo Ministério do Esporte, ou até 4% em projetos de inclusão social. A Lei Complementar 222/2025 tornou a lei permanente e eleva o limite geral para 3% a partir de 2028.'
 categoria: incentivo-fiscal
 nivel: intermediario
+mascote: trofeu
 publico: empresa
 interesse: incentivada
 publicado: 2026-10-23

@@ -4,6 +4,7 @@ descricao: 'Os três pilares do ESG na prática, como fazer a análise de materi
 resumo: 'ESG reúne práticas ambientais, sociais e de governança que mostram como a empresa gera e protege valor no longo prazo. O caminho começa por um diagnóstico dos temas materiais, segue com metas e indicadores e termina no relato, em geral com os padrões GRI. Desde a Resolução CVM 244/2026, o relato pelos padrões IFRS S1 e S2 é voluntário para as companhias abertas brasileiras.'
 categoria: sustentabilidade
 nivel: intermediario
+mascote: acenando
 publico: empresa
 interesse: incentivada
 publicado: 2026-10-23

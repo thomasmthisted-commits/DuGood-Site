@@ -4,6 +4,7 @@ descricao: 'Escopos 1, 2 e 3, coleta de dados, fatores de emissão, verificaçã
 resumo: 'O inventário de emissões mede, em toneladas de CO₂ equivalente, os gases de efeito estufa que a empresa emite direta e indiretamente, organizados em escopos 1, 2 e 3 pela metodologia do GHG Protocol. No Brasil, o Programa Brasileiro GHG Protocol, da FGV, oferece ferramenta e registro público, e a Lei 15.042/2024 criou o mercado de carbono regulado (SBCE), que vai exigir relato de quem emite mais de 10 mil tCO₂e por ano.'
 categoria: sustentabilidade
 nivel: avancado
+mascote: capacete
 publico: empresa
 publicado: 2026-10-23
 fontes:

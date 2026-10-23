@@ -4,6 +4,7 @@ descricao: 'Sete perguntas simples para empresas e doadores checarem antes de ap
 resumo: 'Antes de apoiar uma ONG, vale checar sete pontos: CNPJ ativo, tempo de atuação, documentos institucionais, transparência sobre o uso dos recursos, resultados mensuráveis, governança e canais de contato. A maioria dessas informações é pública e pode ser conferida em poucos minutos.'
 categoria: para-ongs
 nivel: basico
+mascote: lupa
 publico: empresa
 publicado: 2026-10-23
 fontes:

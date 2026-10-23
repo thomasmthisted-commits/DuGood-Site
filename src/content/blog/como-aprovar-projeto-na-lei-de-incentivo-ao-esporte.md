@@ -4,6 +4,7 @@ descricao: 'Do cadastro como proponente à prestação de contas: como uma ONG a
 resumo: 'Para captar pela Lei de Incentivo ao Esporte, a organização se cadastra como proponente no sistema do Ministério do Esporte, submete o projeto dentro do prazo anual, aguarda a análise e, depois de aprovado, capta recursos de empresas e pessoas físicas em conta específica do projeto, prestando contas ao final. Em 2026, novas regras organizaram os projetos em três manifestações, com limites de captação próprios.'
 categoria: para-ongs
 nivel: avancado
+mascote: ferramentas
 publico: ong
 interesse: incentivado
 publicado: 2026-10-23

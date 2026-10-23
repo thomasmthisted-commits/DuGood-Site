@@ -4,6 +4,7 @@ descricao: 'Boas práticas para a ONG transformar doadores pontuais em mensais: 
 resumo: 'Doadores recorrentes dão previsibilidade à ONG. Para conquistá-los, a organização precisa de um pedido claro e concreto, um caminho fácil para doar todo mês, atualizações frequentes sobre o impacto e um cuidado especial com o agradecimento e com os motivos de cancelamento.'
 categoria: para-ongs
 nivel: intermediario
+mascote: coracao
 publico: ong
 interesse: captar
 publicado: 2026-10-23

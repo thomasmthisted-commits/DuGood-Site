@@ -4,6 +4,7 @@ descricao: 'Ações de baixo custo para começar hoje: energia, água, resíduos
 resumo: 'Sustentabilidade não começa com relatório: começa com práticas simples de energia, água, resíduos, compras, cuidado com as pessoas e apoio à comunidade. Este roteiro reúne 12 ações de baixo custo que pequenas e médias empresas podem adotar já, muitas delas com economia financeira.'
 categoria: sustentabilidade
 nivel: basico
+mascote: joinha
 publico: empresa
 interesse: beneficios
 publicado: 2026-10-23

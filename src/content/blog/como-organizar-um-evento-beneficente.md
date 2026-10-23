@@ -4,6 +4,7 @@ descricao: 'Da escolha da ONG ao relatório final: um checklist prático para or
 resumo: 'Um evento beneficente bem organizado começa pela escolha de uma ONG de confiança e de um objetivo claro de arrecadação, passa por inscrições simples e transparentes, uma divulgação planejada e uma operação segura no dia, e termina com o relato do resultado para participantes e apoiadores.'
 categoria: impacto-social
 nivel: basico
+mascote: ingresso
 publico: organizador
 interesse: competicao
 publicado: 2026-10-23

@@ -23,6 +23,8 @@ const blog = defineCollection({
     publicado: z.coerce.date(),
     atualizado: z.coerce.date().optional(),
     destaque: z.boolean().default(false),
+    /** Mascote do artigo: arquivo em src/assets/mascotes/ (sem .png), no cartão e na abertura */
+    mascote: z.string().optional(),
     /** Fontes consultadas, sempre oficiais ou de referência */
     fontes: z.array(z.object({ titulo: z.string(), url: z.url() })).min(1),
     perguntas: z.array(z.object({ p: z.string(), r: z.string() })).default([]),

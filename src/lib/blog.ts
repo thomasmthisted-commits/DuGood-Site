@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import type { ImageMetadata } from 'astro';
 import { categoriasBlog, niveisBlog, type CategoriaBlog } from '../config';
 
 export type Post = CollectionEntry<'blog'>;
@@ -40,3 +41,15 @@ export async function relacionados(post: Post, n = 3) {
   return [...mesma, ...outros.filter((p) => !mesma.includes(p))].slice(0, n);
 }
 
+
+// Mascote de cada artigo (campo `mascote` do frontmatter); sem ele, o do tema
+const mascotes = import.meta.glob<{ default: ImageMetadata }>('../assets/mascotes/*.png', { eager: true });
+const mascotePorTema: Record<CategoriaBlog, string> = {
+  'incentivo-fiscal': 'presente',
+  'para-ongs': 'coracao',
+  sustentabilidade: 'joinha',
+  'impacto-social': 'abraco',
+  certificacoes: 'trofeu',
+};
+export const mascoteDo = (post: Post) =>
+  (mascotes[`../assets/mascotes/${post.data.mascote}.png`] ?? mascotes[`../assets/mascotes/${mascotePorTema[post.data.categoria]}.png`]).default;

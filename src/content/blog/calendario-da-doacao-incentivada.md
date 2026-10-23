@@ -4,6 +4,7 @@ descricao: 'Do planejamento no começo do ano ao aporte até 31 de dezembro: um 
 resumo: 'A doação incentivada funciona melhor quando é planejada ao longo do ano. Para empresas do lucro real, o aporte precisa ser feito dentro do período de apuração do imposto (em geral, até 31 de dezembro); para pessoas físicas, a maioria das doações também vence em dezembro, e algumas podem ser feitas na própria declaração.'
 categoria: incentivo-fiscal
 nivel: basico
+mascote: celular
 publico: empresa
 interesse: incentivada
 publicado: 2026-10-23

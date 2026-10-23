@@ -4,6 +4,7 @@ descricao: 'Como funcionam os principais selos de impacto social e ambiental par
 resumo: 'Selos como a certificação B Corp (Empresa B), o GPTW e o Selo Empresa Amiga da Criança reconhecem práticas sociais e ambientais das empresas, cada um com foco e processo próprios. Em 2026, a certificação B Corp passou a exigir requisitos mínimos em vários temas de impacto, no lugar da pontuação mínima de 80 pontos.'
 categoria: certificacoes
 nivel: intermediario
+mascote: trofeu
 publico: empresa
 publicado: 2026-10-23
 fontes:

@@ -4,6 +4,7 @@ descricao: 'Quanto a empresa do lucro real pode deduzir pela Lei Rouanet, a dife
 resumo: 'Pela Lei Rouanet, empresas do lucro real podem deduzir do IRPJ patrocínios e doações a projetos culturais aprovados pelo Ministério da Cultura, dentro de um limite global de 4% do imposto devido, dividido com o audiovisual e o esporte de inclusão social. Nos projetos do artigo 18, a dedução é de 100% do valor; nos do artigo 26, de 40% (doação) ou 30% (patrocínio), e o valor também pode ser lançado como despesa operacional.'
 categoria: incentivo-fiscal
 nivel: intermediario
+mascote: festa
 publico: empresa
 interesse: incentivada
 publicado: 2026-10-23
