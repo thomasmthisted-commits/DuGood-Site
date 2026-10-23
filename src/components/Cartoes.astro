@@ -1,0 +1,33 @@
+---
+// Grade de cartões com ícone; com href, o cartão inteiro vira link; com interesse, leva ao contato
+import Icone from './Icone.astro';
+import type { ItemIcone } from '../conteudo/tipos';
+
+interface Props {
+  itens: (ItemIcone & { interesse?: string })[];
+  duas?: boolean;
+}
+
+const { itens, duas = false } = Astro.props;
+---
+
+<div class:list={['cartoes', { 'cartoes--2': duas }]} data-r>
+  {
+    itens.map((i) => {
+      const Tag = i.href || i.interesse ? 'a' : 'div';
+      return (
+        <Tag
+          class:list={['cartao', { 'cartao--link': Tag === 'a' }]}
+          href={i.href ?? (i.interesse ? '#contato' : undefined)}
+          data-interesse={i.interesse}
+        >
+          <div class="icone">
+            <Icone nome={i.icone} />
+          </div>
+          <h3>{i.titulo}</h3>
+          <p>{i.texto}</p>
+        </Tag>
+      );
+    })
+  }
+</div>

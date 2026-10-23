@@ -1,0 +1,16 @@
+[
+  { "nome": "ong-painel-causas", "perfil": "ong", "url": "/OrganizationDashboard" },
+  { "nome": "ong-painel-perfil", "perfil": "ong", "url": "/OrganizationDashboard", "passos": [{ "clicar": "Perfil", "exato": true }] },
+  { "nome": "ong-painel-eventos", "perfil": "ong", "url": "/OrganizationDashboard", "passos": [{ "clicar": "Eventos", "exato": true }] },
+  { "nome": "ong-painel-fiscal", "perfil": "ong", "url": "/OrganizationDashboard", "passos": [{ "clicar": "Incentivos Fiscais" }, { "clicar": "Doações", "exato": true }] },
+  { "nome": "ong-painel-doadores", "perfil": "ong", "url": "/OrganizationDashboard", "passos": [{ "clicar": "Doadores", "exato": true }] },
+  { "nome": "ong-painel-documentos", "perfil": "ong", "url": "/OrganizationDashboard", "passos": [{ "clicar": "Documentos", "exato": true }] },
+  { "nome": "lojista-beneficios", "perfil": "lojista", "url": "/MerchantDashboard", "camera": "beneficio" },
+  { "nome": "lojista-informacoes", "perfil": "lojista", "url": "/MerchantDashboard", "passos": [{ "clicar": "Informações da Loja" }] },
+  { "nome": "lojista-scanner", "perfil": "lojista", "url": "/MerchantDashboard", "camera": "beneficio", "passos": [{ "botao": "Iniciar Scanner", "esperar": 5000 }] },
+  { "nome": "lojista-clientes", "perfil": "lojista", "url": "/MerchantDashboard", "passos": [{ "clicar": "Clientes", "exato": true }] },
+  { "nome": "organizador-eventos", "perfil": "organizador", "url": "/EventOrganizerDashboard" },
+  { "nome": "organizador-novo-evento", "perfil": "organizador", "url": "/EventOrganizerDashboard", "passos": [{ "clicar": "Novo Evento" }] },
+  { "nome": "organizador-inscritos", "perfil": "organizador", "url": "/EventOrganizerDashboard", "passos": [{ "clicar": "Inscritos", "exato": true }, { "clicar": "Inscritos (14)" }] },
+  { "nome": "organizador-scanner", "perfil": "organizador", "url": "/EventOrganizerDashboard", "camera": "ingresso", "passos": [{ "clicar": "Escanear Ingressos" }, { "botao": "Iniciar Scanner", "esperar": 5000 }] }
+]

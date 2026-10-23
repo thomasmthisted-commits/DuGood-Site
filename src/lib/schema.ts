@@ -1,0 +1,88 @@
+// Dados estruturados schema.org (JSON-LD). Nada de texto escondido na página: o que os
+// buscadores e agentes de IA precisam saber vai aqui, nas versões .md e no llms.txt.
+import type { Pagina } from '../conteudo/tipos';
+import { dugood, fundadores, instagramLink } from '../config';
+
+const id = (site: URL | undefined, ancora: string) => new URL(`/#${ancora}`, site).href;
+
+export function organizacao(site: URL | undefined) {
+  return {
+    '@type': 'Organization',
+    '@id': id(site, 'organizacao'),
+    name: dugood.nome,
+    description: dugood.descricao,
+    slogan: dugood.slogan,
+    url: new URL('/', site).href,
+    logo: { '@type': 'ImageObject', url: new URL('/logo.png', site).href },
+    email: dugood.email,
+    founder: fundadores.map((f) => ({ '@type': 'Person', name: f.nome, description: f.bio, sameAs: [f.linkedin] })),
+    contactPoint: [{ '@type': 'ContactPoint', contactType: 'sales', email: dugood.email, availableLanguage: ['pt-BR', 'en'] }],
+    sameAs: [dugood.app, instagramLink],
+    knowsAbout: ['Doação incentivada', 'Leis de incentivo fiscal', 'Captação de recursos para ONGs', 'Eventos beneficentes', 'ESG'],
+  };
+}
+
+export function grafo(pagina: Pagina, site: URL | undefined, imagem: string, atualizado: string) {
+  const url = new URL(pagina.rota, site).href;
+  const nos: object[] = [
+    organizacao(site),
+    {
+      '@type': 'WebSite',
+      '@id': id(site, 'site'),
+      name: `${dugood.nome} para empresas, ONGs e eventos`,
+      url: new URL('/', site).href,
+      inLanguage: 'pt-BR',
+      publisher: { '@id': id(site, 'organizacao') },
+    },
+    {
+      '@type': 'WebPage',
+      '@id': `${url}#pagina`,
+      url,
+      name: pagina.titulo,
+      description: pagina.descricao,
+      abstract: pagina.resumo,
+      inLanguage: 'pt-BR',
+      isPartOf: { '@id': id(site, 'site') },
+      about: { '@id': id(site, 'organizacao') },
+      primaryImageOfPage: { '@type': 'ImageObject', url: imagem },
+      dateModified: atualizado,
+      ...(pagina.rota !== '/' && { breadcrumb: { '@id': `${url}#migalhas` } }),
+      ...(pagina.servico && { mainEntity: { '@id': `${url}#servico` } }),
+    },
+  ];
+
+  if (pagina.rota !== '/') {
+    nos.push({
+      '@type': 'BreadcrumbList',
+      '@id': `${url}#migalhas`,
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Início', item: new URL('/', site).href },
+        { '@type': 'ListItem', position: 2, name: pagina.nome, item: url },
+      ],
+    });
+  }
+
+  if (pagina.servico) {
+    nos.push({
+      '@type': 'Service',
+      '@id': `${url}#servico`,
+      name: pagina.servico.nome,
+      serviceType: pagina.servico.tipo,
+      description: pagina.servico.descricao,
+      provider: { '@id': id(site, 'organizacao') },
+      audience: { '@type': 'Audience', audienceType: pagina.servico.publico },
+      areaServed: { '@type': 'Country', name: 'Brasil' },
+      availableChannel: { '@type': 'ServiceChannel', serviceUrl: `${url}#contato`, availableLanguage: 'pt-BR' },
+    });
+  }
+
+  if (pagina.perguntas.length) {
+    nos.push({
+      '@type': 'FAQPage',
+      '@id': `${url}#perguntas`,
+      mainEntity: pagina.perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+    });
+  }
+
+  return { '@context': 'https://schema.org', '@graph': nos };
+}

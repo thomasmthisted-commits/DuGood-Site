@@ -1,11 +1,13 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import Onda from '../components/Onda.astro';
 import lupa from '../assets/mascotes/lupa.png';
 ---
 
 <Base titulo="Página não encontrada" descricao="Esta página não existe." indexar={false}>
-  <section class="heroi">
+  <section class="heroi onda">
+    <Onda prioridade />
     <div class="conteiner centro">
       <Image class="mascote" src={lupa} alt="" width={200} loading="eager" />
       <h1>Procuramos, mas esta página não existe.</h1>

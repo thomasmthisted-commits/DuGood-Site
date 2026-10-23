@@ -16,9 +16,11 @@ interface Props {
   class?: string;
   /** false: sem o fade de entrada (ex.: dentro de abas) */
   revelar?: boolean;
+  /** true: imagem principal da página (carrega primeiro, sem lazy) */
+  prioridade?: boolean;
 }
 
-const { nome, alt, tipo = 'celular', legenda, pendente, class: classe, revelar = true } = Astro.props;
+const { nome, alt, tipo = 'celular', legenda, pendente, class: classe, revelar = true, prioridade = false } = Astro.props;
 const imagem = print(nome);
 const larguras = tipo === 'celular' ? [300, 600] : [640, 1100, 1600];
 const tamanhos = tipo === 'celular' ? '300px' : '(min-width: 900px) 560px, 100vw';
@@ -36,7 +38,7 @@ const tamanhos = tipo === 'celular' ? '300px' : '(min-width: 900px) 560px, 100vw
           </div>
         )}
         {imagem ? (
-          <Image src={imagem} alt={alt} widths={larguras} sizes={tamanhos} />
+          <Image src={imagem} alt={alt} widths={larguras} sizes={tamanhos} loading={prioridade ? 'eager' : 'lazy'} fetchpriority={prioridade ? 'high' : 'auto'} />
         ) : (
           <div class="print__pendente">
             <strong>Print pendente</strong>

@@ -13,6 +13,8 @@ export default defineConfig({
   integrations: [
     sitemap({
       filter: (pagina) => !pagina.includes('/obrigado'),
+      // O conteúdo inteiro é publicado junto: a data do build vale para todas as páginas
+      lastmod: new Date(),
     }),
   ],
 });

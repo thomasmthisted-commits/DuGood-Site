@@ -36,6 +36,8 @@ const irpj = padrao * 0.15;
     <strong data-total>{brl(irpj * leisIncentivo.reduce((s, l) => s + l.limite, 0))}</strong>
   </div>
 
+  <a class="botao simulador__botao" href="#contato" data-interesse="incentivada" data-simulador-contato>Conversar sobre este valor</a>
+
   <p class="simulador__nota" id="simulador-nota">
     Estimativa para empresas tributadas pelo lucro real, sobre o IRPJ à alíquota de 15% (sem o adicional de 10%). Os limites
     e as regras de cada lei mudam conforme o projeto; confirme com a contabilidade da empresa. Para abater no imposto de um
@@ -56,6 +58,16 @@ const irpj = padrao * 0.15;
       el.querySelector('[data-total]')!.textContent = brl(irpj * leis.reduce((s, l) => s + l.limite, 0));
     };
     campo.addEventListener('input', atualizar);
+
+    // Leva o valor simulado para a mensagem do formulário de contato
+    el.querySelector('[data-simulador-contato]')!.addEventListener('click', () => {
+      const lucro = Number(campo.value.replace(/\D/g, '')) || 0;
+      const total = el.querySelector('[data-total]')!.textContent;
+      const texto = lucro
+        ? `Simulei no site um lucro real anual de ${brl(lucro)}: potencial de ${total} por ano em doação incentivada.`
+        : 'Quero entender quanto a empresa pode direcionar em doação incentivada.';
+      document.dispatchEvent(new CustomEvent('dugood:mensagem', { detail: { texto, interesses: ['incentivada'], regime: lucro ? 'Lucro real' : '' } }));
+    });
   }
 </script>
 
@@ -136,6 +148,10 @@ const irpj = padrao * 0.15;
   }
   .simulador__total strong {
     font: 700 1.6rem var(--titulo);
+  }
+  .simulador__botao {
+    width: 100%;
+    margin-top: 16px;
   }
   .simulador__nota {
     margin: 16px 0 0;

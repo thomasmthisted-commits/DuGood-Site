@@ -1,66 +1,32 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import Heroi from '../components/Heroi.astro';
 import Print from '../components/Print.astro';
+import Lista from '../components/Lista.astro';
+import Perguntas from '../components/Perguntas.astro';
 import Chamada from '../components/Chamada.astro';
-import { appLink } from '../config';
+import * as c from '../conteudo/inicio';
 import acenando from '../assets/mascotes/acenando.png';
 import presente from '../assets/mascotes/presente.png';
 import lupa from '../assets/mascotes/lupa.png';
 import ingresso from '../assets/mascotes/ingresso.png';
 import abraco from '../assets/mascotes/abraco.png';
 
-const publicos = [
-  {
-    href: '/empresas',
-    rotulo: 'Para empresas',
-    titulo: 'Doação incentivada e benefícios',
-    texto: 'Direcione parte do IR a projetos aprovados e ofereça benefícios a uma comunidade de doadores.',
-    mascote: presente,
-  },
-  {
-    href: '/ongs',
-    rotulo: 'Para ONGs',
-    titulo: 'Doações, eventos e recibos',
-    texto: 'Página no app, doações pontuais e mensais, eventos com ingresso e captação com empresas.',
-    mascote: lupa,
-  },
-  {
-    href: '/eventos',
-    rotulo: 'Para organizadores',
-    titulo: 'Eventos sociais',
-    texto: 'Corridas, torneios e jantares em que a inscrição é uma doação para a ONG que você escolher.',
-    mascote: ingresso,
-  },
-];
+const mascotes = [presente, lupa, ingresso];
 ---
 
-<Base
-  titulo="DuGood para empresas, ONGs e organizadores de eventos"
-  descricao="A DuGood conecta doadores, ONGs e marcas: doação incentivada para empresas, captação para ONGs e eventos sociais com inscrição e ingresso."
->
-  <section class="heroi">
-    <div class="conteiner duo">
-      <div data-r>
-        <span class="rotulo">A Rede do Bem</span>
-        <h1>Fazer o bem, parte do dia a dia.</h1>
-        <p class="lead">
-          A DuGood é uma plataforma de doações onde doadores, ONGs e marcas se conectam. Quem doa acumula pontos e desbloqueia
-          benefícios; as ONGs recebem doações direcionadas, com transparência; e as empresas apoiam causas com impacto real.
-        </p>
-        <div class="botoes">
-          <a class="botao" href="/empresas">Sou empresa</a>
-          <a class="botao botao--claro" href="/ongs">Sou uma ONG</a>
-        </div>
-      </div>
-      <div class="heroi__visual">
-        <Print nome="inicio" alt="Tela inicial do app DuGood, com o total doado na plataforma e as causas populares" />
-        <Image class="mascote heroi__mascote" src={acenando} alt="" width={220} loading="eager" />
-      </div>
-    </div>
-  </section>
+<Base pagina={c.pagina}>
+  <Heroi {...c.heroi}>
+    <a class="botao" href="#contato">Fale com a gente</a>
+    <a class="botao botao--claro" href="#para-quem">Para quem é</a>
+    <Fragment slot="visual">
+      <Print nome="inicio" alt="Tela inicial do app DuGood, com o total doado na plataforma e as causas populares" revelar={false} prioridade />
+      <Image class="mascote heroi__mascote" src={acenando} alt="" width={220} loading="eager" />
+    </Fragment>
+  </Heroi>
 
-  <section class="secao">
+  <section class="secao" id="para-quem">
     <div class="conteiner">
       <div class="cabeca-secao cabeca-secao--centro" data-r>
         <span class="rotulo">Para quem</span>
@@ -68,9 +34,9 @@ const publicos = [
       </div>
       <div class="publicos" data-r>
         {
-          publicos.map((p) => (
-            <a class="publico" href={p.href}>
-              <Image class="mascote" src={p.mascote} alt="" width={160} />
+          c.publicos.map((p, i) => (
+            <a class="publico" href={p.pagina.rota}>
+              <Image class="mascote" src={mascotes[i]} alt="" width={160} />
               <span class="rotulo">{p.rotulo}</span>
               <h3>{p.titulo}</h3>
               <p>{p.texto}</p>
@@ -85,14 +51,9 @@ const publicos = [
   <section class="secao secao--nevoa">
     <div class="conteiner duo duo--inverso">
       <div data-r>
-        <span class="rotulo">Como a rede funciona</span>
-        <h2>Cada doação movimenta as três pontas.</h2>
-        <ul class="lista-check">
-          <li><strong>Doadores</strong> doam para causas específicas, acumulam pontos e desbloqueiam benefícios reais.</li>
-          <li><strong>ONGs</strong> recebem doações direcionadas, com transparência e mais previsibilidade de receita.</li>
-          <li><strong>Marcas</strong> apoiam causas com impacto, fortalecem a agenda ESG e se conectam com um público consciente.</li>
-        </ul>
-        <a class="botao botao--claro" href={appLink()} target="_blank" rel="noopener">Conhecer o app</a>
+        <span class="rotulo">{c.rede.rotulo}</span>
+        <h2>{c.rede.titulo}</h2>
+        <Lista itens={c.rede.itens} />
       </div>
       <div class="par-prints">
         <Print nome="explorar-ongs" alt="Tela Explorar do app, com a lista de ONGs" legenda="ONGs no app" />
@@ -101,30 +62,36 @@ const publicos = [
     </div>
   </section>
 
+  <section class="secao" id="quem-somos">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">{c.proposito.rotulo}</span>
+        <h2>{c.proposito.titulo}</h2>
+      </div>
+      <div class="cartoes" data-r>
+        {
+          c.proposito.itens.map((i) => (
+            <div class="cartao">
+              <h3>{i.titulo}</h3>
+              <p>{i.texto}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <Perguntas titulo="Perguntas sobre a DuGood." perguntas={c.pagina.perguntas} nevoa />
+
   <Chamada
-    titulo="Seja parte da Rede do Bem."
-    texto="Se você representa uma empresa, uma ONG ou organiza eventos, fale com a gente."
-    botao={{ texto: 'Sou empresa', href: '/empresas#contato' }}
-    secundario={{ texto: 'Sou uma ONG', href: '/ongs#contato' }}
+    titulo={c.contato.titulo}
+    texto={c.contato.lead}
+    botoes={c.publicos.map((p) => ({ texto: p.botao, href: `${p.pagina.rota}#contato` }))}
     mascote={abraco}
   />
 </Base>
 
 <style>
-  .heroi__visual {
-    padding-left: 40px;
-  }
-  .heroi__mascote {
-    width: 140px;
-    left: 0;
-    bottom: 24px;
-  }
-  @media (min-width: 900px) {
-    .heroi__mascote {
-      width: 180px;
-      left: 6%;
-    }
-  }
   .publicos {
     display: grid;
     gap: 20px;

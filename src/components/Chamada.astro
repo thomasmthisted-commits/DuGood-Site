@@ -1,34 +1,29 @@
 ---
-// A única chamada verde-escura de cada página, antes do rodapé.
+// Chamada final sobre o fundo verde ondulado (páginas sem formulário): leva ao contato certo.
 import { Image } from 'astro:assets';
+import Onda from './Onda.astro';
 import type { ImageMetadata } from 'astro';
 
 interface Props {
   titulo: string;
   texto: string;
-  botao: { texto: string; href: string };
-  secundario?: { texto: string; href: string };
+  /** O primeiro é o botão principal */
+  botoes: { texto: string; href: string }[];
   mascote: ImageMetadata;
 }
 
-const { titulo, texto, botao, secundario, mascote } = Astro.props;
-const externo = (href: string) => href.startsWith('http');
+const { titulo, texto, botoes, mascote } = Astro.props;
 ---
 
-<section class="secao secao--escura chamada">
+<section class="secao onda chamada" id="contato" aria-labelledby="contato-titulo">
+  <Onda />
   <div class="conteiner chamada__grade">
     <div data-r>
-      <h2>{titulo}</h2>
+      <span class="rotulo">Contato</span>
+      <h2 id="contato-titulo">{titulo}</h2>
       <p class="lead">{texto}</p>
       <div class="botoes">
-        <a class="botao" href={botao.href} target={externo(botao.href) ? '_blank' : undefined} rel="noopener">{botao.texto}</a>
-        {
-          secundario && (
-            <a class="botao botao--claro" href={secundario.href} target={externo(secundario.href) ? '_blank' : undefined} rel="noopener">
-              {secundario.texto}
-            </a>
-          )
-        }
+        {botoes.map((b, i) => <a class:list={['botao', { 'botao--claro': i > 0 }]} href={b.href}>{b.texto}</a>)}
       </div>
     </div>
     <Image class="mascote chamada__mascote" src={mascote} alt="" width={260} />
@@ -36,16 +31,12 @@ const externo = (href: string) => href.startsWith('http');
 </section>
 
 <style>
-  .chamada {
-    overflow: hidden;
-  }
   .chamada__grade {
     display: grid;
     gap: 32px;
     align-items: center;
   }
   .chamada .lead {
-    color: var(--sobre-escuro-suave);
     margin-bottom: 28px;
   }
   .chamada__mascote {

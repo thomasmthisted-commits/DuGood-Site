@@ -11,20 +11,20 @@ import { dugood, appLink, instagramLink, termosLink, privacidadeLink } from '../
       <p>{dugood.slogan}.</p>
     </div>
     <nav class="col" aria-label="Rodapé">
-      <h2>Para quem</h2>
+      <p class="rodape__titulo">Para quem</p>
       <a href="/empresas">Empresas e marcas</a>
       <a href="/ongs">ONGs</a>
       <a href="/eventos">Organizadores de eventos</a>
     </nav>
     <nav class="col" aria-label="Plataforma">
-      <h2>Plataforma</h2>
-      <a href={appLink()} target="_blank" rel="noopener">Abrir o app</a>
+      <p class="rodape__titulo">Plataforma</p>
+      <a href={appLink()} target="_blank" rel="noopener">App para quem doa</a>
       <a href={appLink('AboutUs')} target="_blank" rel="noopener">Quem somos</a>
       <a href={termosLink} target="_blank" rel="noopener">Termos de uso</a>
       <a href={privacidadeLink} target="_blank" rel="noopener">Privacidade</a>
     </nav>
     <div class="col">
-      <h2>Contato</h2>
+      <p class="rodape__titulo">Contato</p>
       <a href={`mailto:${dugood.email}`}>{dugood.email}</a>
       <a href={instagramLink} target="_blank" rel="noopener">@{dugood.instagram}</a>
     </div>
@@ -66,8 +66,9 @@ import { dugood, appLink, instagramLink, termosLink, privacidadeLink } from '../
       grid-column: auto;
     }
   }
-  h2 {
+  .rodape__titulo {
     font-family: var(--texto);
+    font-weight: 600;
     font-size: 0.8rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;

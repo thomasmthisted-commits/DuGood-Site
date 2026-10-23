@@ -2,36 +2,35 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { dugood, rascunho, instagramLink } from '../config';
+import { dugood, rascunho } from '../config';
+import { grafo, organizacao } from '../lib/schema';
+import type { Pagina } from '../conteudo/tipos';
 import ogPadrao from '../assets/og.png';
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 
 interface Props {
-  titulo: string;
-  descricao: string;
+  /** Página com conteúdo em src/conteudo: título, descrição, Markdown e dados estruturados saem daqui */
+  pagina?: Pagina;
+  /** Para páginas sem conteúdo próprio (404, obrigado) */
+  titulo?: string;
+  descricao?: string;
   imagem?: ImageMetadata;
-  /** Dados estruturados extras (schema.org), além da Organization do site */
-  dados?: object[];
   /** false: página fora dos buscadores */
   indexar?: boolean;
 }
 
-const { titulo, descricao, imagem, dados = [], indexar = true } = Astro.props;
+const { pagina, imagem, indexar = true } = Astro.props;
+const titulo = pagina?.titulo ?? Astro.props.titulo ?? dugood.nome;
+const descricao = pagina?.descricao ?? Astro.props.descricao ?? dugood.descricao;
 const tituloCompleto = titulo.includes(dugood.nome) ? titulo : `${titulo} | ${dugood.nome}`;
 const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/', Astro.site);
-const og = await getImage({ src: imagem ?? ogPadrao, width: 1200, format: 'png' });
-
-const organizacao = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: dugood.nome,
-  description: dugood.descricao,
-  url: Astro.site?.href,
-  logo: new URL('/logo.png', Astro.site).href,
-  email: dugood.email,
-  sameAs: [dugood.app, instagramLink],
-};
+const og = await getImage({ src: imagem ?? ogPadrao, width: 1200, height: 630, format: 'png' });
+const ogUrl = new URL(og.src, Astro.site).href;
+const markdown = pagina && new URL(pagina.rota === '/' ? '/index.md' : `${pagina.rota}.md`, Astro.site).pathname;
+// Data do build: todas as páginas saem do mesmo conteúdo, publicado junto
+const atualizado = new Date().toISOString();
+const dados = pagina ? grafo(pagina, Astro.site, ogUrl, atualizado) : { '@context': 'https://schema.org', ...organizacao(Astro.site) };
 ---
 
 <!doctype html>
@@ -42,7 +41,12 @@ const organizacao = {
     <title>{tituloCompleto}</title>
     <meta name="description" content={descricao} />
     {(rascunho || !indexar) && <meta name="robots" content="noindex, nofollow" />}
+    {!rascunho && indexar && <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
     <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="pt-BR" href={canonical} />
+    {markdown && <link rel="alternate" type="text/markdown" href={markdown} title="Versão em Markdown" />}
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <meta property="og:type" content="website" />
@@ -51,8 +55,15 @@ const organizacao = {
     <meta property="og:title" content={tituloCompleto} />
     <meta property="og:description" content={descricao} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(og.src, Astro.site)} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="DuGood para empresas, ONGs e eventos sociais" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={tituloCompleto} />
+    <meta name="twitter:description" content={descricao} />
+    <meta name="twitter:image" content={ogUrl} />
+    {pagina && <meta property="article:modified_time" content={atualizado} />}
     <meta name="theme-color" content="#ffffff" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -61,8 +72,7 @@ const organizacao = {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700&display=swap"
     />
     <script is:inline>document.documentElement.classList.add('js');</script>
-    <script type="application/ld+json" set:html={JSON.stringify(organizacao)} />
-    {dados.map((d) => <script type="application/ld+json" set:html={JSON.stringify(d)} />)}
+    <script type="application/ld+json" set:html={JSON.stringify(dados)} />
   </head>
   <body>
     <a class="pular" href="#conteudo">Pular para o conteúdo</a>

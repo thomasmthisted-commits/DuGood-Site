@@ -2,9 +2,15 @@
 // Formulário de contato. Envia para /api/contato (src/worker.js), que repassa ao Base44:
 // o contato cai na lista "Contatos do site" do Admin da DuGood e os admins recebem um e-mail.
 // Sem JS, o envio é um POST normal e o Worker redireciona para /obrigado.
-import { privacidadeLink, dugood } from '../config';
+//
+// Preenchimento prévio:
+// - CNPJ: ao digitar um CNPJ válido, /api/cnpj busca nome, cidade e regime na base pública;
+// - interesse: botões com data-interesse="<id>" e o endereço ?interesse=<id> marcam a opção;
+// - mensagem: o simulador manda o valor simulado (evento dugood:mensagem);
+// - dados da pessoa: nome, e-mail, WhatsApp e organização ficam na aba do navegador
+//   (sessionStorage) e já aparecem preenchidos nos formulários das outras páginas.
+import { privacidadeLink, dugood, interesses, type Publico } from '../config';
 
-type Publico = 'empresa' | 'ong' | 'organizador';
 interface Props {
   publico: Publico;
   titulo?: string;
@@ -18,17 +24,6 @@ const nomeOrganizacao: Record<Publico, string> = {
   organizador: 'Organização, coletivo ou time',
 };
 
-const interesses: Record<Publico, string[]> = {
-  empresa: [
-    'Doação incentivada (leis de incentivo)',
-    'Oferecer benefícios aos doadores',
-    'Patrocinar um evento social',
-    'Integrar doações ao nosso app ou site (API)',
-  ],
-  ong: ['Captar doações pela DuGood', 'Projeto incentivado (lei de incentivo)', 'Eventos com ingresso', 'Recibos de incentivo fiscal'],
-  organizador: ['Corrida, torneio ou competição', 'Jantar, feijoada ou festa beneficente', 'Show ou evento cultural', 'Outro tipo de evento'],
-};
-
 const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 'Ambiental', 'Alimentação', 'Moradia', 'Vestuário', 'Outra'];
 ---
 
@@ -37,28 +32,35 @@ const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 
   <input type="hidden" name="pagina" value={Astro.url.pathname.replace(/\.html$/, '')} />
   <input type="hidden" name="utm" value="" data-utm />
   <input type="hidden" name="t" value="" data-t />
+  <input type="hidden" name="razao_social" value="" data-campo-cnpj="razao_social" />
   <div class="form__isca" aria-hidden="true">
     <label>Não preencha <input type="text" name="site" tabindex="-1" autocomplete="off" /></label>
   </div>
 
   <h3>{titulo}</h3>
 
+  <label class="form__cnpj">
+    <span>CNPJ {publico === 'organizador' ? '(se houver)' : ''}</span>
+    <input name="cnpj" inputmode="numeric" autocomplete="off" maxlength="18" placeholder="00.000.000/0000-00" data-cnpj />
+    <small data-cnpj-status>{publico === 'organizador' ? 'Opcional.' : 'Comece por aqui: preenchemos o nome e a cidade para você.'}</small>
+  </label>
+
   <div class="form__grade">
     <label>
-      <span>Seu nome *</span>
-      <input name="nome" required autocomplete="name" maxlength="120" />
+      <span>{nomeOrganizacao[publico]} *</span>
+      <input name="organizacao" required autocomplete="organization" maxlength="160" data-lembrar data-campo-cnpj="nome" />
     </label>
     <label>
-      <span>{nomeOrganizacao[publico]} *</span>
-      <input name="organizacao" required autocomplete="organization" maxlength="160" />
+      <span>Seu nome *</span>
+      <input name="nome" required autocomplete="name" maxlength="120" data-lembrar />
     </label>
     <label>
       <span>E-mail *</span>
-      <input name="email" type="email" required autocomplete="email" maxlength="160" />
+      <input name="email" type="email" required autocomplete="email" maxlength="160" data-lembrar />
     </label>
     <label>
       <span>WhatsApp *</span>
-      <input name="telefone" type="tel" required autocomplete="tel" inputmode="tel" maxlength="30" placeholder="(11) 90000-0000" />
+      <input name="telefone" type="tel" required autocomplete="tel" inputmode="tel" maxlength="30" placeholder="(11) 90000-0000" data-lembrar />
     </label>
 
     {
@@ -66,11 +68,11 @@ const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 
         <>
           <label>
             <span>Cargo</span>
-            <input name="cargo" autocomplete="organization-title" maxlength="80" />
+            <input name="cargo" autocomplete="organization-title" maxlength="80" data-lembrar />
           </label>
           <label>
             <span>Regime tributário</span>
-            <select name="regime">
+            <select name="regime" data-campo-cnpj="regime">
               <option value="">Selecione</option>
               <option>Lucro real</option>
               <option>Lucro presumido</option>
@@ -96,7 +98,7 @@ const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 
           </label>
           <label>
             <span>Cidade / UF</span>
-            <input name="cidade" autocomplete="address-level2" maxlength="80" />
+            <input name="cidade" autocomplete="address-level2" maxlength="80" data-campo-cnpj="cidade" />
           </label>
         </>
       )
@@ -116,11 +118,6 @@ const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 
         </>
       )
     }
-
-    <label class="form__largo">
-      <span>CNPJ</span>
-      <input name="cnpj" inputmode="numeric" maxlength="20" placeholder="opcional" />
-    </label>
   </div>
 
   <fieldset>
@@ -129,8 +126,8 @@ const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 
       {
         interesses[publico].map((i) => (
           <label class="form__opcao">
-            <input type="checkbox" name="interesses" value={i} />
-            <span>{i}</span>
+            <input type="checkbox" name="interesses" value={i.texto} data-interesse-id={i.id} />
+            <span>{i.texto}</span>
           </label>
         ))
       }
@@ -158,22 +155,97 @@ const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 
 </div>
 
 <script>
-  const CHAVE = 'dugood-origem';
-  try {
-    const params = new URLSearchParams(location.search);
-    const utm = [...params].filter(([k]) => k.startsWith('utm_')).map(([k, v]) => `${k}=${v}`).join('&');
-    if (utm || (document.referrer && !document.referrer.startsWith(location.origin))) {
-      sessionStorage.setItem(CHAVE, utm || `ref=${new URL(document.referrer).hostname}`);
+  import { cnpjValido, formatarCnpj } from '../scripts/cnpj';
+
+  const ORIGEM = 'dugood-origem';
+  const DADOS = 'dugood-contato';
+  const ler = (chave: string) => {
+    try {
+      return sessionStorage.getItem(chave);
+    } catch {
+      return null;
     }
+  };
+  const gravar = (chave: string, valor: string) => {
+    try {
+      sessionStorage.setItem(chave, valor);
+    } catch {}
+  };
+
+  // Origem da visita (UTM ou site de referência), guardada na primeira página vista
+  try {
+    const utm = [...new URLSearchParams(location.search)].filter(([k]) => k.startsWith('utm_')).map(([k, v]) => `${k}=${v}`).join('&');
+    if (utm) gravar(ORIGEM, utm);
+    else if (document.referrer && !document.referrer.startsWith(location.origin) && !ler(ORIGEM)) gravar(ORIGEM, `ref=${new URL(document.referrer).hostname}`);
   } catch {}
+
+  const marcarInteresses = (form: HTMLFormElement, ids: string[]) => {
+    for (const id of ids) {
+      const caixa = form.querySelector<HTMLInputElement>(`[data-interesse-id="${CSS.escape(id)}"]`);
+      if (caixa) caixa.checked = true;
+    }
+  };
 
   for (const form of document.querySelectorAll<HTMLFormElement>('[data-form-contato]')) {
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const ok = form.nextElementSibling as HTMLElement;
+    const mensagem = form.querySelector<HTMLTextAreaElement>('textarea[name=mensagem]')!;
     form.querySelector<HTMLInputElement>('[data-t]')!.value = String(Date.now());
-    try {
-      form.querySelector<HTMLInputElement>('[data-utm]')!.value = sessionStorage.getItem(CHAVE) ?? '';
-    } catch {}
+    form.querySelector<HTMLInputElement>('[data-utm]')!.value = ler(ORIGEM) ?? '';
+
+    // Dados que a pessoa já digitou em outra página do site
+    const lembrados: Record<string, string> = JSON.parse(ler(DADOS) ?? '{}');
+    for (const campo of form.querySelectorAll<HTMLInputElement>('[data-lembrar]')) {
+      if (!campo.value && lembrados[campo.name]) campo.value = lembrados[campo.name];
+      campo.addEventListener('change', () => {
+        const atuais = JSON.parse(ler(DADOS) ?? '{}');
+        gravar(DADOS, JSON.stringify({ ...atuais, [campo.name]: campo.value.trim() }));
+      });
+    }
+
+    // Interesse vindo do endereço: /empresas?interesse=incentivada#contato
+    marcarInteresses(form, (new URLSearchParams(location.search).get('interesse') ?? '').split(',').filter(Boolean));
+
+    // CNPJ: busca nome, cidade e regime na base pública e preenche o que estiver vazio
+    const cnpj = form.querySelector<HTMLInputElement>('[data-cnpj]')!;
+    const cnpjStatus = form.querySelector<HTMLElement>('[data-cnpj-status]')!;
+    const cnpjDica = cnpjStatus.textContent;
+    let ultimoCnpj = '';
+    cnpj.addEventListener('input', async () => {
+      const digitos = cnpj.value.replace(/\D/g, '').slice(0, 14);
+      cnpj.value = formatarCnpj(digitos);
+      if (digitos.length < 14) {
+        cnpjStatus.textContent = cnpjDica;
+        cnpjStatus.removeAttribute('data-tom');
+        return;
+      }
+      if (!cnpjValido(digitos)) {
+        cnpjStatus.textContent = 'Confira o CNPJ: os dígitos não batem.';
+        cnpjStatus.dataset.tom = 'erro';
+        return;
+      }
+      if (digitos === ultimoCnpj) return;
+      ultimoCnpj = digitos;
+      cnpjStatus.textContent = 'Buscando os dados do CNPJ…';
+      cnpjStatus.removeAttribute('data-tom');
+      try {
+        const r = await fetch(`/api/cnpj/${digitos}`, { headers: { accept: 'application/json' } });
+        if (!r.ok) throw new Error(r.status === 404 ? 'CNPJ não encontrado na base pública. Pode seguir preenchendo.' : '');
+        const dados: Record<string, string> = await r.json();
+        for (const campo of form.querySelectorAll<HTMLInputElement | HTMLSelectElement>('[data-campo-cnpj]')) {
+          const valor = dados[campo.dataset.campoCnpj!];
+          if (valor && (!campo.value || campo.type === 'hidden')) {
+            campo.value = valor;
+            campo.dispatchEvent(new Event('change'));
+          }
+        }
+        cnpjStatus.textContent = `✓ ${dados.razao_social}${dados.cidade ? ` · ${dados.cidade}` : ''}${dados.situacao && dados.situacao !== 'Ativa' ? ` · situação: ${dados.situacao}` : ''}`;
+        cnpjStatus.dataset.tom = 'ok';
+      } catch (erro) {
+        cnpjStatus.textContent = (erro as Error).message || 'Não conseguimos buscar o CNPJ agora. Pode seguir preenchendo.';
+        cnpjStatus.removeAttribute('data-tom');
+      }
+    });
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -198,6 +270,21 @@ const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 
         status.textContent = `${(erro as Error).message} Tente de novo ou escreva para o nosso e-mail.`;
         botao.disabled = false;
       }
+    });
+
+    // Botões da página que levam ao formulário já marcando um interesse
+    document.addEventListener('click', (e) => {
+      const link = (e.target as Element).closest<HTMLElement>('[data-interesse]');
+      if (link) marcarInteresses(form, link.dataset.interesse!.split(','));
+    });
+
+    // Simulador e outros blocos que mandam um texto pronto para a mensagem
+    document.addEventListener('dugood:mensagem', (e) => {
+      const { texto, interesses: ids = [], regime } = (e as CustomEvent).detail;
+      if (texto && !mensagem.value.includes(texto)) mensagem.value = mensagem.value ? `${mensagem.value}\n\n${texto}` : texto;
+      marcarInteresses(form, ids);
+      const select = form.querySelector<HTMLSelectElement>('select[name=regime]');
+      if (select && regime && !select.value) select.value = regime;
     });
   }
 </script>
@@ -225,6 +312,21 @@ const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 
   }
   .form__largo {
     grid-column: 1 / -1;
+  }
+  .form__cnpj {
+    margin-bottom: 16px;
+  }
+  .form__cnpj small {
+    font-size: 0.82rem;
+    font-weight: 400;
+    color: var(--tinta-fraca);
+  }
+  .form__cnpj small[data-tom='ok'] {
+    color: var(--verde-escuro);
+    font-weight: 500;
+  }
+  .form__cnpj small[data-tom='erro'] {
+    color: var(--tinta);
   }
   label {
     display: grid;

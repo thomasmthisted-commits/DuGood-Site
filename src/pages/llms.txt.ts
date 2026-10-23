@@ -1,27 +1,36 @@
 import type { APIRoute } from 'astro';
-import { dugood, appLink, leisIncentivo } from '../config';
+import { dugood, appLink } from '../config';
+import { pagina as inicio } from '../conteudo/inicio';
+import { pagina as empresas } from '../conteudo/empresas';
+import { pagina as ongs } from '../conteudo/ongs';
+import { pagina as eventos } from '../conteudo/eventos';
 
-// Índice do site para agentes de IA (padrão llms.txt)
+// Índice do site para agentes de IA (padrão llms.txt: https://llmstxt.org)
 export const GET: APIRoute = ({ site }) => {
-  const url = (p: string) => new URL(p, site).href;
+  const md = (rota: string) => new URL(rota === '/' ? '/index.md' : `${rota}.md`, site).href;
   const texto = `# ${dugood.nome}
 
-> ${dugood.descricao}
+> ${inicio.resumo}
 
-Contato comercial: ${dugood.email}. App para doadores: ${dugood.app}.
+Contato comercial: ${dugood.email}. App para quem doa: ${dugood.app}. Cada página tem uma versão em Markdown (mesmo endereço + .md), e todo o conteúdo está em ${new URL('/llms-full.txt', site).href}.
 
 ## Páginas
 
-- [Para empresas](${url('/empresas')}): doação incentivada (empresas do lucro real direcionam parte do IRPJ a projetos aprovados: ${leisIncentivo.map((l) => l.nome).join(', ')}), benefícios para doadores como lojista parceiro, patrocínio de eventos e integração por API.
-- [Para ONGs](${url('/ongs')}): página da ONG no app, doações pontuais e mensais (cartão e Pix), eventos com ingresso por QR Code, recibos de incentivo fiscal com assinatura digital, painel de doadores e captação de projetos incentivados com empresas.
-- [Eventos sociais](${url('/eventos')}): organizadores criam eventos em que a inscrição é uma doação para a ONG escolhida (100% para ela), com times, ingresso por QR Code e check-in pelo celular.
+${[inicio, empresas, ongs, eventos].map((p) => `- [${p.nome}](${md(p.rota)}): ${p.resumo}`).join('\n')}
 
-## Regras importantes
+## Fatos importantes
 
+- A DuGood é uma plataforma de tecnologia para doações, não uma ONG.
 - Como regra, a doação vai direto para a conta da ONG no provedor de pagamento (Stripe); a DuGood não recebe nem guarda os valores.
 - Quem doa paga só o valor escolhido. A remuneração da DuGood nas causas incentivadas é combinada com cada ONG em contrato.
-- A DuGood não garante dedução fiscal: depende da lei, do projeto e da situação fiscal de quem doa.
-- Termos de uso: ${appLink('TermsAndConditions')}. Privacidade: ${appLink('PrivacyPolicy')}.
+- No app, cada R$ 1 doado vale 1 ponto; os níveis são Bronze, Prata, Ouro e Platina, e liberam benefícios de marcas parceiras.
+- A DuGood não garante dedução fiscal: ela depende da lei, do projeto e da situação fiscal de quem doa.
+
+## Opcional
+
+- [Termos de uso](${appLink('TermsAndConditions')})
+- [Política de privacidade](${appLink('PrivacyPolicy')})
+- [Quem somos, no app](${appLink('AboutUs')})
 `;
   return new Response(texto, { headers: { 'content-type': 'text/plain; charset=utf-8' } });
 };

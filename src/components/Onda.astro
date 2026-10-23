@@ -1,0 +1,23 @@
+---
+// Fundo verde ondulado do app DuGood (o mesmo do GreenHeader do app): gradiente verde com a
+// imagem das ondas por cima. Vai dentro de uma seção com a classe "onda".
+import { Image } from 'astro:assets';
+import onda from '../assets/onda-verde.png';
+
+interface Props {
+  /** true na abertura da página: carrega junto com o resto do topo */
+  prioridade?: boolean;
+}
+
+const { prioridade = false } = Astro.props;
+---
+
+<Image
+  class="onda__img"
+  src={onda}
+  alt=""
+  aria-hidden="true"
+  widths={[640, 1200, 1800]}
+  sizes="100vw"
+  loading={prioridade ? 'eager' : 'lazy'}
+/>

@@ -1,0 +1,43 @@
+---
+// Perguntas frequentes da página (as mesmas vão para o FAQPage do JSON-LD e para a versão .md)
+import type { Pergunta } from '../conteudo/tipos';
+
+interface Props {
+  titulo: string;
+  perguntas: Pergunta[];
+  nevoa?: boolean;
+}
+
+const { titulo, perguntas, nevoa = false } = Astro.props;
+---
+
+<section class:list={['secao', { 'secao--nevoa': nevoa }]} id="perguntas" aria-labelledby="perguntas-titulo">
+  <div class="conteiner">
+    <div class="cabeca-secao cabeca-secao--centro" data-r>
+      <span class="rotulo">Perguntas frequentes</span>
+      <h2 id="perguntas-titulo">{titulo}</h2>
+    </div>
+    <div class="faq" data-r>
+      {
+        perguntas.map((q, i) => (
+          <details open={i === 0}>
+            <summary>
+              <h3>{q.p}</h3>
+            </summary>
+            <p>{q.r}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  summary h3 {
+    display: inline;
+    font: inherit;
+    color: inherit;
+    letter-spacing: 0;
+    margin: 0;
+  }
+</style>

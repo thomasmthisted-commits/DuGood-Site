@@ -1,0 +1,30 @@
+---
+// Abertura das páginas, sobre o fundo verde ondulado do app. Slot padrão: botões;
+// slot "visual": print e mascote ao lado.
+import Onda from './Onda.astro';
+
+interface Props {
+  rotulo: string;
+  titulo: string;
+  lead: string;
+}
+
+const { rotulo, titulo, lead } = Astro.props;
+---
+
+<section class="heroi onda">
+  <Onda prioridade />
+  <div class="conteiner duo">
+    <div>
+      <span class="rotulo">{rotulo}</span>
+      <h1>{titulo}</h1>
+      <p class="lead">{lead}</p>
+      <div class="botoes">
+        <slot />
+      </div>
+    </div>
+    <div class="heroi__visual">
+      <slot name="visual" />
+    </div>
+  </div>
+</section>

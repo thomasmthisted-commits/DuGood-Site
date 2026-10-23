@@ -1,0 +1,44 @@
+---
+// Seção final com o fundo verde ondulado e o formulário: o único chamado para ação de cada página.
+import { Image } from 'astro:assets';
+import Onda from './Onda.astro';
+import type { ImageMetadata } from 'astro';
+import Formulario from './Formulario.astro';
+import type { Item } from '../conteudo/tipos';
+import type { Publico } from '../config';
+
+interface Props {
+  publico: Publico;
+  titulo: string;
+  lead: string;
+  itens?: Item[];
+  formulario: string;
+  mascote: ImageMetadata;
+}
+
+const { publico, titulo, lead, itens = [], formulario, mascote } = Astro.props;
+---
+
+<section class="secao onda" id="contato" aria-labelledby="contato-titulo">
+  <Onda />
+  <div class="conteiner contato">
+    <div class="contato__texto" data-r>
+      <span class="rotulo">Contato</span>
+      <h2 id="contato-titulo">{titulo}</h2>
+      <p class="lead">{lead}</p>
+      {
+        itens.length > 0 && (
+          <ul class="lista-check">
+            {itens.map((i) => (
+              <li>
+                <strong>{i.titulo}</strong> {i.texto}
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <Image class="mascote" src={mascote} alt="" width={200} />
+    </div>
+    <Formulario publico={publico} titulo={formulario} />
+  </div>
+</section>

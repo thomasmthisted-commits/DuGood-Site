@@ -2,11 +2,13 @@
 // Destino do formulário quando o navegador está sem JS (o Worker redireciona para cá).
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
+import Onda from '../components/Onda.astro';
 import acenando from '../assets/mascotes/acenando.png';
 ---
 
 <Base titulo="Recebemos seu contato" descricao="Obrigado pelo interesse na DuGood." indexar={false}>
-  <section class="heroi">
+  <section class="heroi onda">
+    <Onda prioridade />
     <div class="conteiner centro">
       <Image class="mascote" src={acenando} alt="" width={200} loading="eager" />
       <h1>Recebemos seu contato!</h1>

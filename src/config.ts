@@ -38,3 +38,35 @@ export const leisIncentivo = [
   { id: 'pronon', nome: 'PRONON (oncologia)', limite: 0.01, nota: 'Lei 12.715/12' },
   { id: 'pronas', nome: 'PRONAS/PCD (pessoa com deficiência)', limite: 0.01, nota: 'Lei 12.715/12' },
 ];
+
+export type Publico = 'empresa' | 'ong' | 'organizador';
+
+// Opções "Tenho interesse em" de cada formulário. O id pré-marca a opção pelos botões
+// (data-interesse) ou pelo endereço (/empresas?interesse=incentivada#contato).
+export const interesses: Record<Publico, { id: string; texto: string }[]> = {
+  empresa: [
+    { id: 'incentivada', texto: 'Doação incentivada (leis de incentivo)' },
+    { id: 'beneficios', texto: 'Oferecer benefícios aos doadores' },
+    { id: 'eventos', texto: 'Patrocinar um evento social' },
+    { id: 'api', texto: 'Integrar doações ao nosso app ou site (API)' },
+  ],
+  ong: [
+    { id: 'captar', texto: 'Captar doações pela DuGood' },
+    { id: 'incentivado', texto: 'Projeto incentivado (lei de incentivo)' },
+    { id: 'eventos', texto: 'Eventos com ingresso' },
+    { id: 'recibos', texto: 'Recibos de incentivo fiscal' },
+  ],
+  organizador: [
+    { id: 'competicao', texto: 'Corrida, torneio ou competição' },
+    { id: 'jantar', texto: 'Jantar, feijoada ou festa beneficente' },
+    { id: 'cultural', texto: 'Show ou evento cultural' },
+    { id: 'outro', texto: 'Outro tipo de evento' },
+  ],
+};
+
+// Fundadores (página Quem somos do app)
+export const fundadores = [
+  { nome: 'Nicollas', bio: 'Engenheiro Ambiental pela Poli-USP, nadador e Diretor Geral do Ecoswim 2023.', linkedin: 'https://www.linkedin.com/in/nicollas-thisted-b20239230/' },
+  { nome: 'Thomas', bio: 'Engenheiro de Produção pela Poli-USP, nadador e Diretor Geral do Ecoswim 2025.', linkedin: 'https://www.linkedin.com/in/thomasmthisted' },
+  { nome: 'André', bio: 'Publicitário formado pela ESPM, analista de dados com histórico de trabalho social.', linkedin: 'https://www.linkedin.com/in/andredelnero/' },
+];

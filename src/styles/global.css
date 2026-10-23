@@ -17,10 +17,13 @@
   --verde-claro: #e6f6ee;
   --verde-claro-2: #d2efe0;
 
-  /* Sobre fundo verde escuro */
-  --sobre-escuro: #f1f8f3;
-  --sobre-escuro-suave: #b9d3c1;
-  --linha-escura: rgb(255 255 255 / 0.16);
+  /* Fundo verde ondulado do app (GreenHeader): gradiente + imagem das ondas */
+  --onda-1: #7be83a;
+  --onda-2: #57bc2d;
+  --onda-3: #45a425;
+  /* Véu verde escuro sobre as ondas, para o texto branco ter contraste */
+  --onda-veu: rgb(17 62 17 / 0.55);
+
 
   --titulo: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -106,7 +109,7 @@ p {
   padding: 0 var(--gutter);
 }
 
-/* Seções: alternam branco e cinza bem claro; uma verde escura no fim de cada página */
+/* Seções: alternam branco e cinza bem claro; a última, com o contato, tem o fundo ondulado */
 .secao {
   padding: clamp(64px, 9vw, 112px) 0;
   position: relative;
@@ -116,19 +119,8 @@ p {
   background: var(--nevoa);
 }
 
-.secao--escura {
-  background: var(--verde-escuro);
-  color: var(--sobre-escuro);
-}
 
-.secao--escura h2,
-.secao--escura h3 {
-  color: #fff;
-}
 
-.secao--escura p {
-  color: var(--sobre-escuro-suave);
-}
 
 .rotulo {
   display: inline-block;
@@ -196,20 +188,8 @@ p {
   border-color: var(--verde-claro-2);
 }
 
-.secao--escura .botao {
-  background: #fff;
-  color: var(--verde-escuro);
-}
 
-.secao--escura .botao:hover {
-  background: var(--verde-claro);
-}
 
-.secao--escura .botao--claro {
-  background: transparent;
-  color: #fff;
-  border-color: var(--linha-escura);
-}
 
 .botoes {
   display: flex;
@@ -352,14 +332,74 @@ p {
   white-space: nowrap;
 }
 
-/* Abertura das páginas */
-.heroi {
+/* Fundo verde ondulado (componente Onda.astro) */
+.onda {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
+  background: linear-gradient(135deg, var(--onda-1) 0%, var(--onda-2) 45%, var(--onda-3) 100%);
+  color: #fff;
+}
+
+.onda .onda__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transform: scale(1.25);
+  z-index: -2;
+  pointer-events: none;
+  user-select: none;
+}
+
+.onda::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(100deg, var(--onda-veu) 0%, rgb(17 62 17 / 0.28) 55%, rgb(17 62 17 / 0) 100%);
+}
+
+.onda h1,
+.onda h2,
+.onda h3 {
+  color: #fff;
+}
+
+.onda .rotulo {
+  color: var(--verde-claro-2);
+}
+
+.onda .lead,
+.onda p {
+  color: rgb(255 255 255 / 0.9);
+}
+
+.onda .botao {
+  background: #fff;
+  color: var(--verde-escuro);
+}
+
+.onda .botao:hover {
+  background: var(--verde-claro);
+}
+
+.onda .botao--claro {
+  background: transparent;
+  color: #fff;
+  border-color: rgb(255 255 255 / 0.55);
+}
+
+.onda .botao--claro:hover {
+  background: rgb(255 255 255 / 0.12);
+}
+
+/* Abertura das páginas, com os cantos de baixo arredondados como no app */
+.heroi {
   padding: clamp(48px, 7vw, 96px) 0 clamp(64px, 8vw, 104px);
-  background:
-    radial-gradient(60% 70% at 85% 20%, var(--verde-claro) 0%, transparent 70%),
-    linear-gradient(180deg, #fff 0%, var(--nevoa) 100%);
+  border-radius: 0 0 clamp(24px, 4vw, 48px) clamp(24px, 4vw, 48px);
 }
 
 .heroi h1 {
@@ -503,7 +543,7 @@ p {
 }
 
 .contato .lista-check li {
-  color: var(--sobre-escuro-suave);
+  color: rgb(255 255 255 / 0.88);
 }
 
 .contato .lista-check li strong {
@@ -549,4 +589,22 @@ p {
 .cartao--link h3::after {
   content: ' →';
   color: var(--verde);
+}
+
+/* Print e mascote na abertura */
+.heroi__visual {
+  padding-left: 40px;
+}
+
+.heroi__visual .heroi__mascote {
+  width: 150px;
+  left: 0;
+  bottom: -12px;
+}
+
+@media (min-width: 900px) {
+  .heroi__visual .heroi__mascote {
+    width: 190px;
+    left: 4%;
+  }
 }

@@ -1,14 +1,15 @@
 ---
 import { Image } from 'astro:assets';
 import logo from '../assets/logo.png';
-import { appLink } from '../config';
 
 const links = [
   { href: '/empresas', texto: 'Para empresas' },
   { href: '/ongs', texto: 'Para ONGs' },
   { href: '/eventos', texto: 'Eventos sociais' },
 ];
-const atual = Astro.url.pathname.replace(/\.html$/, '');
+const atual = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
+// O único botão do topo é o de contato: leva ao formulário da própria página
+const contato = ['/', ...links.map((l) => l.href)].includes(atual) ? '#contato' : '/#contato';
 ---
 
 <header class="topo">
@@ -25,7 +26,7 @@ const atual = Astro.url.pathname.replace(/\.html$/, '');
         ))
       }
     </nav>
-    <a class="botao topo__app" href={appLink()} target="_blank" rel="noopener">Abrir o app</a>
+    <a class="botao topo__app" href={contato}>Fale com a gente</a>
     <details class="topo__menu">
       <summary aria-label="Menu">
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"
@@ -40,11 +41,19 @@ const atual = Astro.url.pathname.replace(/\.html$/, '');
             </a>
           ))
         }
-        <a class="botao" href={appLink()} target="_blank" rel="noopener">Abrir o app</a>
+        <a class="botao" href={contato}>Fale com a gente</a>
       </div>
     </details>
   </div>
 </header>
+
+<script>
+  // Fecha o menu do celular ao escolher um link (inclusive o de contato, que é âncora)
+  const menu = document.querySelector<HTMLDetailsElement>('.topo__menu');
+  menu?.addEventListener('click', (e) => {
+    if ((e.target as Element).closest('a')) menu.open = false;
+  });
+</script>
 
 <style>
   .topo {

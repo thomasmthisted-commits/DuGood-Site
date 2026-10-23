@@ -1,187 +1,82 @@
 ---
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
-import Icone from '../components/Icone.astro';
+import Heroi from '../components/Heroi.astro';
 import Print from '../components/Print.astro';
 import GaleriaAbas from '../components/GaleriaAbas.astro';
-import Formulario from '../components/Formulario.astro';
-import { appLink } from '../config';
+import Cartoes from '../components/Cartoes.astro';
+import Perguntas from '../components/Perguntas.astro';
+import Contato from '../components/Contato.astro';
+import * as c from '../conteudo/eventos';
 import ingresso from '../assets/mascotes/ingresso.png';
 import celular from '../assets/mascotes/celular.png';
 import trofeu from '../assets/mascotes/trofeu.png';
-
-const abasOrganizador = [
-  {
-    aba: 'Meus eventos',
-    texto: 'Crie o evento, escolha a ONG que recebe as doações e acompanhe a arrecadação e os times.',
-    print: 'organizador-eventos',
-    pendente: 'Painel do organizador, aba "Meus Eventos", com um evento aprovado e outro aguardando a ONG',
-  },
-  {
-    aba: 'Novo evento',
-    texto: 'Data, horário, local, prazo de inscrição, meta, doação mínima, fotos e a mensagem do e-mail de confirmação.',
-    print: 'organizador-novo-evento',
-    pendente: 'Formulário de criação de evento no painel do organizador',
-  },
-  {
-    aba: 'Inscritos',
-    texto: 'A lista de inscritos de cada evento, separada por time quando houver times.',
-    print: 'organizador-inscritos',
-    pendente: 'Painel do organizador, aba "Inscritos" (use um evento de teste ou borre nomes)',
-  },
-  {
-    aba: 'Escanear ingressos',
-    texto: 'Na entrada, o celular lê o QR Code do ingresso e confirma a presença com um toque.',
-    print: 'organizador-scanner',
-    pendente: 'Painel do organizador: scanner de ingressos com uma validação confirmada',
-  },
-];
 ---
 
-<Base
-  titulo="Eventos sociais na DuGood: inscrição, ingresso e doação"
-  descricao="Organize corridas, torneios e jantares beneficentes na DuGood: a inscrição é uma doação para a ONG que você escolher, com ingresso por QR Code e check-in pelo celular."
->
-  <section class="heroi">
-    <div class="conteiner duo">
-      <div data-r>
-        <span class="rotulo">Eventos sociais</span>
-        <h1>Seu evento, 100% a favor de uma causa.</h1>
-        <p class="lead">
-          Corridas, torneios, jantares e festas beneficentes: o organizador cria o evento na DuGood, escolhe a ONG que recebe as
-          doações e cuida das inscrições e da entrada, com ingresso por QR Code.
-        </p>
-        <div class="botoes">
-          <a class="botao" href="#contato">Quero organizar um evento</a>
-          <a class="botao botao--claro" href={appLink('Explore?tab=events')} target="_blank" rel="noopener">Ver eventos no app</a>
-        </div>
-      </div>
-      <div class="heroi__visual">
-        <Print nome="evento" alt="Página de um evento beneficente no app DuGood, com informações e botão de inscrição" />
-        <Image class="mascote heroi__mascote" src={ingresso} alt="" width={220} loading="eager" />
-      </div>
-    </div>
-  </section>
+<Base pagina={c.pagina}>
+  <Heroi {...c.heroi}>
+    <a class="botao" href="#contato">Quero organizar um evento</a>
+    <a class="botao botao--claro" href="#como-funciona">Ver como funciona</a>
+    <Fragment slot="visual">
+      <Print nome="evento" alt="Página de um evento beneficente no app DuGood, com informações e botão de inscrição" revelar={false} prioridade />
+      <Image class="mascote heroi__mascote" src={ingresso} alt="" width={220} loading="eager" />
+    </Fragment>
+  </Heroi>
 
-  <section class="secao secao--nevoa">
+  <section class="secao secao--nevoa" id="como-funciona">
     <div class="conteiner">
       <div class="cabeca-secao" data-r>
-        <span class="rotulo">Como funciona</span>
-        <h2>A inscrição é a doação.</h2>
-        <p class="lead">Quem se inscreve doa para a ONG e recebe o ingresso por e-mail. Sem planilha de pagamentos e sem lista no papel na porta.</p>
+        <span class="rotulo">{c.passos.rotulo}</span>
+        <h2>{c.passos.titulo}</h2>
+        <p class="lead">{c.passos.lead}</p>
       </div>
       <ol class="passos" data-r>
-        <li>
-          <h3>Crie o evento</h3>
-          <p>Data, horário, local, prazo de inscrição, meta e doação mínima, com fotos e descrição.</p>
-        </li>
-        <li>
-          <h3>Escolha a ONG</h3>
-          <p>Ela recebe 100% das doações. O evento vai ao ar assim que a ONG aceitar; se recusar, dá para convidar outra.</p>
-        </li>
-        <li>
-          <h3>Inscrições abertas</h3>
-          <p>Cada inscrição é uma doação e gera um ingresso com QR Code no e-mail de confirmação.</p>
-        </li>
-        <li>
-          <h3>Check-in na entrada</h3>
-          <p>O celular lê o ingresso e confirma a presença, com o histórico de todas as validações.</p>
-        </li>
+        {
+          c.passos.itens.map((p) => (
+            <li>
+              <h3>{p.titulo}</h3>
+              <p>{p.texto}</p>
+            </li>
+          ))
+        }
       </ol>
     </div>
   </section>
 
   <section class="secao">
     <div class="conteiner duo">
-      <div class="cartoes cartoes--2" data-r>
-        <div class="cartao">
-          <div class="icone"><Icone nome="times" /></div>
-          <h3>Times</h3>
-          <p>Doação por time: o participante escolhe o seu na inscrição, e a competição também é de arrecadação.</p>
-        </div>
-        <div class="cartao">
-          <div class="icone"><Icone nome="qr" /></div>
-          <h3>Quem valida</h3>
-          <p>O ingresso pode ser escaneado pelo organizador, pela ONG ou por um lojista parceiro que recebe o evento.</p>
-        </div>
-        <div class="cartao">
-          <div class="icone"><Icone nome="megafone" /></div>
-          <h3>Vitrine no app</h3>
-          <p>O evento aparece em Eventos Beneficentes, para os doadores da DuGood, e tem link próprio para divulgar.</p>
-        </div>
-        <div class="cartao">
-          <div class="icone"><Icone nome="coracao" /></div>
-          <h3>Mensagem de quem organiza</h3>
-          <p>Um recado personalizado no e-mail de confirmação, com as instruções do dia.</p>
-        </div>
-      </div>
+      <Cartoes itens={c.recursos} duas />
       <div class="historia" data-r>
         <Image class="mascote" src={trofeu} alt="" width={200} />
-        <span class="rotulo">De onde viemos</span>
-        <h2>A DuGood nasceu num evento beneficente.</h2>
-        <p class="lead">
-          A ideia surgiu na organização do Ecoswim, uma competição beneficente de natação da Poli-USP. Engajar as pessoas e
-          deixar claro para onde ia cada doação era difícil. Os eventos da DuGood resolvem justamente isso.
-        </p>
+        <span class="rotulo">{c.historia.rotulo}</span>
+        <h2>{c.historia.titulo}</h2>
+        <p class="lead">{c.historia.lead}</p>
       </div>
     </div>
   </section>
 
-  <section class="secao secao--nevoa">
+  <section class="secao secao--nevoa" id="painel">
     <div class="conteiner">
       <div class="cabeca-secao" data-r>
-        <span class="rotulo">Painel do organizador</span>
-        <h2>O evento inteiro na palma da mão.</h2>
+        <span class="rotulo">{c.painel.rotulo}</span>
+        <h2>{c.painel.titulo}</h2>
       </div>
-      <GaleriaAbas id="organizador" painel="Painel do organizador" abas={abasOrganizador} />
+      <GaleriaAbas id="organizador" painel="Painel do organizador" abas={c.painel.abas} />
     </div>
   </section>
 
   <section class="secao">
     <div class="conteiner">
-      <div class="cartoes" data-r>
-        <a class="cartao cartao--link" href="/ongs">
-          <div class="icone"><Icone nome="folha" /></div>
-          <h3>É uma ONG?</h3>
-          <p>A ONG cria eventos direto no próprio painel, ou aceita os eventos que organizadores propõem em favor dela.</p>
-        </a>
-        <a class="cartao cartao--link" href="/empresas">
-          <div class="icone"><Icone nome="estrela" /></div>
-          <h3>É uma empresa?</h3>
-          <p>Patrocine um evento social ou receba o evento no seu espaço, validando os ingressos como lojista parceiro.</p>
-        </a>
-      </div>
+      <Cartoes itens={c.outros} />
     </div>
   </section>
 
-  <section class="secao secao--escura" id="contato">
-    <div class="conteiner contato">
-      <div class="contato__texto" data-r>
-        <span class="rotulo">Contato</span>
-        <h2>Vamos tirar o seu evento do papel.</h2>
-        <p class="lead">Conte o que vocês estão planejando. Ajudamos a montar o evento na plataforma e a encontrar a ONG certa, se ainda não tiverem uma.</p>
-        <Image class="mascote" src={celular} alt="" width={200} />
-      </div>
-      <Formulario publico="organizador" titulo="Quero organizar um evento" />
-    </div>
-  </section>
+  <Perguntas titulo="Dúvidas sobre eventos sociais." perguntas={c.pagina.perguntas} nevoa />
+
+  <Contato publico="organizador" {...c.contato} mascote={celular} />
 </Base>
 
 <style>
-  .heroi__visual {
-    padding-left: 40px;
-  }
-  .heroi__mascote {
-    width: 150px;
-    left: 0;
-    bottom: -12px;
-  }
-  @media (min-width: 900px) {
-    .heroi__mascote {
-      width: 190px;
-      left: 4%;
-    }
-  }
   .historia .mascote {
     width: 150px;
     height: auto;

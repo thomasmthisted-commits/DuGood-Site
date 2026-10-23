@@ -1,69 +1,50 @@
 # Site institucional DuGood (Astro + Cloudflare)
 
-Site comercial da **DuGood** para **empresas**, **ONGs** e **organizadores de eventos sociais**, feito em [Astro](https://astro.build) e hospedado na **Cloudflare** (Workers com arquivos estáticos), no mesmo modelo da Vitrine. O app dos doadores continua no Base44 (`dugood.com.br`); este site só apresenta a DuGood e recebe os pedidos de contato.
+Site comercial da **DuGood** para **empresas**, **ONGs** e **organizadores de eventos sociais**, feito em [Astro](https://astro.build) e hospedado na **Cloudflare** (Workers com arquivos estáticos), no mesmo modelo da Vitrine. É um site só institucional: não tem login, e o único chamado para ação é o contato. O app dos doadores continua no Base44 (`dugood.com.br`).
 
 ## Páginas
 
 | Rota | O que é |
 | --- | --- |
-| `/` | Início: a Rede do Bem e os três públicos |
+| `/` | Início: a Rede do Bem, os três públicos, quem somos e perguntas sobre a DuGood |
 | `/empresas` | Doação incentivada (com simulador), benefícios como lojista parceiro, painel do lojista, política, perguntas e formulário |
 | `/ongs` | Como a ONG aparece no app, por que os doadores voltam, painel da ONG, projetos incentivados, como entrar e formulário |
 | `/eventos` | Eventos sociais: como funciona, times e validação de ingressos, painel do organizador e formulário |
 | `/obrigado` | Destino do formulário quando o navegador está sem JavaScript |
-| `/llms.txt` | Resumo do site para agentes de IA |
 
 ## Onde mudar cada coisa
 
 | O que | Onde |
 | --- | --- |
-| E-mail, Instagram, link do app, níveis, leis do simulador | `src/config.ts` |
+| Textos de cada página (uma fonte só para o HTML, o `.md`, o `llms.txt` e os dados estruturados) | `src/conteudo/*.ts` |
+| E-mail, Instagram, link do app, níveis, leis do simulador, opções do formulário, fundadores | `src/config.ts` |
 | Modo rascunho (fora do Google e com molduras de print pendente) | `rascunho` em `src/config.ts` |
-| Textos de cada página | `src/pages/*.astro` |
-| Mascotes | `src/assets/mascotes/` |
+| Layout das páginas | `src/pages/*.astro` e `src/components/` |
+| Mascotes, fundo verde ondulado (o mesmo do app) | `src/assets/mascotes/`, `src/assets/onda-verde.png` |
 | Prints do app | `src/assets/prints/` |
 | Cores e tipografia | `src/styles/global.css` |
-| Endpoint do formulário | `src/worker.js` |
+| Formulário, consulta de CNPJ e Markdown para agentes | `src/worker.js` |
 
-## Prints do app
+## Google e agentes de IA (SEO e LLMO)
 
-Cada print é um arquivo em `src/assets/prints/<nome>.png` (também vale `.jpg` ou `.webp`). Basta colocar o arquivo com o nome certo: o site gera as versões otimizadas sozinho. Enquanto um print não existe, a página mostra uma moldura "Print pendente" com o nome do arquivo esperado (só no modo rascunho; depois do lançamento, a moldura some).
+- **Uma fonte de conteúdo.** Cada página tem seu arquivo em `src/conteudo/`. Dele saem a página HTML, a versão Markdown, o `llms.txt`, o `llms-full.txt` e os dados estruturados. Nunca há texto escondido só para buscadores.
+- **Versão Markdown de cada página:** `/index.md`, `/empresas.md`, `/ongs.md`, `/eventos.md`. Cada página HTML aponta para a sua no `<link rel="alternate" type="text/markdown">` e no cabeçalho HTTP `Link`. Quem pede `Accept: text/markdown` no endereço normal recebe direto o Markdown.
+- **`/llms.txt`** (índice com resumo e fatos importantes) e **`/llms-full.txt`** (todo o conteúdo num arquivo).
+- **Dados estruturados (JSON-LD):** Organization (com fundadores e contato), WebSite, WebPage, BreadcrumbList, Service e FAQPage em cada página.
+- **`robots.txt`** libera buscadores e agentes de IA (GPTBot, ClaudeBot, PerplexityBot e outros) e aponta o sitemap e o `llms.txt`. Enquanto o site for rascunho, bloqueia tudo.
+- **Sitemap** com data de atualização, canonical, Open Graph e Twitter Card com imagem 1200 × 630, e a imagem principal de cada página carregando primeiro.
 
-Telas do celular (tiradas a 390 × 844, como no app):
+## Formulário de contato e preenchimento prévio
 
-| Arquivo | Tela | Status |
-| --- | --- | --- |
-| `inicio` | Início do app | ✅ |
-| `explorar-ongs` | Explorar › ONGs | ✅ |
-| `ong-perfil` | Página de uma ONG (AACC) | ✅ |
-| `causa` | Página de uma causa | ✅ |
-| `evento` | Página de um evento | ✅ |
-| `beneficios-lista` | Benefícios | ✅ |
-| `beneficio-detalhe` | Detalhe de um benefício | ✅ |
-| `niveis` | Níveis de doação | ✅ |
+Os três formulários enviam para `/api/contato` (`src/worker.js`). O Worker valida, descarta robôs (campo isca e envio rápido demais) e repassa para a função `submitSiteLead` do app DuGood no Base44. A função grava o contato na entidade `SiteLead`, que aparece em **Admin › Parceiros › Contatos do site**, e avisa os admins por e-mail.
 
-Painéis (prints de computador, janela inteira do painel). Com a conta de admin dá para abrir o painel de qualquer ONG, lojista ou organizador (`/OrganizationDashboard?view_org_id=...`, `/MerchantDashboard?view_merchant_id=...`, `/EventOrganizerDashboard?view_organizer_id=...`). **Use contas de teste ou borre nomes, e-mails e telefones de doadores.**
+O formulário já chega preenchido sempre que possível:
 
-| Arquivo | Tela |
-| --- | --- |
-| `lojista-informacoes` | Painel do lojista › Informações da Loja |
-| `lojista-beneficios` | Painel do lojista › Benefícios |
-| `lojista-scanner` | Painel do lojista › scanner e tabela de resgates |
-| `lojista-clientes` | Painel do lojista › Clientes |
-| `ong-painel-perfil` | Painel da ONG › Perfil (com os números do topo) |
-| `ong-painel-causas` | Painel da ONG › Suas Causas |
-| `ong-painel-eventos` | Painel da ONG › Eventos (inscritos e scanner) |
-| `ong-painel-fiscal` | Painel da ONG › Incentivos Fiscais |
-| `ong-painel-doadores` | Painel da ONG › Doadores |
-| `ong-painel-documentos` | Painel da ONG › Documentos |
-| `organizador-eventos` | Painel do organizador › Meus Eventos |
-| `organizador-novo-evento` | Formulário de novo evento |
-| `organizador-inscritos` | Painel do organizador › Inscritos |
-| `organizador-scanner` | Painel do organizador › Escanear ingressos |
-
-## Formulário de contato
-
-Os três formulários enviam para `/api/contato` (`src/worker.js`). O Worker valida, descarta robôs (campo isca e envio rápido demais) e repassa para a função `submitSiteLead` do app DuGood no Base44. A função grava o contato na entidade `SiteLead`, que aparece no app em **Admin › Parceiros › Contatos do site**, e avisa os admins por e-mail.
+- **CNPJ:** ao digitar um CNPJ válido, `/api/cnpj/<número>` busca na base pública da Receita (BrasilAPI) o nome, a razão social, a cidade e o regime tributário, e preenche o que estiver vazio. A consulta fica em cache por um dia.
+- **Interesse:** os botões da página já marcam a opção certa (`data-interesse`), e dá para fazer o mesmo pelo endereço, por exemplo `/empresas?interesse=incentivada#contato`. Os ids das opções estão em `interesses`, no `src/config.ts`.
+- **Simulador:** o botão "Conversar sobre este valor" escreve o valor simulado na mensagem e marca doação incentivada e lucro real.
+- **Dados da pessoa:** nome, e-mail, WhatsApp, cargo e organização ficam guardados só naquela aba do navegador e já aparecem nos formulários das outras páginas.
+- **Origem:** os parâmetros `utm_` (ou o site de onde a pessoa veio) vão junto com o contato.
 
 Para funcionar, configure uma vez o mesmo texto aleatório longo nos dois lados:
 
@@ -72,13 +53,20 @@ Para funcionar, configure uma vez o mesmo texto aleatório longo nos dois lados:
 
 O endereço da função fica em `BASE44_CONTATO_URL`, no `wrangler.jsonc`.
 
-## Domínio
+## Prints do app
 
-O site está pronto para um domínio próprio. Ao definir o domínio:
+Cada print é um arquivo em `src/assets/prints/<nome>.png`. O site gera as versões otimizadas sozinho.
+
+- **Telas públicas** (início, explorar, página de ONG, causa, evento, benefícios e níveis): tiradas do app no ar, a 390 × 844.
+- **Painéis** (ONG, lojista e organizador): tirados do app de verdade com **dados fictícios** (Instituto Exemplo, Café Exemplo, Assessoria Corre Junto e doadores inventados), sem nenhum dado real. Para refazer, veja `scripts/prints/README.md` (`npm run prints`).
+
+Se faltar algum print, a página mostra uma moldura "Print pendente" (só no modo rascunho; depois do lançamento, a moldura some).
+
+## Domínio
 
 1. Ligue o domínio ao Worker na Cloudflare (Worker › Settings › Domains & Routes).
 2. Troque o endereço em `astro.config.mjs` (`site`).
-3. Para o lançamento, mude `rascunho` para `false` em `src/config.ts`: o site entra no Google e as molduras de print pendente somem.
+3. Para o lançamento, mude `rascunho` para `false` em `src/config.ts`: o site entra no Google e o `robots.txt` libera buscadores e agentes de IA.
 
 Se empresas e ONGs ganharem domínios diferentes, o mesmo projeto atende os dois: em `INICIO_POR_DOMINIO` (`wrangler.jsonc`), diga qual página cada domínio abre na raiz, por exemplo `{ "ongs.exemplo.com.br": "/ongs" }`.
 
@@ -88,8 +76,8 @@ Requer Node.js 22.12 ou mais novo.
 
 ```sh
 npm install
-npm run dev       # site em http://localhost:4321 (sem o formulário)
-npm run preview   # site + Worker do formulário, como na Cloudflare
+npm run dev       # site em http://localhost:4321 (sem o formulário e o CNPJ)
+npm run preview   # site + Worker (formulário, CNPJ, Markdown), como na Cloudflare
 npm run build     # gera ./dist
 npm run deploy    # publica na Cloudflare
 ```

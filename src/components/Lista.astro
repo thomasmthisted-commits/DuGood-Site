@@ -1,0 +1,21 @@
+---
+// Lista com marcadores verdes: título em negrito seguido do texto
+import type { Item } from '../conteudo/tipos';
+
+interface Props {
+  itens: Item[];
+  class?: string;
+}
+
+const { itens, class: classe } = Astro.props;
+---
+
+<ul class:list={['lista-check', classe]} data-r>
+  {
+    itens.map((i) => (
+      <li>
+        <strong>{i.titulo}</strong> {i.texto}
+      </li>
+    ))
+  }
+</ul>
