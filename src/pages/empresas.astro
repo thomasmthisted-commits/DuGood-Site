@@ -1,0 +1,340 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import Print from '../components/Print.astro';
+import GaleriaAbas from '../components/GaleriaAbas.astro';
+import Simulador from '../components/Simulador.astro';
+import Formulario from '../components/Formulario.astro';
+import { niveis, termosLink } from '../config';
+import presente from '../assets/mascotes/presente.png';
+import joinha from '../assets/mascotes/joinha.png';
+import abraco from '../assets/mascotes/abraco.png';
+
+const abasLojista = [
+  {
+    aba: 'Informações da loja',
+    texto: 'Nome, descrição, logo e contatos: é assim que os doadores conhecem a sua marca dentro do app.',
+    print: 'lojista-informacoes',
+    pendente: 'Painel do lojista, aba "Informações da Loja", com o perfil preenchido',
+  },
+  {
+    aba: 'Benefícios',
+    texto: 'Crie quantos benefícios quiser, escolha o nível ou badge exigido, o limite de usos e a validade. Pause e reative quando quiser.',
+    print: 'lojista-beneficios',
+    pendente: 'Painel do lojista, aba "Benefícios": lista de benefícios com status e o botão "Novo benefício"',
+  },
+  {
+    aba: 'Validar resgates',
+    texto: 'O doador mostra o QR Code do benefício e sua equipe confirma o uso na hora, pela câmera do celular.',
+    print: 'lojista-scanner',
+    pendente: 'Painel do lojista: scanner de QR Code do benefício e a tabela de resgates',
+  },
+  {
+    aba: 'Clientes',
+    texto: 'Quem resgatou seus benefícios e a composição desse público: região, faixa etária e escolaridade.',
+    print: 'lojista-clientes',
+    pendente: 'Painel do lojista, aba "Clientes" (use uma loja de teste: sem dados reais de doadores)',
+  },
+];
+
+const perguntas = [
+  {
+    p: 'Minha empresa não é do lucro real. Ainda dá para participar?',
+    r: 'Dá. As deduções de IRPJ das leis de incentivo valem para empresas do lucro real, mas qualquer empresa pode ser lojista parceira, oferecendo benefícios aos doadores, patrocinar eventos sociais ou apoiar uma ONG diretamente.',
+  },
+  {
+    p: 'A doação incentivada custa algo a mais para a empresa?',
+    r: 'O valor é abatido do imposto de renda devido, dentro do limite de cada lei. Na prática, a empresa escolhe para onde vai uma parte do imposto que já pagaria. A contabilidade da empresa confirma os valores e o enquadramento.',
+  },
+  {
+    p: 'A DuGood garante a dedução?',
+    r: 'Não. A dedução depende da lei, da regularidade do projeto e da situação fiscal da empresa. Por isso trabalhamos com projetos aprovados nos órgãos responsáveis e com a documentação em dia, e orientamos a empresa a validar tudo com a contabilidade.',
+  },
+  {
+    p: 'O dinheiro passa pela DuGood?',
+    r: 'Como regra, não: o valor vai para a organização responsável pelo projeto. A DuGood oferece a tecnologia, a curadoria dos projetos e o acompanhamento.',
+  },
+  {
+    p: 'Até quando posso fazer o aporte?',
+    r: 'Para abater no imposto de um ano, o aporte precisa ser feito até 31 de dezembro daquele ano. Quanto antes a conversa começar, mais tempo para escolher o projeto com calma.',
+  },
+];
+---
+
+<Base
+  titulo="DuGood para empresas: doação incentivada e benefícios"
+  descricao="Direcione parte do imposto de renda da sua empresa para projetos sociais aprovados e ofereça benefícios a uma comunidade de doadores. Conheça a DuGood para empresas."
+  dados={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+    },
+  ]}
+>
+  <section class="heroi">
+    <div class="conteiner duo">
+      <div data-r>
+        <span class="rotulo">DuGood para empresas</span>
+        <h1>Sua marca do lado de quem faz o bem.</h1>
+        <p class="lead">
+          Direcione parte do imposto de renda para projetos sociais aprovados, ofereça benefícios a quem doa e mostre, com
+          dados, o impacto que a sua empresa ajuda a gerar.
+        </p>
+        <div class="botoes">
+          <a class="botao" href="#incentivada">Simular doação incentivada</a>
+          <a class="botao botao--claro" href="#contato">Falar com a DuGood</a>
+        </div>
+      </div>
+      <div class="heroi__visual">
+        <Print nome="beneficios-lista" alt="Tela de benefícios do app DuGood, com descontos de lojas parceiras por nível" />
+        <Image class="mascote heroi__mascote" src={presente} alt="" width={220} loading="eager" />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa" id="incentivada">
+    <div class="conteiner duo">
+      <div data-r>
+        <span class="rotulo">Em destaque · Doação incentivada</span>
+        <h2>O imposto que já seria pago pode virar impacto.</h2>
+        <p class="lead">
+          Empresas do lucro real podem destinar parte do IRPJ a projetos aprovados pelo governo: esporte, cultura, infância,
+          pessoa idosa e saúde. Em vez de ir só para a arrecadação, o valor financia um projeto que a empresa escolhe e
+          acompanha.
+        </p>
+        <ul class="lista-check">
+          <li><strong>Curadoria de projetos.</strong> Mapeamos projetos aprovados e em captação e apresentamos os que combinam com o setor, a região e os valores da empresa.</li>
+          <li><strong>O dinheiro vai para o projeto.</strong> A DuGood não recebe nem guarda o valor: ele segue para a organização responsável.</li>
+          <li><strong>Recibo pela plataforma.</strong> A ONG emite e assina digitalmente o recibo pela DuGood, pronto para a contabilidade.</li>
+          <li><strong>Prazo.</strong> Para abater no imposto do ano, o aporte precisa ser feito até 31 de dezembro.</li>
+        </ul>
+      </div>
+      <div data-r>
+        <Simulador />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">Como funciona</span>
+        <h2>Da conversa ao recibo, com a DuGood do lado.</h2>
+      </div>
+      <ol class="passos" data-r>
+        <li>
+          <h3>Conversa</h3>
+          <p>Entendemos o regime tributário, o potencial de dedução e as causas que importam para a empresa.</p>
+        </li>
+        <li>
+          <h3>Projetos</h3>
+          <p>Apresentamos projetos aprovados e em captação, com metas, contrapartidas e a organização por trás.</p>
+        </li>
+        <li>
+          <h3>Aporte</h3>
+          <p>A empresa faz o aporte ao projeto escolhido e recebe o recibo para a contabilidade.</p>
+        </li>
+        <li>
+          <h3>Acompanhamento</h3>
+          <p>A empresa acompanha o projeto pelas atualizações da ONG e pode comunicar o apoio nas contrapartidas previstas.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa" id="beneficios">
+    <div class="conteiner duo duo--inverso">
+      <div data-r>
+        <span class="rotulo">Marketing com propósito</span>
+        <h2>Sua marca na rotina de quem doa.</h2>
+        <p class="lead">
+          Na DuGood, cada R$ 1 doado vira 1 ponto. Com os pontos, o doador sobe de nível e desbloqueia benefícios oferecidos por
+          marcas parceiras. Sua empresa entra como lojista parceira, cria os benefícios e recebe clientes que chegam por uma boa
+          causa.
+        </p>
+        <ul class="niveis">
+          {niveis.map((n) => <li><strong>{n.nome}</strong><span>{n.pontos}</span></li>)}
+        </ul>
+      </div>
+      <div class="par-prints">
+        <Print nome="beneficio-detalhe" alt="Detalhe de um benefício no app: desconto, categoria e nível exigido" legenda="O benefício dentro do app" />
+        <Print nome="niveis" alt="Níveis de doação no app: Bronze, Prata, Ouro e Platina" legenda="Os níveis de quem doa" />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="conteiner">
+      <div class="cartoes" data-r>
+        <div class="cartao">
+          <div class="icone"><Icone nome="presente" /></div>
+          <h3>Benefícios do seu jeito</h3>
+          <p>Desconto na loja, cupom, link para o seu site ou resgate por QR Code. Você escolhe o nível exigido, o limite de usos e a validade.</p>
+        </div>
+        <div class="cartao">
+          <div class="icone"><Icone nome="qr" /></div>
+          <h3>Resgate validado na hora</h3>
+          <p>O doador mostra o QR Code e sua equipe confirma o uso pelo painel, com o histórico de todos os resgates.</p>
+        </div>
+        <div class="cartao">
+          <div class="icone"><Icone nome="usuarios" /></div>
+          <h3>Conheça quem chega</h3>
+          <p>Veja quem resgatou seus benefícios e a composição desse público: região, faixa etária e escolaridade.</p>
+        </div>
+        <div class="cartao">
+          <div class="icone"><Icone nome="folha" /></div>
+          <h3>ESG com ação concreta</h3>
+          <p>Sua marca aparece ao lado de ONGs verificadas e de quem doa: um apoio que dá para mostrar, não só declarar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">Painel do lojista</span>
+        <h2>Tudo em um painel simples.</h2>
+        <p class="lead">Sem integração nem instalação: o lojista cadastra os benefícios e acompanha os resgates pelo próprio app.</p>
+      </div>
+      <GaleriaAbas id="lojista" painel="Painel do lojista" abas={abasLojista} />
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">Outras formas de participar</span>
+        <h2>Cada empresa apoia do jeito que faz mais sentido.</h2>
+      </div>
+      <div class="cartoes" data-r>
+        <a class="cartao cartao--link" href="/eventos">
+          <div class="icone"><Icone nome="calendario" /></div>
+          <h3>Eventos sociais</h3>
+          <p>Patrocine corridas, torneios e jantares beneficentes, ou valide os ingressos no seu espaço. A arrecadação vai 100% para a ONG.</p>
+        </a>
+        <div class="cartao">
+          <div class="icone"><Icone nome="codigo" /></div>
+          <h3>Doação dentro do seu produto</h3>
+          <p>Pela API da DuGood, seu app, site ou checkout cria doações para ONGs aprovadas e recebe a confirmação automaticamente.</p>
+        </div>
+        <div class="cartao">
+          <div class="icone"><Icone nome="coracao" /></div>
+          <h3>Apoio direto a uma ONG</h3>
+          <p>Escolha uma ONG ou causa da plataforma e acompanhe o impacto pelas atualizações que ela envia a quem doa.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa">
+    <div class="conteiner duo">
+      <div data-r>
+        <span class="rotulo">Nossa política</span>
+        <h2>Transparência inegociável.</h2>
+        <p class="lead">É um dos nossos valores, e está nos <a href={termosLink} target="_blank" rel="noopener">Termos de Uso</a>.</p>
+        <Image class="mascote politica__mascote" src={joinha} alt="" width={200} />
+      </div>
+      <ul class="lista-check politica" data-r>
+        <li><strong>O dinheiro vai para a ONG.</strong> Como regra, a doação cai direto na conta da organização no provedor de pagamento. A DuGood não recebe nem guarda os valores.</li>
+        <li><strong>ONGs verificadas.</strong> Antes de aprovar uma organização, fazemos uma verificação cadastral e documental.</li>
+        <li><strong>Quem doa não paga a mais.</strong> O doador paga só o valor que escolheu. A remuneração da DuGood nas causas incentivadas é combinada com cada ONG, em contrato.</li>
+        <li><strong>Prestação de contas.</strong> As ONGs enviam atualizações sobre as causas a quem doou, e os recibos ficam registrados na plataforma.</li>
+        <li><strong>Dados protegidos.</strong> Os dados de quem doa são tratados conforme a LGPD e a nossa Política de Privacidade.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="conteiner">
+      <div class="cabeca-secao cabeca-secao--centro" data-r>
+        <span class="rotulo">Perguntas frequentes</span>
+        <h2>Dúvidas de quem está começando.</h2>
+      </div>
+      <div class="faq" data-r>
+        {
+          perguntas.map((q) => (
+            <details>
+              <summary>{q.p}</summary>
+              <p>{q.r}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--escura" id="contato">
+    <div class="conteiner contato">
+      <div class="contato__texto" data-r>
+        <span class="rotulo">Contato</span>
+        <h2>Vamos conversar sobre a sua empresa.</h2>
+        <p class="lead">Conte o que vocês têm em mente. Respondemos com os projetos e as formas de apoio que fazem sentido para o seu caso.</p>
+        <ul class="lista-check">
+          <li><strong>Doação incentivada:</strong> projetos aprovados e o potencial de dedução.</li>
+          <li><strong>Benefícios:</strong> como a sua marca entra no app.</li>
+          <li><strong>Eventos e API:</strong> patrocínio e integração.</li>
+        </ul>
+        <Image class="mascote" src={abraco} alt="" width={200} />
+      </div>
+      <Formulario publico="empresa" titulo="Fale com a DuGood" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .heroi__visual {
+    padding-left: 40px;
+  }
+  .heroi__mascote {
+    width: 150px;
+    left: 0;
+    bottom: -12px;
+  }
+  @media (min-width: 900px) {
+    .heroi__mascote {
+      width: 190px;
+      left: 4%;
+    }
+  }
+  .niveis {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .niveis li {
+    background: #fff;
+    border-radius: var(--raio-p);
+    padding: 12px 16px;
+    display: grid;
+    box-shadow: var(--sombra);
+  }
+  .niveis strong {
+    font-family: var(--titulo);
+    color: var(--verde-escuro);
+  }
+  .niveis span {
+    font-size: 0.85rem;
+    color: var(--tinta-fraca);
+  }
+  .politica__mascote {
+    width: 160px;
+    height: auto;
+    margin-top: 12px;
+  }
+  .politica li {
+    background: #fff;
+    border-radius: var(--raio-p);
+    padding: 18px 20px 18px 54px;
+    box-shadow: var(--sombra);
+  }
+  .politica li::before {
+    left: 20px;
+    top: 21px;
+  }
+</style>

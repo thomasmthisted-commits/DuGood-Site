@@ -1,0 +1,35 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import lupa from '../assets/mascotes/lupa.png';
+---
+
+<Base titulo="Página não encontrada" descricao="Esta página não existe." indexar={false}>
+  <section class="heroi">
+    <div class="conteiner centro">
+      <Image class="mascote" src={lupa} alt="" width={200} loading="eager" />
+      <h1>Procuramos, mas esta página não existe.</h1>
+      <p class="lead">Talvez o endereço tenha mudado. Comece por uma destas:</p>
+      <div class="botoes">
+        <a class="botao" href="/empresas">Para empresas</a>
+        <a class="botao botao--claro" href="/ongs">Para ONGs</a>
+        <a class="botao botao--claro" href="/eventos">Eventos sociais</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .centro {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+  }
+  .mascote {
+    width: 160px;
+    margin-bottom: 24px;
+  }
+  .botoes {
+    justify-content: center;
+  }
+</style>

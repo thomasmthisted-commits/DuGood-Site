@@ -1,0 +1,146 @@
+---
+// Simulador de doação incentivada para empresas do lucro real. Estimativa simples:
+// IRPJ à alíquota de 15% sobre o lucro real (sem o adicional) × limite de cada lei.
+import { leisIncentivo } from '../config';
+
+const padrao = 10_000_000;
+const brl = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+const irpj = padrao * 0.15;
+---
+
+<div class="simulador" data-simulador data-leis={JSON.stringify(leisIncentivo)}>
+  <label class="simulador__entrada">
+    <span>Lucro real anual estimado da empresa</span>
+    <div class="simulador__campo">
+      <span aria-hidden="true">R$</span>
+      <input type="text" inputmode="numeric" value={padrao.toLocaleString('pt-BR')} data-lucro aria-describedby="simulador-nota" />
+    </div>
+  </label>
+
+  <ul class="simulador__leis">
+    {
+      leisIncentivo.map((l) => (
+        <li>
+          <span>
+            {l.nome}
+            <small>até {(l.limite * 100).toLocaleString('pt-BR')}% do IRPJ · {l.nota}</small>
+          </span>
+          <strong data-lei={l.id}>{brl(irpj * l.limite)}</strong>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="simulador__total">
+    <span>Potencial para direcionar por ano</span>
+    <strong data-total>{brl(irpj * leisIncentivo.reduce((s, l) => s + l.limite, 0))}</strong>
+  </div>
+
+  <p class="simulador__nota" id="simulador-nota">
+    Estimativa para empresas tributadas pelo lucro real, sobre o IRPJ à alíquota de 15% (sem o adicional de 10%). Os limites
+    e as regras de cada lei mudam conforme o projeto; confirme com a contabilidade da empresa. Para abater no imposto de um
+    ano, o aporte precisa ser feito até 31 de dezembro dele.
+  </p>
+</div>
+
+<script>
+  for (const el of document.querySelectorAll<HTMLElement>('[data-simulador]')) {
+    const leis: { id: string; limite: number }[] = JSON.parse(el.dataset.leis!);
+    const campo = el.querySelector<HTMLInputElement>('[data-lucro]')!;
+    const brl = (v: number) => v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
+    const atualizar = () => {
+      const lucro = Number(campo.value.replace(/\D/g, '')) || 0;
+      campo.value = lucro ? lucro.toLocaleString('pt-BR') : '';
+      const irpj = lucro * 0.15;
+      for (const l of leis) el.querySelector(`[data-lei="${l.id}"]`)!.textContent = brl(irpj * l.limite);
+      el.querySelector('[data-total]')!.textContent = brl(irpj * leis.reduce((s, l) => s + l.limite, 0));
+    };
+    campo.addEventListener('input', atualizar);
+  }
+</script>
+
+<style>
+  .simulador {
+    background: #fff;
+    border-radius: var(--raio);
+    padding: clamp(24px, 4vw, 36px);
+    box-shadow: var(--sombra);
+    color: var(--tinta);
+  }
+  .simulador__entrada {
+    display: grid;
+    gap: 8px;
+    font-weight: 500;
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+  .simulador__campo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--nevoa);
+    border: 1px solid var(--cinza-1);
+    border-radius: var(--raio-p);
+    padding: 0 16px;
+    font: 600 1.3rem var(--titulo);
+    color: var(--verde-escuro);
+  }
+  .simulador__campo:focus-within {
+    background: #fff;
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px var(--verde-claro);
+  }
+  .simulador__campo input {
+    border: 0;
+    background: transparent;
+    font: inherit;
+    color: inherit;
+    padding: 14px 0;
+    width: 100%;
+    outline: none;
+  }
+  .simulador__leis {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+  }
+  .simulador__leis li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cinza-1);
+    font-size: 0.95rem;
+  }
+  .simulador__leis small {
+    display: block;
+    color: var(--tinta-fraca);
+    font-size: 0.8rem;
+  }
+  .simulador__leis strong {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .simulador__total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    background: var(--verde-claro);
+    border-radius: var(--raio-p);
+    padding: 16px 20px;
+    color: var(--verde-escuro);
+    font-weight: 500;
+  }
+  .simulador__total strong {
+    font: 700 1.6rem var(--titulo);
+  }
+  .simulador__nota {
+    margin: 16px 0 0;
+    font-size: 0.8rem;
+    color: var(--tinta-fraca);
+    line-height: 1.5;
+  }
+</style>

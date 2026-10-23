@@ -1,0 +1,29 @@
+---
+// Destino do formulário quando o navegador está sem JS (o Worker redireciona para cá).
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import acenando from '../assets/mascotes/acenando.png';
+---
+
+<Base titulo="Recebemos seu contato" descricao="Obrigado pelo interesse na DuGood." indexar={false}>
+  <section class="heroi">
+    <div class="conteiner centro">
+      <Image class="mascote" src={acenando} alt="" width={200} loading="eager" />
+      <h1>Recebemos seu contato!</h1>
+      <p class="lead">A equipe da DuGood vai responder em breve pelo e-mail ou WhatsApp que você informou.</p>
+      <a class="botao" href="/">Voltar ao início</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .centro {
+    text-align: center;
+    display: grid;
+    justify-items: center;
+  }
+  .mascote {
+    width: 160px;
+    margin-bottom: 24px;
+  }
+</style>

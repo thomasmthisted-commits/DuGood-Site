@@ -1,0 +1,148 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { appLink } from '../config';
+
+const links = [
+  { href: '/empresas', texto: 'Para empresas' },
+  { href: '/ongs', texto: 'Para ONGs' },
+  { href: '/eventos', texto: 'Eventos sociais' },
+];
+const atual = Astro.url.pathname.replace(/\.html$/, '');
+---
+
+<header class="topo">
+  <div class="conteiner topo__barra">
+    <a href="/" class="topo__logo" aria-label="DuGood, página inicial">
+      <Image src={logo} alt="DuGood" width={132} loading="eager" />
+    </a>
+    <nav class="topo__nav" aria-label="Principal">
+      {
+        links.map((l) => (
+          <a href={l.href} aria-current={atual === l.href ? 'page' : undefined}>
+            {l.texto}
+          </a>
+        ))
+      }
+    </nav>
+    <a class="botao topo__app" href={appLink()} target="_blank" rel="noopener">Abrir o app</a>
+    <details class="topo__menu">
+      <summary aria-label="Menu">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"
+          ><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg
+        >
+      </summary>
+      <div class="topo__gaveta">
+        {
+          links.map((l) => (
+            <a href={l.href} aria-current={atual === l.href ? 'page' : undefined}>
+              {l.texto}
+            </a>
+          ))
+        }
+        <a class="botao" href={appLink()} target="_blank" rel="noopener">Abrir o app</a>
+      </div>
+    </details>
+  </div>
+</header>
+
+<style>
+  .topo {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgb(255 255 255 / 0.88);
+    backdrop-filter: saturate(1.4) blur(12px);
+    border-bottom: 1px solid var(--cinza-1);
+  }
+  .topo__barra {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    height: 72px;
+  }
+  .topo__logo {
+    flex-shrink: 0;
+  }
+  .topo__logo img {
+    width: 120px;
+    height: auto;
+  }
+  .topo__nav {
+    display: none;
+    gap: 28px;
+    margin-left: auto;
+  }
+  .topo__nav a,
+  .topo__gaveta a:not(.botao) {
+    color: var(--tinta-suave);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.97rem;
+  }
+  .topo__nav a:hover,
+  .topo__nav a[aria-current='page'],
+  .topo__gaveta a[aria-current='page'] {
+    color: var(--verde-escuro);
+  }
+  .topo__nav a[aria-current='page'] {
+    text-decoration: underline;
+    text-decoration-color: var(--verde);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 8px;
+  }
+  .topo__app {
+    display: none;
+    min-height: 42px;
+    padding: 8px 20px;
+    font-size: 0.93rem;
+  }
+  .topo__menu {
+    margin-left: auto;
+  }
+  .topo__menu summary {
+    list-style: none;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+    color: var(--verde-escuro);
+  }
+  .topo__menu summary::-webkit-details-marker {
+    display: none;
+  }
+  .topo__menu[open] summary {
+    background: var(--nevoa);
+  }
+  .topo__gaveta {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 72px;
+    background: #fff;
+    border-bottom: 1px solid var(--linha);
+    padding: 12px var(--gutter) 24px;
+    display: grid;
+    gap: 4px;
+    box-shadow: var(--sombra);
+  }
+  .topo__gaveta a:not(.botao) {
+    padding: 12px 0;
+    font-size: 1.05rem;
+    border-bottom: 1px solid var(--cinza-1);
+  }
+  .topo__gaveta .botao {
+    margin-top: 12px;
+  }
+  @media (min-width: 900px) {
+    .topo__nav,
+    .topo__app {
+      display: flex;
+    }
+    .topo__menu {
+      display: none;
+    }
+  }
+</style>

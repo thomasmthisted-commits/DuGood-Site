@@ -1,0 +1,125 @@
+---
+// Print do app numa moldura: celular (telas do app) ou janela (painéis no computador).
+// O arquivo é src/assets/prints/<nome>.(png|jpg|webp). Se ainda não existir, aparece uma
+// moldura pendente enquanto o site for rascunho (src/config.ts) e nada depois do lançamento.
+import { Image } from 'astro:assets';
+import { rascunho } from '../config';
+import { print } from '../lib/prints';
+
+interface Props {
+  nome: string;
+  alt: string;
+  tipo?: 'celular' | 'janela';
+  legenda?: string;
+  /** O que precisa aparecer no print, para quem for tirar */
+  pendente?: string;
+  class?: string;
+  /** false: sem o fade de entrada (ex.: dentro de abas) */
+  revelar?: boolean;
+}
+
+const { nome, alt, tipo = 'celular', legenda, pendente, class: classe, revelar = true } = Astro.props;
+const imagem = print(nome);
+const larguras = tipo === 'celular' ? [300, 600] : [640, 1100, 1600];
+const tamanhos = tipo === 'celular' ? '300px' : '(min-width: 900px) 560px, 100vw';
+---
+
+{
+  (imagem || rascunho) && (
+    <figure class:list={['print', `print--${tipo}`, classe]} data-r={revelar ? '' : undefined}>
+      <div class="print__moldura">
+        {tipo === 'janela' && (
+          <div class="print__barra" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+        )}
+        {imagem ? (
+          <Image src={imagem} alt={alt} widths={larguras} sizes={tamanhos} />
+        ) : (
+          <div class="print__pendente">
+            <strong>Print pendente</strong>
+            <span>{pendente ?? alt}</span>
+            <code>src/assets/prints/{nome}.png</code>
+          </div>
+        )}
+      </div>
+      {legenda && <figcaption>{legenda}</figcaption>}
+    </figure>
+  )
+}
+
+<style>
+  .print {
+    margin: 0;
+  }
+  .print--celular {
+    max-width: 300px;
+  }
+  .print__moldura {
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 6px rgb(23 36 28 / 0.06), 0 24px 56px rgb(23 36 28 / 0.12);
+  }
+  .print--celular .print__moldura {
+    border-radius: 36px;
+    border: 8px solid #17241c;
+  }
+  .print--celular img {
+    aspect-ratio: 390 / 844;
+    object-fit: cover;
+    object-position: top;
+    width: 100%;
+  }
+  .print--janela .print__moldura {
+    border-radius: 14px;
+    border: 1px solid var(--linha);
+  }
+  .print__barra {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px;
+    background: var(--nevoa);
+    border-bottom: 1px solid var(--linha);
+  }
+  .print__barra span {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--linha);
+  }
+  .print__pendente {
+    display: grid;
+    gap: 8px;
+    place-content: center;
+    text-align: center;
+    padding: 32px 24px;
+    background: repeating-linear-gradient(-45deg, var(--nevoa) 0 12px, #fff 12px 24px);
+    color: var(--tinta-suave);
+    font-size: 0.9rem;
+  }
+  .print--celular .print__pendente {
+    aspect-ratio: 390 / 844;
+  }
+  .print--janela .print__pendente {
+    aspect-ratio: 16 / 10;
+  }
+  .print__pendente strong {
+    color: var(--verde-escuro);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .print__pendente code {
+    font-size: 0.75rem;
+    color: var(--tinta-fraca);
+    word-break: break-all;
+  }
+  figcaption {
+    margin-top: 14px;
+    font-size: 0.88rem;
+    color: var(--tinta-fraca);
+    text-align: center;
+  }
+</style>

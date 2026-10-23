@@ -1,0 +1,157 @@
+---
+// Tour pelas abas de um painel do app: a lista de abas de um lado, o print da aba escolhida do
+// outro. Sem JS, todas as abas aparecem uma embaixo da outra.
+import Print from './Print.astro';
+import { rascunho } from '../config';
+import { print } from '../lib/prints';
+
+interface Aba {
+  /** Nome da aba como aparece no app */
+  aba: string;
+  texto: string;
+  /** Arquivo em src/assets/prints/ (sem extensão) */
+  print: string;
+  pendente: string;
+}
+
+interface Props {
+  id: string;
+  painel: string;
+  abas: Aba[];
+}
+
+const { id, painel } = Astro.props;
+// Depois do lançamento, aba sem print não aparece
+const abas = Astro.props.abas.filter((a) => rascunho || print(a.print));
+---
+
+<div class="galeria" data-galeria>
+  <div class="galeria__abas" role="tablist" aria-label={`Abas do ${painel}`}>
+    {
+      abas.map((a, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`${id}-aba-${i}`}
+          aria-controls={`${id}-painel-${i}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+          tabindex={i === 0 ? 0 : -1}
+        >
+          <strong>{a.aba}</strong>
+          <span>{a.texto}</span>
+        </button>
+      ))
+    }
+  </div>
+  <div class="galeria__telas">
+    {
+      abas.map((a, i) => (
+        <div role="tabpanel" id={`${id}-painel-${i}`} aria-labelledby={`${id}-aba-${i}`} class="galeria__tela" data-ativa={i === 0 ? '' : undefined}>
+          <Print nome={a.print} tipo="janela" revelar={false} alt={`${painel}: aba ${a.aba}`} pendente={a.pendente} />
+        </div>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  for (const g of document.querySelectorAll<HTMLElement>('[data-galeria]')) {
+    g.classList.add('galeria--js');
+    const abas = [...g.querySelectorAll<HTMLButtonElement>('[role=tab]')];
+    const telas = [...g.querySelectorAll<HTMLElement>('[role=tabpanel]')];
+    const ativar = (i: number, foco = false) => {
+      abas.forEach((a, j) => {
+        a.setAttribute('aria-selected', String(i === j));
+        a.tabIndex = i === j ? 0 : -1;
+      });
+      telas.forEach((t, j) => t.toggleAttribute('data-ativa', i === j));
+      if (foco) abas[i].focus();
+    };
+    abas.forEach((a, i) => {
+      a.addEventListener('click', () => ativar(i));
+      a.addEventListener('keydown', (e) => {
+        const passo = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+        if (!passo) return;
+        e.preventDefault();
+        ativar((i + passo + abas.length) % abas.length, true);
+      });
+    });
+  }
+</script>
+
+<style>
+  .galeria {
+    display: grid;
+    gap: 28px;
+  }
+  .galeria__abas {
+    display: grid;
+    gap: 8px;
+    align-content: start;
+  }
+  .galeria__abas button {
+    text-align: left;
+    font: inherit;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: var(--raio-p);
+    padding: 14px 18px;
+    cursor: default;
+    display: grid;
+    gap: 2px;
+    color: var(--tinta-suave);
+  }
+  .galeria__abas strong {
+    font-family: var(--titulo);
+    font-weight: 650;
+    color: var(--verde-escuro);
+  }
+  .galeria__abas span {
+    font-size: 0.92rem;
+  }
+  .galeria__tela + .galeria__tela {
+    margin-top: 28px;
+  }
+
+  /* Com JS: abas clicáveis e uma tela por vez */
+  .galeria--js .galeria__abas button {
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .galeria--js .galeria__abas button:hover {
+    background: var(--nevoa);
+  }
+  .galeria--js .galeria__abas button[aria-selected='true'] {
+    background: #fff;
+    border-color: var(--linha);
+    box-shadow: var(--sombra);
+  }
+  .galeria--js .galeria__abas button:not([aria-selected='true']) span {
+    display: none;
+  }
+  .galeria--js .galeria__tela {
+    display: none;
+    margin: 0;
+  }
+  .galeria--js .galeria__tela[data-ativa] {
+    display: block;
+    animation: aparecer 0.4s var(--curva);
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+    }
+  }
+  @media (min-width: 900px) {
+    .galeria {
+      grid-template-columns: 300px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .galeria--js .galeria__tela[data-ativa] {
+      animation: none;
+    }
+  }
+</style>

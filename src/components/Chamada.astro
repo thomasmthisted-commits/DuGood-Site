@@ -1,0 +1,64 @@
+---
+// A única chamada verde-escura de cada página, antes do rodapé.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  titulo: string;
+  texto: string;
+  botao: { texto: string; href: string };
+  secundario?: { texto: string; href: string };
+  mascote: ImageMetadata;
+}
+
+const { titulo, texto, botao, secundario, mascote } = Astro.props;
+const externo = (href: string) => href.startsWith('http');
+---
+
+<section class="secao secao--escura chamada">
+  <div class="conteiner chamada__grade">
+    <div data-r>
+      <h2>{titulo}</h2>
+      <p class="lead">{texto}</p>
+      <div class="botoes">
+        <a class="botao" href={botao.href} target={externo(botao.href) ? '_blank' : undefined} rel="noopener">{botao.texto}</a>
+        {
+          secundario && (
+            <a class="botao botao--claro" href={secundario.href} target={externo(secundario.href) ? '_blank' : undefined} rel="noopener">
+              {secundario.texto}
+            </a>
+          )
+        }
+      </div>
+    </div>
+    <Image class="mascote chamada__mascote" src={mascote} alt="" width={260} />
+  </div>
+</section>
+
+<style>
+  .chamada {
+    overflow: hidden;
+  }
+  .chamada__grade {
+    display: grid;
+    gap: 32px;
+    align-items: center;
+  }
+  .chamada .lead {
+    color: var(--sobre-escuro-suave);
+    margin-bottom: 28px;
+  }
+  .chamada__mascote {
+    width: 180px;
+    height: auto;
+    justify-self: center;
+  }
+  @media (min-width: 900px) {
+    .chamada__grade {
+      grid-template-columns: 1fr auto;
+    }
+    .chamada__mascote {
+      width: 240px;
+    }
+  }
+</style>

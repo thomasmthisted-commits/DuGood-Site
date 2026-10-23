@@ -1,0 +1,331 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
+import Print from '../components/Print.astro';
+import GaleriaAbas from '../components/GaleriaAbas.astro';
+import Formulario from '../components/Formulario.astro';
+import { appLink, termosLink } from '../config';
+import lupa from '../assets/mascotes/lupa.png';
+import trofeu from '../assets/mascotes/trofeu.png';
+import coracao from '../assets/mascotes/coracao.png';
+import acenando from '../assets/mascotes/acenando.png';
+
+const abasOng = [
+  {
+    aba: 'Perfil',
+    texto: 'Logo, descrição, endereço, contatos e galeria de fotos e vídeos: exatamente o que o doador vê na página da ONG.',
+    print: 'ong-painel-perfil',
+    pendente: 'Painel da ONG, aba "Perfil", com os números do topo (total arrecadado, causas ativas)',
+  },
+  {
+    aba: 'Suas causas',
+    texto: 'Crie causas com meta, prazo e doação mínima, pré-visualize como o doador vê e envie atualizações a quem doou.',
+    print: 'ong-painel-causas',
+    pendente: 'Painel da ONG, aba "Suas Causas", com cards de causas ativas e em aprovação',
+  },
+  {
+    aba: 'Eventos',
+    texto: 'Eventos com data, local e prazo de inscrição. Cada doação gera um ingresso com QR Code, validado na entrada.',
+    print: 'ong-painel-eventos',
+    pendente: 'Painel da ONG, aba "Eventos": lista de inscritos e o scanner de ingressos',
+  },
+  {
+    aba: 'Incentivos fiscais',
+    texto: 'Projetos com dedução de IR, dados fiscais da ONG e o andamento de cada recibo, com assinatura digital.',
+    print: 'ong-painel-fiscal',
+    pendente: 'Painel da ONG, aba "Incentivos Fiscais": projetos e pipeline de recibos',
+  },
+  {
+    aba: 'Doadores',
+    texto: 'Quem apoia a ONG, quanto e quando, doações mensais previstas, composição do público e sorteios entre doadores.',
+    print: 'ong-painel-doadores',
+    pendente: 'Painel da ONG, aba "Doadores" (use uma ONG de teste ou borre nomes e contatos)',
+  },
+  {
+    aba: 'Documentos',
+    texto: 'Termos assinados digitalmente e documentos institucionais em um só lugar.',
+    print: 'ong-painel-documentos',
+    pendente: 'Painel da ONG, aba "Documentos", com os termos assinados',
+  },
+];
+
+const perguntas = [
+  {
+    p: 'Quem pode entrar na DuGood?',
+    r: 'Organizações sem fins lucrativos com CNPJ e documentação em dia. Antes de aprovar, a DuGood faz uma verificação cadastral e documental da organização.',
+  },
+  {
+    p: 'O dinheiro passa pela DuGood?',
+    r: 'Como regra, não. A doação é creditada direto na conta que a ONG mantém no provedor de pagamento (Stripe), conectada uma única vez pelo painel.',
+  },
+  {
+    p: 'Já temos doadores. Perdemos esse histórico?',
+    r: 'Não. Dá para importar o histórico por planilha, e ele entra na lista de doadores, nos filtros e nas análises junto com as doações feitas pelo app.',
+  },
+  {
+    p: 'Como funcionam as doações para projetos incentivados?',
+    r: 'A ONG cadastra a causa com a lei e o número do projeto aprovado. Essas doações têm valor mínimo de R$ 1.000, pedem os dados fiscais de quem doa e geram recibo assinado digitalmente pela plataforma.',
+  },
+  {
+    p: 'Dá para receber doações mensais?',
+    r: 'Sim. O doador escolhe doar todo mês no cartão e pode cancelar quando quiser. No painel, a ONG vê a previsão mensal das doações recorrentes.',
+  },
+];
+---
+
+<Base
+  titulo="DuGood para ONGs: doações, eventos e recibos em um só lugar"
+  descricao="Página da ONG no app, doações pontuais e mensais, eventos com ingresso, recibos de incentivo fiscal e captação com empresas. Conheça a DuGood para ONGs."
+  dados={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: perguntas.map((q) => ({ '@type': 'Question', name: q.p, acceptedAnswer: { '@type': 'Answer', text: q.r } })),
+    },
+  ]}
+>
+  <section class="heroi">
+    <div class="conteiner duo">
+      <div data-r>
+        <span class="rotulo">DuGood para ONGs</span>
+        <h1>Mais doações, doadores que voltam e menos trabalho manual.</h1>
+        <p class="lead">
+          Sua ONG ganha uma página no app, doações pontuais e mensais, eventos com ingresso, recibos de incentivo fiscal e um
+          painel para conhecer quem apoia a causa. E a DuGood leva seus projetos incentivados até as empresas.
+        </p>
+        <div class="botoes">
+          <a class="botao" href="#contato">Quero levar minha ONG</a>
+          <a class="botao botao--claro" href={appLink('Explore')} target="_blank" rel="noopener">Ver ONGs no app</a>
+        </div>
+      </div>
+      <div class="heroi__visual">
+        <Print nome="ong-perfil" alt="Página de uma ONG no app DuGood, com total arrecadado, doadores, causas e eventos" />
+        <Image class="mascote heroi__mascote" src={lupa} alt="" width={220} loading="eager" />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa">
+    <div class="conteiner">
+      <div class="cabeca-secao cabeca-secao--centro" data-r>
+        <span class="rotulo">Sua ONG dentro do app</span>
+        <h2>O doador encontra, conhece e doa em poucos toques.</h2>
+        <p class="lead">
+          Em Explorar, os doadores chegam à página da ONG, veem o trabalho, as causas abertas e os eventos, e doam com cartão ou
+          Pix, uma vez ou todo mês.
+        </p>
+      </div>
+      <div class="trio">
+        <Print nome="ong-perfil" alt="Página da ONG no app" legenda="A página da ONG" />
+        <Print nome="causa" alt="Página de uma causa com meta, valor arrecadado e botão Doar" legenda="Uma causa com meta" />
+        <Print nome="evento" alt="Página de um evento beneficente com inscrição" legenda="Um evento com inscrição" />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="conteiner duo">
+      <div data-r>
+        <span class="rotulo">Por que os doadores voltam</span>
+        <h2>Doar vira hábito, e a ONG ganha previsibilidade.</h2>
+        <p class="lead">
+          Cada R$ 1 doado vira 1 ponto. Com os pontos, o doador sobe de nível, conquista badges e desbloqueia benefícios em lojas
+          parceiras. É um motivo a mais para voltar, e para doar todo mês.
+        </p>
+        <Image class="mascote" src={trofeu} alt="" width={220} />
+      </div>
+      <div class="cartoes cartoes--2" data-r>
+        <div class="cartao">
+          <div class="icone"><Icone nome="estrela" /></div>
+          <h3>Pontos e níveis</h3>
+          <p>Bronze, Prata, Ouro e Platina: quem doa vê o próprio progresso.</p>
+        </div>
+        <div class="cartao">
+          <div class="icone"><Icone nome="presente" /></div>
+          <h3>Benefícios reais</h3>
+          <p>Descontos em marcas parceiras, desbloqueados pelas doações.</p>
+        </div>
+        <div class="cartao">
+          <div class="icone"><Icone nome="repetir" /></div>
+          <h3>Doação mensal</h3>
+          <p>Recorrência no cartão, com a previsão de receita no painel.</p>
+        </div>
+        <div class="cartao">
+          <div class="icone"><Icone nome="usuarios" /></div>
+          <h3>Comunidade</h3>
+          <p>Rankings e times que transformam a doação em movimento.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">Painel da ONG</span>
+        <h2>Da primeira causa ao recibo, tudo em um painel.</h2>
+        <p class="lead">Um tutorial guiado mostra cada aba no primeiro acesso, e a equipe da DuGood acompanha a ONG na entrada.</p>
+      </div>
+      <GaleriaAbas id="ong" painel="Painel da ONG" abas={abasOng} />
+    </div>
+  </section>
+
+  <section class="secao" id="incentivados">
+    <div class="conteiner duo duo--inverso">
+      <div data-r>
+        <span class="rotulo">Projetos incentivados</span>
+        <h2>Tem projeto aprovado em lei de incentivo? A DuGood ajuda a captar.</h2>
+        <ul class="lista-check">
+          <li><strong>Causa incentivada no app.</strong> Cadastre o projeto com a lei (Rouanet, Esporte, FIA, Idoso, PRONON e outras) e o número de aprovação.</li>
+          <li><strong>Recibos sem planilha.</strong> A plataforma reúne os dados fiscais de quem doa e gera os recibos para a ONG assinar digitalmente.</li>
+          <li><strong>Empresas apoiadoras.</strong> Para projetos da Lei de Incentivo ao Esporte, a DuGood prospecta empresas do lucro real a partir de dados públicos oficiais e conduz a abordagem.</li>
+          <li><strong>Remuneração em contrato.</strong> Nas causas incentivadas, o que a DuGood recebe é combinado com a ONG em contrato próprio.</li>
+        </ul>
+        <a class="botao botao--claro" href="/empresas#incentivada">Ver o que mostramos às empresas</a>
+      </div>
+      <div class="cartao destaque" data-r>
+        <Image class="mascote destaque__mascote" src={coracao} alt="" width={120} />
+        <h3>Para a empresa, é imposto que vira impacto.</h3>
+        <p>
+          Empresas do lucro real podem destinar parte do IRPJ a projetos aprovados. Para muitas delas, o que falta é conhecer um
+          bom projeto. A DuGood faz essa ponte.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">Como entrar</span>
+        <h2>Quatro passos até a primeira doação.</h2>
+      </div>
+      <ol class="passos" data-r>
+        <li>
+          <h3>Conversa</h3>
+          <p>Preencha o formulário. Entendemos a ONG, as causas e o que vocês querem captar.</p>
+        </li>
+        <li>
+          <h3>Cadastro e verificação</h3>
+          <p>A ONG completa o perfil e envia os documentos institucionais para a verificação.</p>
+        </li>
+        <li>
+          <h3>Termos e recebimento</h3>
+          <p>Assinatura digital do termo de captação e conexão da conta de recebimento, uma única vez.</p>
+        </li>
+        <li>
+          <h3>Primeira causa no ar</h3>
+          <p>A ONG cria a causa, a DuGood aprova e ela aparece no app para os doadores.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao">
+    <div class="conteiner duo">
+      <div data-r>
+        <span class="rotulo">Nossa política</span>
+        <h2>A ONG continua dona da relação com quem doa.</h2>
+        <p class="lead">Regras claras, nos <a href={termosLink} target="_blank" rel="noopener">Termos de Uso</a>.</p>
+      </div>
+      <ul class="lista-check" data-r>
+        <li><strong>Recebimento direto.</strong> Como regra, a doação cai na conta da ONG no provedor de pagamento. A DuGood não recebe nem guarda os valores.</li>
+        <li><strong>Quem doa não paga a mais.</strong> O doador paga só o valor que escolheu.</li>
+        <li><strong>Autonomia.</strong> A ONG publica as causas, emite os recibos e presta contas aos doadores, com as ferramentas da plataforma.</li>
+        <li><strong>Dados protegidos.</strong> Os dados de quem doa são tratados conforme a LGPD e a nossa Política de Privacidade.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa">
+    <div class="conteiner">
+      <div class="cabeca-secao cabeca-secao--centro" data-r>
+        <span class="rotulo">Perguntas frequentes</span>
+        <h2>O que as ONGs costumam perguntar.</h2>
+      </div>
+      <div class="faq" data-r>
+        {
+          perguntas.map((q) => (
+            <details>
+              <summary>{q.p}</summary>
+              <p>{q.r}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--escura" id="contato">
+    <div class="conteiner contato">
+      <div class="contato__texto" data-r>
+        <span class="rotulo">Contato</span>
+        <h2>Leve sua ONG para a DuGood.</h2>
+        <p class="lead">Conte um pouco sobre a organização. A equipe da DuGood entra em contato para apresentar a plataforma e os próximos passos.</p>
+        <ul class="lista-check">
+          <li><strong>Apresentação</strong> da plataforma e do painel.</li>
+          <li><strong>Apoio</strong> no cadastro e na primeira causa.</li>
+          <li><strong>Captação incentivada</strong>, se a ONG tiver projeto aprovado.</li>
+        </ul>
+        <Image class="mascote" src={acenando} alt="" width={200} />
+      </div>
+      <Formulario publico="ong" titulo="Quero conhecer a DuGood" />
+    </div>
+  </section>
+</Base>
+
+<style>
+  .heroi__visual {
+    padding-left: 40px;
+  }
+  .heroi__mascote {
+    width: 150px;
+    left: 0;
+    bottom: -12px;
+  }
+  @media (min-width: 900px) {
+    .heroi__mascote {
+      width: 190px;
+      left: 4%;
+    }
+  }
+  .trio {
+    display: grid;
+    gap: 40px;
+    justify-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .trio :global(.print--celular) {
+    width: 100%;
+    max-width: 280px;
+  }
+  @media (min-width: 900px) {
+    .trio :global(.print:nth-child(2)) {
+      margin-top: 48px;
+    }
+  }
+  .duo .mascote {
+    width: 180px;
+    height: auto;
+    margin-top: 8px;
+  }
+  .destaque {
+    position: relative;
+    background: var(--verde-claro);
+    border: 0;
+    padding: 40px 32px 32px;
+  }
+  .destaque h3 {
+    font-size: 1.5rem;
+    max-width: 18ch;
+  }
+  .destaque p {
+    color: var(--verde-escuro);
+    opacity: 0.8;
+  }
+  .destaque .destaque__mascote {
+    width: 96px;
+    margin: 0 0 16px;
+  }
+</style>

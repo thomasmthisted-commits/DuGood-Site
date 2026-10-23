@@ -1,0 +1,23 @@
+{
+  "name": "dugood-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "node -e \"for (const d of ['node_modules/.astro', '.astro']) require('fs').rmSync(d, { recursive: true, force: true })\"",
+    "build": "astro build",
+    "preview": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.5",
+    "sharp": "^0.35.5"
+  },
+  "devDependencies": {
+    "wrangler": "^4.147.0"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

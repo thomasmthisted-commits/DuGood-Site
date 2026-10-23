@@ -1,0 +1,344 @@
+---
+// Formulário de contato. Envia para /api/contato (src/worker.js), que repassa ao Base44:
+// o contato cai na lista "Contatos do site" do Admin da DuGood e os admins recebem um e-mail.
+// Sem JS, o envio é um POST normal e o Worker redireciona para /obrigado.
+import { privacidadeLink, dugood } from '../config';
+
+type Publico = 'empresa' | 'ong' | 'organizador';
+interface Props {
+  publico: Publico;
+  titulo?: string;
+}
+
+const { publico, titulo = 'Fale com a gente' } = Astro.props;
+
+const nomeOrganizacao: Record<Publico, string> = {
+  empresa: 'Empresa',
+  ong: 'Nome da ONG',
+  organizador: 'Organização, coletivo ou time',
+};
+
+const interesses: Record<Publico, string[]> = {
+  empresa: [
+    'Doação incentivada (leis de incentivo)',
+    'Oferecer benefícios aos doadores',
+    'Patrocinar um evento social',
+    'Integrar doações ao nosso app ou site (API)',
+  ],
+  ong: ['Captar doações pela DuGood', 'Projeto incentivado (lei de incentivo)', 'Eventos com ingresso', 'Recibos de incentivo fiscal'],
+  organizador: ['Corrida, torneio ou competição', 'Jantar, feijoada ou festa beneficente', 'Show ou evento cultural', 'Outro tipo de evento'],
+};
+
+const categorias = ['Educação', 'Saúde', 'Esportes', 'Crianças', 'Animais', 'Ambiental', 'Alimentação', 'Moradia', 'Vestuário', 'Outra'];
+---
+
+<form class="form" method="post" action="/api/contato" data-form-contato>
+  <input type="hidden" name="publico" value={publico} />
+  <input type="hidden" name="pagina" value={Astro.url.pathname.replace(/\.html$/, '')} />
+  <input type="hidden" name="utm" value="" data-utm />
+  <input type="hidden" name="t" value="" data-t />
+  <div class="form__isca" aria-hidden="true">
+    <label>Não preencha <input type="text" name="site" tabindex="-1" autocomplete="off" /></label>
+  </div>
+
+  <h3>{titulo}</h3>
+
+  <div class="form__grade">
+    <label>
+      <span>Seu nome *</span>
+      <input name="nome" required autocomplete="name" maxlength="120" />
+    </label>
+    <label>
+      <span>{nomeOrganizacao[publico]} *</span>
+      <input name="organizacao" required autocomplete="organization" maxlength="160" />
+    </label>
+    <label>
+      <span>E-mail *</span>
+      <input name="email" type="email" required autocomplete="email" maxlength="160" />
+    </label>
+    <label>
+      <span>WhatsApp *</span>
+      <input name="telefone" type="tel" required autocomplete="tel" inputmode="tel" maxlength="30" placeholder="(11) 90000-0000" />
+    </label>
+
+    {
+      publico === 'empresa' && (
+        <>
+          <label>
+            <span>Cargo</span>
+            <input name="cargo" autocomplete="organization-title" maxlength="80" />
+          </label>
+          <label>
+            <span>Regime tributário</span>
+            <select name="regime">
+              <option value="">Selecione</option>
+              <option>Lucro real</option>
+              <option>Lucro presumido</option>
+              <option>Simples Nacional</option>
+              <option>Não sei</option>
+            </select>
+          </label>
+        </>
+      )
+    }
+
+    {
+      publico === 'ong' && (
+        <>
+          <label>
+            <span>Área de atuação</span>
+            <select name="area">
+              <option value="">Selecione</option>
+              {categorias.map((c) => (
+                <option>{c}</option>
+              ))}
+            </select>
+          </label>
+          <label>
+            <span>Cidade / UF</span>
+            <input name="cidade" autocomplete="address-level2" maxlength="80" />
+          </label>
+        </>
+      )
+    }
+
+    {
+      publico === 'organizador' && (
+        <>
+          <label>
+            <span>Data prevista</span>
+            <input name="data_evento" maxlength="60" placeholder="ex.: março de 2027" />
+          </label>
+          <label>
+            <span>ONG que vai receber (se já tiver)</span>
+            <input name="ong_beneficiada" maxlength="160" />
+          </label>
+        </>
+      )
+    }
+
+    <label class="form__largo">
+      <span>CNPJ</span>
+      <input name="cnpj" inputmode="numeric" maxlength="20" placeholder="opcional" />
+    </label>
+  </div>
+
+  <fieldset>
+    <legend>{publico === 'organizador' ? 'Tipo de evento' : 'Tenho interesse em'}</legend>
+    <div class="form__opcoes">
+      {
+        interesses[publico].map((i) => (
+          <label class="form__opcao">
+            <input type="checkbox" name="interesses" value={i} />
+            <span>{i}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <label class="form__largo">
+    <span>Mensagem</span>
+    <textarea name="mensagem" rows="4" maxlength="3000" placeholder="Conte um pouco sobre o que vocês têm em mente"></textarea>
+  </label>
+
+  <label class="form__aceite">
+    <input type="checkbox" name="aceite" value="sim" required />
+    <span>Autorizo a DuGood a usar estes dados para entrar em contato comigo, conforme a <a href={privacidadeLink} target="_blank" rel="noopener">Política de Privacidade</a>.</span>
+  </label>
+
+  <button class="botao" type="submit">Enviar</button>
+  <p class="form__status" role="status" aria-live="polite" data-status></p>
+  <p class="form__alt">Se preferir, escreva para <a href={`mailto:${dugood.email}`}>{dugood.email}</a>.</p>
+</form>
+
+<div class="form form__ok" hidden data-ok>
+  <h3>Recebemos seu contato!</h3>
+  <p>Obrigado pelo interesse. A equipe da DuGood vai responder em breve pelo e-mail ou WhatsApp que você informou.</p>
+</div>
+
+<script>
+  const CHAVE = 'dugood-origem';
+  try {
+    const params = new URLSearchParams(location.search);
+    const utm = [...params].filter(([k]) => k.startsWith('utm_')).map(([k, v]) => `${k}=${v}`).join('&');
+    if (utm || (document.referrer && !document.referrer.startsWith(location.origin))) {
+      sessionStorage.setItem(CHAVE, utm || `ref=${new URL(document.referrer).hostname}`);
+    }
+  } catch {}
+
+  for (const form of document.querySelectorAll<HTMLFormElement>('[data-form-contato]')) {
+    const status = form.querySelector<HTMLElement>('[data-status]')!;
+    const ok = form.nextElementSibling as HTMLElement;
+    form.querySelector<HTMLInputElement>('[data-t]')!.value = String(Date.now());
+    try {
+      form.querySelector<HTMLInputElement>('[data-utm]')!.value = sessionStorage.getItem(CHAVE) ?? '';
+    } catch {}
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const botao = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+      const fd = new FormData(form);
+      const dados: Record<string, string | string[]> = Object.fromEntries([...fd].map(([k, v]) => [k, String(v)]));
+      dados.interesses = fd.getAll('interesses').map(String);
+      botao.disabled = true;
+      status.textContent = 'Enviando…';
+      try {
+        const r = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', accept: 'application/json' },
+          body: JSON.stringify(dados),
+        });
+        const resp = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(resp.erro || 'Não foi possível enviar agora.');
+        form.hidden = true;
+        ok.hidden = false;
+        ok.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (erro) {
+        status.textContent = `${(erro as Error).message} Tente de novo ou escreva para o nosso e-mail.`;
+        botao.disabled = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  /* O formulário fica sobre o verde escuro: cores próprias, sem herdar as da seção */
+  .form {
+    color: var(--tinta);
+    background: #fff;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    padding: clamp(24px, 4vw, 40px);
+    box-shadow: var(--sombra);
+  }
+  .form h3 {
+    color: var(--verde-escuro);
+    font-size: 1.4rem;
+    margin-bottom: 24px;
+  }
+  .form__grade {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+    margin-bottom: 20px;
+  }
+  .form__largo {
+    grid-column: 1 / -1;
+  }
+  label {
+    display: grid;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--tinta);
+  }
+  input:not([type='checkbox']),
+  select,
+  textarea {
+    width: 100%;
+    font: 400 1rem/1.4 var(--texto);
+    color: var(--tinta);
+    background: var(--nevoa);
+    border: 1px solid var(--cinza-1);
+    border-radius: var(--raio-p);
+    padding: 12px 14px;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline: none;
+    background: #fff;
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px var(--verde-claro);
+  }
+  textarea {
+    resize: vertical;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 20px;
+  }
+  legend {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .form__opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .form__opcao {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1px solid var(--linha);
+    border-radius: 999px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .form__opcao:has(input:checked) {
+    background: var(--verde-claro);
+    border-color: var(--verde-claro-2);
+    color: var(--verde-escuro);
+  }
+  input[type='checkbox'] {
+    accent-color: var(--verde-escuro);
+    width: 16px;
+    height: 16px;
+    margin: 0;
+  }
+  .form__aceite {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 20px 0 24px;
+    font-weight: 400;
+    color: var(--tinta-suave);
+    font-size: 0.88rem;
+  }
+  .form__aceite input {
+    margin-top: 3px;
+    flex-shrink: 0;
+  }
+  .form .botao {
+    background: var(--verde-escuro);
+    color: #fff;
+  }
+  .form .botao:hover {
+    background: #134513;
+  }
+  .form .botao:disabled {
+    opacity: 0.6;
+    cursor: wait;
+  }
+  .form__status {
+    margin: 12px 0 0;
+    font-size: 0.9rem;
+    color: var(--tinta-suave);
+  }
+  .form__status:empty {
+    display: none;
+  }
+  .form__alt {
+    margin: 16px 0 0;
+    font-size: 0.85rem;
+    color: var(--tinta-fraca);
+  }
+  .form__isca {
+    position: absolute;
+    left: -9999px;
+  }
+  .form__ok {
+    text-align: center;
+  }
+  .form__ok p {
+    color: var(--tinta-suave);
+    margin: 0;
+  }
+</style>

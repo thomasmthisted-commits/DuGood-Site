@@ -1,0 +1,96 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
+import { dugood, appLink, instagramLink, termosLink, privacidadeLink } from '../config';
+---
+
+<footer class="rodape">
+  <div class="conteiner rodape__grade">
+    <div class="rodape__marca">
+      <Image src={logo} alt="DuGood" width={140} />
+      <p>{dugood.slogan}.</p>
+    </div>
+    <nav class="col" aria-label="Rodapé">
+      <h2>Para quem</h2>
+      <a href="/empresas">Empresas e marcas</a>
+      <a href="/ongs">ONGs</a>
+      <a href="/eventos">Organizadores de eventos</a>
+    </nav>
+    <nav class="col" aria-label="Plataforma">
+      <h2>Plataforma</h2>
+      <a href={appLink()} target="_blank" rel="noopener">Abrir o app</a>
+      <a href={appLink('AboutUs')} target="_blank" rel="noopener">Quem somos</a>
+      <a href={termosLink} target="_blank" rel="noopener">Termos de uso</a>
+      <a href={privacidadeLink} target="_blank" rel="noopener">Privacidade</a>
+    </nav>
+    <div class="col">
+      <h2>Contato</h2>
+      <a href={`mailto:${dugood.email}`}>{dugood.email}</a>
+      <a href={instagramLink} target="_blank" rel="noopener">@{dugood.instagram}</a>
+    </div>
+  </div>
+  <div class="conteiner rodape__fim">
+    <span>© {new Date().getFullYear()} DuGood</span>
+  </div>
+</footer>
+
+<style>
+  .rodape {
+    background: var(--nevoa);
+    border-top: 1px solid var(--cinza-1);
+    padding: 56px 0 28px;
+    font-size: 0.95rem;
+  }
+  .rodape__grade {
+    display: grid;
+    gap: 36px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+  .rodape__marca {
+    grid-column: 1 / -1;
+  }
+  .rodape__marca img {
+    width: 128px;
+    height: auto;
+    margin-bottom: 12px;
+  }
+  .rodape__marca p {
+    color: var(--tinta-suave);
+    max-width: 32ch;
+  }
+  @media (min-width: 900px) {
+    .rodape__grade {
+      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+    }
+    .rodape__marca {
+      grid-column: auto;
+    }
+  }
+  h2 {
+    font-family: var(--texto);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tinta-fraca);
+    margin-bottom: 14px;
+  }
+  .col {
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    color: var(--tinta-suave);
+    text-decoration: none;
+    padding: 4px 0;
+  }
+  a:hover {
+    color: var(--verde-escuro);
+  }
+  .rodape__fim {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--linha);
+    color: var(--tinta-fraca);
+    font-size: 0.85rem;
+  }
+</style>

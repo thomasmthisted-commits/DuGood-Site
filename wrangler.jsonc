@@ -1,0 +1,30 @@
+{
+  // Site estático em Cloudflare Workers (static assets) + o endpoint do formulário (src/worker.js).
+  // Deploy: `npm run deploy`, ou conecte o repositório em Workers Builds.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dugood-site",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-01",
+  // Mantém o endereço de preview dugood-site.<conta>.workers.dev ligado.
+  "workers_dev": true,
+  // O wrangler monta o site (gera ./dist) antes de publicar ou rodar localmente.
+  "build": {
+    "command": "npm run build"
+  },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "drop-trailing-slash",
+    // O Worker só roda no formulário e na raiz (para domínios que abrem direto numa página)
+    "run_worker_first": ["/api/*", "/"]
+  },
+  "vars": {
+    // Função do Base44 que grava o contato (entidade SiteLead) e avisa os admins
+    "BASE44_CONTATO_URL": "https://dugood.base44.app/functions/submitSiteLead",
+    // Domínio próprio que deve abrir direto numa página, ex.: { "ongs.exemplo.com.br": "/ongs" }
+    "INICIO_POR_DOMINIO": {}
+  }
+  // Segredo (não fica no repositório): `npx wrangler secret put SITE_LEAD_TOKEN`
+  // com o mesmo texto do segredo SITE_LEAD_TOKEN do app no Base44.
+}
