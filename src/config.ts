@@ -31,8 +31,8 @@ export const niveis = [
 // Leis de incentivo para empresas do lucro real: limite de dedução sobre o IRPJ
 // devido à alíquota de 15% (sem o adicional de 10%). Usado no simulador.
 export const leisIncentivo = [
-  { id: 'esporte', nome: 'Lei de Incentivo ao Esporte', limite: 0.02, nota: 'Lei 11.438/06' },
-  { id: 'rouanet', nome: 'Lei Rouanet (cultura)', limite: 0.04, nota: 'teto dividido com o Audiovisual' },
+  { id: 'esporte', nome: 'Lei de Incentivo ao Esporte', limite: 0.02, nota: 'Lei 11.438/06; 3% a partir de 2028' },
+  { id: 'rouanet', nome: 'Lei Rouanet (cultura)', limite: 0.04, nota: 'teto de 4% dividido com audiovisual e esporte de inclusão social' },
   { id: 'fia', nome: 'Fundo da Infância e Adolescência', limite: 0.01, nota: 'FIA' },
   { id: 'idoso', nome: 'Fundo do Idoso', limite: 0.01, nota: 'Lei 12.213/10' },
   { id: 'pronon', nome: 'PRONON (oncologia)', limite: 0.01, nota: 'Lei 12.715/12' },
@@ -64,9 +64,41 @@ export const interesses: Record<Publico, { id: string; texto: string }[]> = {
   ],
 };
 
-// Fundadores (página Quem somos do app)
+// Fundadores (página Quem somos do app); a foto fica em src/assets/fundadores/<foto>.jpg
 export const fundadores = [
-  { nome: 'Nicollas', bio: 'Engenheiro Ambiental pela Poli-USP, nadador e Diretor Geral do Ecoswim 2023.', linkedin: 'https://www.linkedin.com/in/nicollas-thisted-b20239230/' },
-  { nome: 'Thomas', bio: 'Engenheiro de Produção pela Poli-USP, nadador e Diretor Geral do Ecoswim 2025.', linkedin: 'https://www.linkedin.com/in/thomasmthisted' },
-  { nome: 'André', bio: 'Publicitário formado pela ESPM, analista de dados com histórico de trabalho social.', linkedin: 'https://www.linkedin.com/in/andredelnero/' },
+  {
+    nome: 'Nicollas',
+    foto: 'nicollas',
+    bio: 'Engenheiro Ambiental pela Escola Politécnica da USP, nadador e Diretor Geral do Ecoswim 2023, com vasta experiência profissional na área de investimentos.',
+    linkedin: 'https://www.linkedin.com/in/nicollas-thisted-b20239230/',
+  },
+  {
+    nome: 'Thomas',
+    foto: 'thomas',
+    bio: 'Engenheiro de Produção pela Escola Politécnica da USP, nadador e Diretor Geral do Ecoswim 2025, com especialização em mercados de capitais.',
+    linkedin: 'https://www.linkedin.com/in/thomasmthisted',
+  },
+  {
+    nome: 'André',
+    foto: 'andre',
+    bio: 'Publicitário formado pela ESPM, analista de dados com vasto histórico de trabalho social.',
+    linkedin: 'https://www.linkedin.com/in/andredelnero/',
+  },
 ];
+
+// Blog: categorias (cada uma tem página própria em /blog/categoria/<id>) e níveis dos artigos
+export const categoriasBlog = {
+  'incentivo-fiscal': { nome: 'Leis de incentivo', descricao: 'Doação incentivada, leis de incentivo fiscal, limites, prazos e boas práticas para empresas e pessoas físicas.' },
+  'para-ongs': { nome: 'Para ONGs', descricao: 'Captação de recursos, projetos incentivados e transparência para organizações sociais.' },
+  sustentabilidade: { nome: 'Sustentabilidade', descricao: 'Práticas ambientais e ESG para empresas de todos os tamanhos, do primeiro passo ao relatório.' },
+  'impacto-social': { nome: 'Boas práticas sociais', descricao: 'Voluntariado, apoio a ONGs e investimento social privado feitos do jeito certo.' },
+  certificacoes: { nome: 'Certificações e ISOs', descricao: 'Normas ISO, selos e certificações de sustentabilidade e impacto social: o que cada um cobre e como obter.' },
+} as const;
+export type CategoriaBlog = keyof typeof categoriasBlog;
+
+export const niveisBlog = {
+  basico: { nome: 'Básico', descricao: 'Para começar' },
+  intermediario: { nome: 'Intermediário', descricao: 'Na prática' },
+  avancado: { nome: 'Avançado', descricao: 'Guia completo' },
+} as const;
+export type NivelBlog = keyof typeof niveisBlog;

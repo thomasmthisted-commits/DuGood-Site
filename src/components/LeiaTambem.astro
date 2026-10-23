@@ -1,0 +1,48 @@
+---
+// Faixa "Para se aprofundar": artigos do blog ligados ao assunto da página
+import PostCard from './PostCard.astro';
+import type { Post } from '../lib/blog';
+
+interface Props {
+  titulo: string;
+  posts: Post[];
+  /** Link para ver mais (ex.: a página do tema) */
+  mais?: { texto: string; href: string };
+  nevoa?: boolean;
+}
+
+const { titulo, posts, mais, nevoa = false } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class:list={['secao', { 'secao--nevoa': nevoa }]} aria-labelledby="leia-titulo">
+      <div class="conteiner">
+        <div class="cabeca-secao leia__cabeca" data-r>
+          <div>
+            <span class="rotulo">Para se aprofundar</span>
+            <h2 id="leia-titulo">{titulo}</h2>
+          </div>
+          {mais && <a class="botao botao--claro" href={mais.href}>{mais.texto}</a>}
+        </div>
+        <div class="posts" data-r>
+          {posts.map((p) => <PostCard post={p} />)}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .leia__cabeca {
+    max-width: none;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+  }
+  .leia__cabeca h2 {
+    margin: 0;
+  }
+</style>

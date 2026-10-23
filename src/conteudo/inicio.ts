@@ -80,6 +80,6 @@ export const markdown = (site: URL | undefined) =>
     ),
     secao(rede.titulo, lista(rede.itens)),
     secao(proposito.rotulo, lista(proposito.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto })))),
-    secao('Fundadores', lista(fundadores.map((f) => `**${f.nome}** — ${f.bio} (${f.linkedin})`))),
+    secao('Fundadores', lista(fundadores.map((f) => `**${f.nome}**: ${f.bio} (${f.linkedin})`)), `História completa: ${new URL('/sobre.md', site).href}`),
     perguntas(pagina.perguntas),
   );

@@ -6,21 +6,24 @@ const links = [
   { href: '/empresas', texto: 'Para empresas' },
   { href: '/ongs', texto: 'Para ONGs' },
   { href: '/eventos', texto: 'Eventos sociais' },
+  { href: '/blog', texto: 'Blog' },
+  { href: '/sobre', texto: 'Sobre nós' },
 ];
 const atual = Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '') || '/';
-// O único botão do topo é o de contato: leva ao formulário da própria página
-const contato = ['/', ...links.map((l) => l.href)].includes(atual) ? '#contato' : '/#contato';
+// O único botão do topo é o de contato: leva à seção de contato da própria página
+const contato = ['/404', '/obrigado'].includes(atual) ? '/#contato' : '#contato';
+const ativo = (href: string) => atual === href || atual.startsWith(`${href}/`);
 ---
 
 <header class="topo">
   <div class="conteiner topo__barra">
     <a href="/" class="topo__logo" aria-label="DuGood, página inicial">
-      <Image src={logo} alt="DuGood" width={132} loading="eager" />
+      <Image src={logo} alt="DuGood" width={132} densities={[1, 2]} loading="eager" />
     </a>
     <nav class="topo__nav" aria-label="Principal">
       {
         links.map((l) => (
-          <a href={l.href} aria-current={atual === l.href ? 'page' : undefined}>
+          <a href={l.href} aria-current={ativo(l.href) ? 'page' : undefined}>
             {l.texto}
           </a>
         ))
@@ -36,7 +39,7 @@ const contato = ['/', ...links.map((l) => l.href)].includes(atual) ? '#contato' 
       <div class="topo__gaveta">
         {
           links.map((l) => (
-            <a href={l.href} aria-current={atual === l.href ? 'page' : undefined}>
+            <a href={l.href} aria-current={ativo(l.href) ? 'page' : undefined}>
               {l.texto}
             </a>
           ))
@@ -79,7 +82,7 @@ const contato = ['/', ...links.map((l) => l.href)].includes(atual) ? '#contato' 
   }
   .topo__nav {
     display: none;
-    gap: 28px;
+    gap: 24px;
     margin-left: auto;
   }
   .topo__nav a,

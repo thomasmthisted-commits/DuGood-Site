@@ -1,13 +1,17 @@
 import type { APIRoute } from 'astro';
-import { dugood, appLink } from '../config';
+import { dugood, appLink, categoriasBlog, niveisBlog } from '../config';
 import { pagina as inicio } from '../conteudo/inicio';
 import { pagina as empresas } from '../conteudo/empresas';
 import { pagina as ongs } from '../conteudo/ongs';
 import { pagina as eventos } from '../conteudo/eventos';
+import { pagina as sobre } from '../conteudo/sobre';
+import { pagina as blog } from '../conteudo/blog';
+import { posts } from '../lib/blog';
 
 // Índice do site para agentes de IA (padrão llms.txt: https://llmstxt.org)
-export const GET: APIRoute = ({ site }) => {
+export const GET: APIRoute = async ({ site }) => {
   const md = (rota: string) => new URL(rota === '/' ? '/index.md' : `${rota}.md`, site).href;
+  const artigos = await posts();
   const texto = `# ${dugood.nome}
 
 > ${inicio.resumo}
@@ -16,7 +20,19 @@ Contato comercial: ${dugood.email}. App para quem doa: ${dugood.app}. Cada pági
 
 ## Páginas
 
-${[inicio, empresas, ongs, eventos].map((p) => `- [${p.nome}](${md(p.rota)}): ${p.resumo}`).join('\n')}
+${[inicio, empresas, ongs, eventos, sobre, blog].map((p) => `- [${p.nome}](${md(p.rota)}): ${p.resumo}`).join('\n')}
+
+## Blog
+
+${Object.entries(categoriasBlog)
+  .map(([id, c]) => {
+    const lista = artigos.filter((a) => a.data.categoria === id);
+    return lista.length
+      ? `### ${c.nome}\n\n${lista.map((a) => `- [${a.data.titulo}](${md(`/blog/${a.id}`)}) (${niveisBlog[a.data.nivel].nome}): ${a.data.resumo}`).join('\n')}`
+      : '';
+  })
+  .filter(Boolean)
+  .join('\n\n')}
 
 ## Fatos importantes
 
@@ -30,7 +46,7 @@ ${[inicio, empresas, ongs, eventos].map((p) => `- [${p.nome}](${md(p.rota)}): ${
 
 - [Termos de uso](${appLink('TermsAndConditions')})
 - [Política de privacidade](${appLink('PrivacyPolicy')})
-- [Quem somos, no app](${appLink('AboutUs')})
+- [Logo em alta resolução](${new URL('/marca/logo-dugood-verde.png', site).href})
 `;
   return new Response(texto, { headers: { 'content-type': 'text/plain; charset=utf-8' } });
 };

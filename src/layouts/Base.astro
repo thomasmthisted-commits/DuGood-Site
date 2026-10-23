@@ -18,9 +18,15 @@ interface Props {
   imagem?: ImageMetadata;
   /** false: página fora dos buscadores */
   indexar?: boolean;
+  /** Nós schema.org a mais no grafo da página (ex.: BlogPosting) */
+  dados?: object[];
+  /** Data da última atualização do conteúdo (padrão: a data do build) */
+  atualizado?: Date;
+  /** Artigos do blog: data de publicação (a página vira og:type article) */
+  publicado?: Date;
 }
 
-const { pagina, imagem, indexar = true } = Astro.props;
+const { pagina, imagem, indexar = true, dados: extras = [] } = Astro.props;
 const titulo = pagina?.titulo ?? Astro.props.titulo ?? dugood.nome;
 const descricao = pagina?.descricao ?? Astro.props.descricao ?? dugood.descricao;
 const tituloCompleto = titulo.includes(dugood.nome) ? titulo : `${titulo} | ${dugood.nome}`;
@@ -28,9 +34,9 @@ const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/i
 const og = await getImage({ src: imagem ?? ogPadrao, width: 1200, height: 630, format: 'png' });
 const ogUrl = new URL(og.src, Astro.site).href;
 const markdown = pagina && new URL(pagina.rota === '/' ? '/index.md' : `${pagina.rota}.md`, Astro.site).pathname;
-// Data do build: todas as páginas saem do mesmo conteúdo, publicado junto
-const atualizado = new Date().toISOString();
-const dados = pagina ? grafo(pagina, Astro.site, ogUrl, atualizado) : { '@context': 'https://schema.org', ...organizacao(Astro.site) };
+// Sem data própria, vale a do build: as páginas saem do mesmo conteúdo, publicado junto
+const atualizado = (Astro.props.atualizado ?? new Date()).toISOString();
+const dados = pagina ? grafo(pagina, Astro.site, ogUrl, atualizado, extras) : { '@context': 'https://schema.org', ...organizacao(Astro.site) };
 ---
 
 <!doctype html>
@@ -49,7 +55,8 @@ const dados = pagina ? grafo(pagina, Astro.site, ogUrl, atualizado) : { '@contex
     <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={Astro.props.publicado ? 'article' : 'website'} />
+    {Astro.props.publicado && <meta property="article:published_time" content={Astro.props.publicado.toISOString()} />}
     <meta property="og:locale" content="pt_BR" />
     <meta property="og:site_name" content={dugood.nome} />
     <meta property="og:title" content={tituloCompleto} />

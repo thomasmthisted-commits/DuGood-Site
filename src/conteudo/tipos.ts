@@ -47,4 +47,8 @@ export interface Pagina {
   perguntas: Pergunta[];
   /** Serviço descrito na página (schema.org Service) */
   servico?: { nome: string; tipo: string; publico: string; descricao: string };
+  /** Páginas intermediárias nas migalhas, entre o Início e esta (ex.: o Blog) */
+  migalhas?: { nome: string; rota: string }[];
+  /** Tipo schema.org da página (padrão WebPage; ex.: CollectionPage no índice do blog) */
+  tipo?: string;
 }

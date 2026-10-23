@@ -1,0 +1,80 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Onda from '../../../components/Onda.astro';
+import PostCard from '../../../components/PostCard.astro';
+import Chamada from '../../../components/Chamada.astro';
+import { categoriasBlog, niveisBlog, type CategoriaBlog } from '../../../config';
+import { postsDaCategoria, type Post } from '../../../lib/blog';
+import { paginaCategoria } from '../../../conteudo/blog';
+import abraco from '../../../assets/mascotes/abraco.png';
+
+export async function getStaticPaths() {
+  const ids = Object.keys(categoriasBlog) as CategoriaBlog[];
+  const lista = await Promise.all(ids.map(async (categoria) => ({ categoria, posts: await postsDaCategoria(categoria) })));
+  return lista.filter((c) => c.posts.length > 0).map(({ categoria, posts }) => ({ params: { categoria }, props: { categoria, posts } }));
+}
+
+const { categoria, posts } = Astro.props as { categoria: CategoriaBlog; posts: Post[] };
+const tema = categoriasBlog[categoria];
+// A trilha do tema, do mais simples ao mais completo
+const porNivel = (Object.keys(niveisBlog) as (keyof typeof niveisBlog)[])
+  .map((nivel) => ({ nivel, ...niveisBlog[nivel], posts: posts.filter((p) => p.data.nivel === nivel) }))
+  .filter((n) => n.posts.length > 0);
+
+const lista = {
+  '@type': 'ItemList',
+  name: tema.nome,
+  itemListElement: posts.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: new URL(`/blog/${p.id}`, Astro.site).href, name: p.data.titulo })),
+};
+---
+
+<Base pagina={paginaCategoria(categoria)} dados={[lista]}>
+  <header class="heroi onda tema__topo">
+    <Onda prioridade />
+    <div class="conteiner">
+      <nav class="migalhas" aria-label="Você está em"><a href="/blog">Blog</a></nav>
+      <h1>{tema.nome}</h1>
+      <p class="lead">{tema.descricao}</p>
+    </div>
+  </header>
+
+  {
+    porNivel.map((n, i) => (
+      <section class:list={['secao', { 'secao--nevoa': i % 2 === 1 }]}>
+        <div class="conteiner">
+          <div class="cabeca-secao" data-r>
+            <span class="rotulo">{n.descricao}</span>
+            <h2>{n.nome}</h2>
+          </div>
+          <div class="posts" data-r>
+            {n.posts.map((p) => (
+              <PostCard post={p} mostrarCategoria={false} />
+            ))}
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <Chamada
+    titulo="Quer colocar isso em prática?"
+    texto="Conte o que a sua empresa, ONG ou evento tem em mente. A equipe da DuGood ajuda a transformar o assunto em ação."
+    botoes={[
+      { texto: 'Sou empresa', href: '/empresas#contato' },
+      { texto: 'Sou uma ONG', href: '/ongs#contato' },
+      { texto: 'Organizo eventos', href: '/eventos#contato' },
+    ]}
+    mascote={abraco}
+  />
+</Base>
+
+<style>
+  .tema__topo h1 {
+    margin: 12px 0 16px;
+  }
+  .migalhas a {
+    color: rgb(255 255 255 / 0.9);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+</style>

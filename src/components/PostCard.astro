@@ -1,0 +1,74 @@
+---
+// Cartão de artigo do blog: tema, nível, título, descrição e tempo de leitura
+import { leitura, nomeCategoria, nomeNivel, type Post } from '../lib/blog';
+
+interface Props {
+  post: Post;
+  /** false: esconde o tema (ex.: dentro da própria página do tema) */
+  mostrarCategoria?: boolean;
+}
+
+const { post, mostrarCategoria = true } = Astro.props;
+const { titulo, descricao, categoria, nivel } = post.data;
+---
+
+<a class="post" href={`/blog/${post.id}`} data-nivel={nivel} data-categoria={categoria}>
+  <div class="post__meta">
+    {mostrarCategoria && <span class="post__tema">{nomeCategoria(categoria)}</span>}
+    <span class:list={['nivel', `nivel--${nivel}`]}>{nomeNivel(nivel)}</span>
+  </div>
+  <h3>{titulo}</h3>
+  <p>{descricao}</p>
+  <span class="post__leitura">{leitura(post)} min de leitura</span>
+</a>
+
+<style>
+  .post {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid var(--linha);
+    border-radius: var(--raio);
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s var(--curva), border-color 0.2s, box-shadow 0.2s;
+  }
+  .post:hover {
+    transform: translateY(-3px);
+    border-color: var(--verde-claro-2);
+    box-shadow: var(--sombra);
+  }
+  :global(.secao--nevoa) .post {
+    border-color: transparent;
+    box-shadow: var(--sombra);
+  }
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .post__tema {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--verde);
+  }
+  h3 {
+    margin: 0;
+    font-size: 1.12rem;
+  }
+  p {
+    margin: 0;
+    color: var(--tinta-suave);
+    font-size: 0.94rem;
+    flex: 1;
+  }
+  .post__leitura {
+    font-size: 0.82rem;
+    color: var(--tinta-fraca);
+  }
+</style>

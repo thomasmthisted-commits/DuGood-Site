@@ -5,6 +5,8 @@ import Heroi from '../components/Heroi.astro';
 import Print from '../components/Print.astro';
 import Lista from '../components/Lista.astro';
 import Perguntas from '../components/Perguntas.astro';
+import LeiaTambem from '../components/LeiaTambem.astro';
+import { posts } from '../lib/blog';
 import Chamada from '../components/Chamada.astro';
 import * as c from '../conteudo/inicio';
 import acenando from '../assets/mascotes/acenando.png';
@@ -14,6 +16,8 @@ import ingresso from '../assets/mascotes/ingresso.png';
 import abraco from '../assets/mascotes/abraco.png';
 
 const mascotes = [presente, lupa, ingresso];
+
+const destaques = (await posts()).filter((p) => p.data.destaque).slice(0, 3);
 ---
 
 <Base pagina={c.pagina}>
@@ -67,6 +71,7 @@ const mascotes = [presente, lupa, ingresso];
       <div class="cabeca-secao" data-r>
         <span class="rotulo">{c.proposito.rotulo}</span>
         <h2>{c.proposito.titulo}</h2>
+        <p class="lead">A DuGood nasceu numa competição beneficente de natação da Poli-USP. <a href="/sobre">Conheça a nossa história e os fundadores →</a></p>
       </div>
       <div class="cartoes" data-r>
         {
@@ -81,7 +86,9 @@ const mascotes = [presente, lupa, ingresso];
     </div>
   </section>
 
-  <Perguntas titulo="Perguntas sobre a DuGood." perguntas={c.pagina.perguntas} nevoa />
+  <LeiaTambem titulo="Do blog da DuGood." posts={destaques} mais={{ texto: 'Ver todos os artigos', href: '/blog' }} nevoa />
+
+  <Perguntas titulo="Perguntas sobre a DuGood." perguntas={c.pagina.perguntas} />
 
   <Chamada
     titulo={c.contato.titulo}

@@ -1,0 +1,341 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Base from '../layouts/Base.astro';
+import Heroi from '../components/Heroi.astro';
+import Perguntas from '../components/Perguntas.astro';
+import Chamada from '../components/Chamada.astro';
+import { fundadores } from '../config';
+import * as c from '../conteudo/sobre';
+import acenando from '../assets/mascotes/acenando.png';
+import celular from '../assets/mascotes/celular.png';
+import coracao from '../assets/mascotes/coracao.png';
+import presente from '../assets/mascotes/presente.png';
+import trofeu from '../assets/mascotes/trofeu.png';
+import abraco from '../assets/mascotes/abraco.png';
+
+const fotos = import.meta.glob<{ default: ImageMetadata }>('../assets/fundadores/*.jpg', { eager: true });
+const foto = (nome: string) => fotos[`../assets/fundadores/${nome}.jpg`]?.default;
+const mascotesEcossistema = [celular, coracao, presente];
+
+const pessoas = fundadores.map((f) => ({
+  '@type': 'Person',
+  name: f.nome,
+  jobTitle: 'Cofundador',
+  description: f.bio,
+  sameAs: [f.linkedin],
+  worksFor: { '@id': new URL('/#organizacao', Astro.site).href },
+}));
+---
+
+<Base pagina={c.pagina} dados={pessoas}>
+  <Heroi {...c.heroi}>
+    <a class="botao" href="#historia">Ler a história</a>
+    <a class="botao botao--claro" href="#fundadores">Conhecer os fundadores</a>
+    <Fragment slot="visual">
+      <div class="heroi__fotos">
+        {
+          fundadores.map((f, i) => {
+            const img = foto(f.foto);
+            return img && <Image class:list={['heroi__foto', `heroi__foto--${i}`]} src={img} alt={f.nome} width={220} densities={[1, 2]} loading="eager" />;
+          })
+        }
+        <Image class="mascote heroi__mascote" src={acenando} alt="" width={180} loading="eager" />
+      </div>
+    </Fragment>
+  </Heroi>
+
+  <section class="secao secao--nevoa" aria-label="Missão, visão e valores">
+    <div class="conteiner">
+      <div class="cartoes" data-r>
+        {
+          c.proposito.map((i) => (
+            <div class="cartao">
+              <span class="rotulo">{i.titulo}</span>
+              <p class="proposito">{i.texto}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="secao" id="historia" aria-labelledby="historia-titulo">
+    <div class="conteiner historia">
+      <div class="historia__cabeca" data-r>
+        <span class="rotulo">{c.historia.rotulo}</span>
+        <h2 id="historia-titulo">{c.historia.titulo}</h2>
+        <blockquote>{c.historia.destaque}</blockquote>
+        <Image class="mascote" src={trofeu} alt="" width={200} />
+      </div>
+      <div class="prosa" data-r>
+        {c.historia.paragrafos.map((p) => <p>{p}</p>)}
+        <p><strong>Venha fazer parte dela.</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa" id="trajetoria" aria-labelledby="trajetoria-titulo">
+    <div class="conteiner">
+      <div class="cabeca-secao cabeca-secao--centro" data-r>
+        <span class="rotulo">Nossa jornada</span>
+        <h2 id="trajetoria-titulo">Marcos principais.</h2>
+      </div>
+      <ol class="linha" data-r>
+        {
+          c.trajetoria.map((t) => (
+            <li>
+              <span class="linha__quando">{t.quando}</span>
+              <h3>{t.titulo}</h3>
+              <p>{t.texto}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="secao" id="ecossistema" aria-labelledby="ecossistema-titulo">
+    <div class="conteiner">
+      <div class="cabeca-secao cabeca-secao--centro" data-r>
+        <span class="rotulo">{c.ecossistema.rotulo}</span>
+        <h2 id="ecossistema-titulo">{c.ecossistema.titulo}</h2>
+        <p class="lead">{c.ecossistema.lead}</p>
+      </div>
+      <div class="ecossistema" data-r>
+        {
+          c.ecossistema.itens.map((i, n) => (
+            <div class="ecossistema__item">
+              <Image class="mascote" src={mascotesEcossistema[n]} alt="" width={140} />
+              <h3>{i.titulo}</h3>
+              <p>{i.texto}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa" id="fundadores" aria-labelledby="fundadores-titulo">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">Quem faz</span>
+        <h2 id="fundadores-titulo">Conheça os fundadores.</h2>
+      </div>
+      <div class="fundadores" data-r>
+        {
+          fundadores.map((f) => {
+            const img = foto(f.foto);
+            return (
+              <article class="fundador">
+                {img && <Image class="fundador__foto" src={img} alt={`Foto de ${f.nome}, cofundador da DuGood`} width={320} densities={[1, 2]} />}
+                <div>
+                  <h3>{f.nome}</h3>
+                  <span class="fundador__cargo">Cofundador</span>
+                  <p>{f.bio}</p>
+                  <a href={f.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+                </div>
+              </article>
+            );
+          })
+        }
+      </div>
+    </div>
+  </section>
+
+  <Perguntas titulo="Perguntas sobre a nossa história." perguntas={c.pagina.perguntas} />
+
+  <Chamada
+    titulo={c.contato.titulo}
+    texto={c.contato.lead}
+    botoes={[
+      { texto: 'Sou empresa', href: '/empresas#contato' },
+      { texto: 'Sou uma ONG', href: '/ongs#contato' },
+      { texto: 'Organizo eventos', href: '/eventos#contato' },
+    ]}
+    mascote={abraco}
+  />
+</Base>
+
+<style>
+  .heroi__fotos {
+    position: relative;
+    width: min(100%, 420px);
+    aspect-ratio: 1;
+  }
+  .heroi__fotos :global(.heroi__foto) {
+    position: absolute;
+    width: 46%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 6px solid #fff;
+    box-shadow: 0 18px 40px rgb(0 0 0 / 0.18);
+  }
+  .heroi__fotos :global(.heroi__foto--0) {
+    left: 4%;
+    top: 4%;
+  }
+  .heroi__fotos :global(.heroi__foto--1) {
+    right: 2%;
+    top: 22%;
+  }
+  .heroi__fotos :global(.heroi__foto--2) {
+    left: 24%;
+    bottom: 0;
+  }
+  .heroi__fotos :global(.heroi__mascote) {
+    position: absolute;
+    right: -4%;
+    bottom: -6%;
+    width: 34%;
+    left: auto;
+  }
+  .proposito {
+    font-family: var(--titulo);
+    font-size: 1.15rem;
+    line-height: 1.4;
+    color: var(--verde-escuro);
+  }
+  .historia {
+    display: grid;
+    gap: 40px;
+  }
+  @media (min-width: 960px) {
+    .historia {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 72px;
+      align-items: start;
+    }
+    .historia__cabeca {
+      position: sticky;
+      top: 110px;
+    }
+  }
+  .historia__cabeca blockquote {
+    margin: 24px 0;
+    padding: 20px 24px;
+    border-left: 4px solid var(--verde);
+    background: var(--verde-claro);
+    border-radius: 0 var(--raio-p) var(--raio-p) 0;
+    font: 600 1.15rem/1.45 var(--titulo);
+    color: var(--verde-escuro);
+  }
+  .historia__cabeca .mascote {
+    width: 160px;
+    height: auto;
+  }
+  .linha {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 760px;
+    position: relative;
+  }
+  .linha::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: var(--verde-claro-2);
+  }
+  .linha li {
+    position: relative;
+    padding: 0 0 36px 56px;
+  }
+  .linha li:last-child {
+    padding-bottom: 0;
+  }
+  .linha li::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--verde);
+    border: 4px solid #fff;
+    box-shadow: 0 0 0 2px var(--verde-claro-2);
+  }
+  .linha__quando {
+    display: inline-block;
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #fff;
+    background: var(--verde-escuro);
+    border-radius: 999px;
+    padding: 3px 12px;
+    margin-bottom: 8px;
+  }
+  .linha h3 {
+    margin-bottom: 4px;
+  }
+  .linha p {
+    color: var(--tinta-suave);
+    margin: 0;
+  }
+  .ecossistema {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  }
+  .ecossistema__item {
+    background: var(--nevoa);
+    border-radius: var(--raio);
+    padding: 32px 28px;
+    text-align: center;
+  }
+  .ecossistema__item .mascote {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    margin: 0 auto 16px;
+  }
+  .ecossistema__item p {
+    color: var(--tinta-suave);
+    margin: 0;
+  }
+  .fundadores {
+    display: grid;
+    gap: 24px;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  }
+  .fundador {
+    background: #fff;
+    border-radius: var(--raio);
+    overflow: hidden;
+    box-shadow: var(--sombra);
+    display: flex;
+    flex-direction: column;
+  }
+  .fundador :global(.fundador__foto) {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+  }
+  .fundador > div {
+    padding: 24px 26px 28px;
+  }
+  .fundador h3 {
+    font-size: 1.35rem;
+    margin-bottom: 2px;
+  }
+  .fundador__cargo {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--verde);
+  }
+  .fundador p {
+    color: var(--tinta-suave);
+    margin: 12px 0 16px;
+    font-size: 0.96rem;
+  }
+  .fundador a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+</style>

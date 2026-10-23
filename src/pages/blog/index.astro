@@ -1,0 +1,193 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Heroi from '../../components/Heroi.astro';
+import PostCard from '../../components/PostCard.astro';
+import Chamada from '../../components/Chamada.astro';
+import { categoriasBlog, niveisBlog, type CategoriaBlog } from '../../config';
+import { porNivel, posts } from '../../lib/blog';
+import * as c from '../../conteudo/blog';
+import lupa from '../../assets/mascotes/lupa.png';
+import abraco from '../../assets/mascotes/abraco.png';
+
+const todos = await posts();
+// Cada tema vira uma trilha: do artigo mais simples ao mais completo
+const trilhas = (Object.keys(categoriasBlog) as CategoriaBlog[])
+  .map((id) => ({
+    id,
+    ...categoriasBlog[id],
+    posts: todos.filter((p) => p.data.categoria === id).sort(porNivel),
+  }))
+  .filter((t) => t.posts.length > 0);
+const destaques = todos.filter((p) => p.data.destaque).slice(0, 3);
+
+const blogSchema = {
+  '@type': 'Blog',
+  '@id': new URL('/blog#blog', Astro.site).href,
+  name: 'Blog DuGood',
+  url: new URL('/blog', Astro.site).href,
+  inLanguage: 'pt-BR',
+  publisher: { '@id': new URL('/#organizacao', Astro.site).href },
+  blogPost: todos.map((p) => ({ '@type': 'BlogPosting', headline: p.data.titulo, url: new URL(`/blog/${p.id}`, Astro.site).href, datePublished: p.data.publicado.toISOString() })),
+};
+---
+
+<Base pagina={c.pagina} dados={[blogSchema]}>
+  <Heroi {...c.heroi}>
+    <a class="botao" href="#temas">Ver os temas</a>
+    <a class="botao botao--claro" href="#contato">Fale com a gente</a>
+    <Fragment slot="visual">
+      <Image class="mascote blog__mascote" src={lupa} alt="" width={320} loading="eager" />
+    </Fragment>
+  </Heroi>
+
+  {
+    destaques.length > 0 && (
+      <section class="secao" aria-labelledby="destaques-titulo">
+        <div class="conteiner">
+          <div class="cabeca-secao" data-r>
+            <span class="rotulo">Comece por aqui</span>
+            <h2 id="destaques-titulo">Os mais procurados.</h2>
+          </div>
+          <div class="posts" data-r>
+            {destaques.map((p) => <PostCard post={p} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="secao secao--nevoa" id="temas" aria-labelledby="temas-titulo">
+    <div class="conteiner">
+      <div class="cabeca-secao" data-r>
+        <span class="rotulo">Temas</span>
+        <h2 id="temas-titulo">Uma trilha para cada assunto.</h2>
+        <p class="lead">Em cada tema, os artigos vão do básico ao guia completo. Filtre pelo nível que faz sentido para você.</p>
+      </div>
+
+      <div class="filtro" role="group" aria-label="Filtrar por nível" data-filtro hidden>
+        <button type="button" aria-pressed="true" data-nivel="">Todos</button>
+        {Object.entries(niveisBlog).map(([id, n]) => <button type="button" aria-pressed="false" data-nivel={id}>{n.nome}</button>)}
+      </div>
+
+      {
+        trilhas.map((t) => (
+          <div class="trilha" data-trilha>
+            <div class="trilha__cabeca">
+              <h3>
+                <a href={`/blog/categoria/${t.id}`}>{t.nome}</a>
+              </h3>
+              <p>{t.descricao}</p>
+            </div>
+            <div class="posts">
+              {t.posts.map((p) => (
+                <PostCard post={p} mostrarCategoria={false} />
+              ))}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <Chamada
+    titulo="Quer colocar isso em prática?"
+    texto="Conte o que a sua empresa, ONG ou evento tem em mente. A equipe da DuGood ajuda a transformar o assunto em ação."
+    botoes={[
+      { texto: 'Sou empresa', href: '/empresas#contato' },
+      { texto: 'Sou uma ONG', href: '/ongs#contato' },
+      { texto: 'Organizo eventos', href: '/eventos#contato' },
+    ]}
+    mascote={abraco}
+  />
+</Base>
+
+<script>
+  // Filtro por nível (sem JS, todos os artigos aparecem e o filtro fica escondido)
+  const filtro = document.querySelector<HTMLElement>('[data-filtro]');
+  if (filtro) {
+    filtro.hidden = false;
+    const botoes = [...filtro.querySelectorAll<HTMLButtonElement>('button')];
+    const aplicar = (nivel: string) => {
+      botoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.nivel === nivel)));
+      for (const trilha of document.querySelectorAll<HTMLElement>('[data-trilha]')) {
+        let visiveis = 0;
+        for (const card of trilha.querySelectorAll<HTMLElement>('[data-nivel]')) {
+          const mostra = !nivel || card.dataset.nivel === nivel;
+          card.hidden = !mostra;
+          if (mostra) visiveis++;
+        }
+        trilha.hidden = visiveis === 0;
+      }
+    };
+    botoes.forEach((b) => b.addEventListener('click', () => aplicar(b.dataset.nivel ?? '')));
+  }
+</script>
+
+<style>
+  .blog__mascote {
+    position: static;
+    width: 220px;
+    height: auto;
+    align-self: center;
+  }
+  @media (min-width: 900px) {
+    .blog__mascote {
+      width: 300px;
+    }
+  }
+  .filtro {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 40px;
+  }
+  .filtro[hidden] {
+    display: none;
+  }
+  .filtro button {
+    font: 500 0.95rem var(--texto);
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--linha);
+    background: #fff;
+    color: var(--tinta-suave);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+  }
+  .filtro button[aria-pressed='true'] {
+    background: var(--verde-escuro);
+    border-color: var(--verde-escuro);
+    color: #fff;
+  }
+  .trilha + .trilha {
+    margin-top: 56px;
+  }
+  .trilha[hidden] {
+    display: none;
+  }
+  .trilha__cabeca {
+    margin-bottom: 20px;
+    max-width: 720px;
+  }
+  .trilha__cabeca h3 {
+    font-size: 1.4rem;
+    margin-bottom: 6px;
+  }
+  .trilha__cabeca h3 a {
+    text-decoration: none;
+    color: inherit;
+  }
+  .trilha__cabeca h3 a::after {
+    content: ' →';
+    color: var(--verde);
+  }
+  .trilha__cabeca p {
+    color: var(--tinta-suave);
+    margin: 0;
+  }
+  /* O cartão tem display próprio: o filtro precisa vencer */
+  .trilha :global([hidden]) {
+    display: none;
+  }
+</style>

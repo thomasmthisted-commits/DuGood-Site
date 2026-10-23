@@ -22,7 +22,8 @@ export function organizacao(site: URL | undefined) {
   };
 }
 
-export function grafo(pagina: Pagina, site: URL | undefined, imagem: string, atualizado: string) {
+/** extras: nós a mais no grafo (ex.: o BlogPosting de um artigo) */
+export function grafo(pagina: Pagina, site: URL | undefined, imagem: string, atualizado: string, extras: object[] = []) {
   const url = new URL(pagina.rota, site).href;
   const nos: object[] = [
     organizacao(site),
@@ -35,7 +36,7 @@ export function grafo(pagina: Pagina, site: URL | undefined, imagem: string, atu
       publisher: { '@id': id(site, 'organizacao') },
     },
     {
-      '@type': 'WebPage',
+      '@type': pagina.tipo ?? 'WebPage',
       '@id': `${url}#pagina`,
       url,
       name: pagina.titulo,
@@ -56,8 +57,12 @@ export function grafo(pagina: Pagina, site: URL | undefined, imagem: string, atu
       '@type': 'BreadcrumbList',
       '@id': `${url}#migalhas`,
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Início', item: new URL('/', site).href },
-        { '@type': 'ListItem', position: 2, name: pagina.nome, item: url },
+        ...[{ nome: 'Início', rota: '/' }, ...(pagina.migalhas ?? []), { nome: pagina.nome, rota: pagina.rota }].map((m, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: m.nome,
+          item: new URL(m.rota, site).href,
+        })),
       ],
     });
   }
@@ -84,5 +89,5 @@ export function grafo(pagina: Pagina, site: URL | undefined, imagem: string, atu
     });
   }
 
-  return { '@context': 'https://schema.org', '@graph': nos };
+  return { '@context': 'https://schema.org', '@graph': [...nos, ...extras] };
 }

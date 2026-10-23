@@ -8,12 +8,16 @@ import Simulador from '../components/Simulador.astro';
 import Lista from '../components/Lista.astro';
 import Cartoes from '../components/Cartoes.astro';
 import Perguntas from '../components/Perguntas.astro';
+import LeiaTambem from '../components/LeiaTambem.astro';
+import { postsDaCategoria } from '../lib/blog';
 import Contato from '../components/Contato.astro';
 import { niveis, termosLink } from '../config';
 import * as c from '../conteudo/empresas';
 import presente from '../assets/mascotes/presente.png';
 import joinha from '../assets/mascotes/joinha.png';
 import abraco from '../assets/mascotes/abraco.png';
+
+const artigos = (await postsDaCategoria('incentivo-fiscal')).slice(0, 3);
 ---
 
 <Base pagina={c.pagina}>
@@ -116,7 +120,9 @@ import abraco from '../assets/mascotes/abraco.png';
     </div>
   </section>
 
-  <Perguntas titulo="Dúvidas de quem está começando." perguntas={c.pagina.perguntas} />
+  <LeiaTambem titulo="Leis de incentivo, do básico ao guia completo." posts={artigos} mais={{ texto: 'Ver o tema completo', href: '/blog/categoria/incentivo-fiscal' }} />
+
+  <Perguntas titulo="Dúvidas de quem está começando." perguntas={c.pagina.perguntas} nevoa />
 
   <Contato publico="empresa" {...c.contato} mascote={abraco} />
 </Base>

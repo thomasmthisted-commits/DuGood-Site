@@ -7,6 +7,8 @@ import GaleriaAbas from '../components/GaleriaAbas.astro';
 import Lista from '../components/Lista.astro';
 import Cartoes from '../components/Cartoes.astro';
 import Perguntas from '../components/Perguntas.astro';
+import LeiaTambem from '../components/LeiaTambem.astro';
+import { postsDaCategoria } from '../lib/blog';
 import Contato from '../components/Contato.astro';
 import { termosLink } from '../config';
 import * as c from '../conteudo/ongs';
@@ -14,6 +16,8 @@ import lupa from '../assets/mascotes/lupa.png';
 import trofeu from '../assets/mascotes/trofeu.png';
 import coracao from '../assets/mascotes/coracao.png';
 import acenando from '../assets/mascotes/acenando.png';
+
+const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
 ---
 
 <Base pagina={c.pagina}>
@@ -110,7 +114,9 @@ import acenando from '../assets/mascotes/acenando.png';
     </div>
   </section>
 
-  <Perguntas titulo="O que as ONGs costumam perguntar." perguntas={c.pagina.perguntas} nevoa />
+  <LeiaTambem titulo="Conteúdos para ONGs." posts={artigos} mais={{ texto: 'Ver o tema completo', href: '/blog/categoria/para-ongs' }} nevoa />
+
+  <Perguntas titulo="O que as ONGs costumam perguntar." perguntas={c.pagina.perguntas} />
 
   <Contato publico="ong" {...c.contato} mascote={acenando} />
 </Base>

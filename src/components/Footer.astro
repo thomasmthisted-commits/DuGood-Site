@@ -7,7 +7,7 @@ import { dugood, appLink, instagramLink, termosLink, privacidadeLink } from '../
 <footer class="rodape">
   <div class="conteiner rodape__grade">
     <div class="rodape__marca">
-      <Image src={logo} alt="DuGood" width={140} />
+      <Image src={logo} alt="DuGood" width={140} densities={[1, 2]} />
       <p>{dugood.slogan}.</p>
     </div>
     <nav class="col" aria-label="Rodapé">
@@ -16,10 +16,15 @@ import { dugood, appLink, instagramLink, termosLink, privacidadeLink } from '../
       <a href="/ongs">ONGs</a>
       <a href="/eventos">Organizadores de eventos</a>
     </nav>
+    <nav class="col" aria-label="DuGood">
+      <p class="rodape__titulo">DuGood</p>
+      <a href="/sobre">Sobre nós</a>
+      <a href="/blog">Blog</a>
+      <a href="/marca/logo-dugood-verde.png" download>Logo em alta resolução</a>
+    </nav>
     <nav class="col" aria-label="Plataforma">
       <p class="rodape__titulo">Plataforma</p>
       <a href={appLink()} target="_blank" rel="noopener">App para quem doa</a>
-      <a href={appLink('AboutUs')} target="_blank" rel="noopener">Quem somos</a>
       <a href={termosLink} target="_blank" rel="noopener">Termos de uso</a>
       <a href={privacidadeLink} target="_blank" rel="noopener">Privacidade</a>
     </nav>
@@ -60,7 +65,7 @@ import { dugood, appLink, instagramLink, termosLink, privacidadeLink } from '../
   }
   @media (min-width: 900px) {
     .rodape__grade {
-      grid-template-columns: 1.6fr 1fr 1fr 1fr;
+      grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
     }
     .rodape__marca {
       grid-column: auto;

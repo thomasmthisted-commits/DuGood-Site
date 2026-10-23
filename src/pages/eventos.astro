@@ -6,11 +6,15 @@ import Print from '../components/Print.astro';
 import GaleriaAbas from '../components/GaleriaAbas.astro';
 import Cartoes from '../components/Cartoes.astro';
 import Perguntas from '../components/Perguntas.astro';
+import LeiaTambem from '../components/LeiaTambem.astro';
+import { posts } from '../lib/blog';
 import Contato from '../components/Contato.astro';
 import * as c from '../conteudo/eventos';
 import ingresso from '../assets/mascotes/ingresso.png';
 import celular from '../assets/mascotes/celular.png';
 import trofeu from '../assets/mascotes/trofeu.png';
+
+const artigos = (await posts()).filter((p) => p.data.publico === 'organizador' || p.data.categoria === 'impacto-social').slice(0, 3);
 ---
 
 <Base pagina={c.pagina}>
@@ -71,7 +75,9 @@ import trofeu from '../assets/mascotes/trofeu.png';
     </div>
   </section>
 
-  <Perguntas titulo="Dúvidas sobre eventos sociais." perguntas={c.pagina.perguntas} nevoa />
+  <LeiaTambem titulo="Boas práticas sociais." posts={artigos} mais={{ texto: 'Ver o tema completo', href: '/blog/categoria/impacto-social' }} nevoa />
+
+  <Perguntas titulo="Dúvidas sobre eventos sociais." perguntas={c.pagina.perguntas} />
 
   <Contato publico="organizador" {...c.contato} mascote={celular} />
 </Base>

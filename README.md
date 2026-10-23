@@ -10,6 +10,11 @@ Site comercial da **DuGood** para **empresas**, **ONGs** e **organizadores de ev
 | `/empresas` | Doação incentivada (com simulador), benefícios como lojista parceiro, painel do lojista, política, perguntas e formulário |
 | `/ongs` | Como a ONG aparece no app, por que os doadores voltam, painel da ONG, projetos incentivados, como entrar e formulário |
 | `/eventos` | Eventos sociais: como funciona, times e validação de ingressos, painel do organizador e formulário |
+| `/sobre` | Sobre nós: missão, história, trajetória, ecossistema e os fundadores (com fotos) |
+| `/blog` | Blog: uma trilha por tema, do básico ao guia completo, com filtro por nível |
+| `/blog/<artigo>` | Artigo, com resumo, índice, fontes oficiais, perguntas e artigos relacionados |
+| `/blog/categoria/<tema>` | Os artigos de um tema, separados por nível |
+| `/marca/` | Logo e fundo verde em alta resolução, para baixar e usar em outros materiais |
 | `/obrigado` | Destino do formulário quando o navegador está sem JavaScript |
 
 ## Onde mudar cada coisa
@@ -17,6 +22,10 @@ Site comercial da **DuGood** para **empresas**, **ONGs** e **organizadores de ev
 | O que | Onde |
 | --- | --- |
 | Textos de cada página (uma fonte só para o HTML, o `.md`, o `llms.txt` e os dados estruturados) | `src/conteudo/*.ts` |
+| Artigos do blog | `src/content/blog/<endereço>.md` (campos validados em `src/content.config.ts`) |
+| Temas e níveis do blog | `categoriasBlog` e `niveisBlog` em `src/config.ts` |
+| Fotos dos fundadores | `src/assets/fundadores/` |
+| Logo e fundo em alta resolução para download | `public/marca/` |
 | E-mail, Instagram, link do app, níveis, leis do simulador, opções do formulário, fundadores | `src/config.ts` |
 | Modo rascunho (fora do Google e com molduras de print pendente) | `rascunho` em `src/config.ts` |
 | Layout das páginas | `src/pages/*.astro` e `src/components/` |
@@ -33,6 +42,18 @@ Site comercial da **DuGood** para **empresas**, **ONGs** e **organizadores de ev
 - **Dados estruturados (JSON-LD):** Organization (com fundadores e contato), WebSite, WebPage, BreadcrumbList, Service e FAQPage em cada página.
 - **`robots.txt`** libera buscadores e agentes de IA (GPTBot, ClaudeBot, PerplexityBot e outros) e aponta o sitemap e o `llms.txt`. Enquanto o site for rascunho, bloqueia tudo.
 - **Sitemap** com data de atualização, canonical, Open Graph e Twitter Card com imagem 1200 × 630, e a imagem principal de cada página carregando primeiro.
+
+## Blog
+
+Cada artigo é um arquivo Markdown em `src/content/blog/`. O nome do arquivo vira o endereço (`/blog/<nome>`). No topo, os campos obrigatórios:
+
+- `titulo` (até ~70 caracteres) e `descricao` (até ~160, aparece no Google);
+- `resumo`: 2 ou 3 frases factuais, que abrem o artigo ("Em resumo"), a versão `.md` e o `llms.txt`;
+- `categoria` (um dos temas de `categoriasBlog`) e `nivel` (`basico`, `intermediario` ou `avancado`);
+- `publico` (`empresa`, `ong` ou `organizador`) e, se quiser, `interesse`: definem para qual formulário a chamada do fim do artigo leva, já com a opção marcada;
+- `publicado` (data), `fontes` (pelo menos uma fonte oficial ou de referência) e, opcional, `perguntas` (viram o FAQ do artigo e do Google) e `destaque: true` (aparece em "Comece por aqui" e na página inicial).
+
+Cada artigo ganha sozinho a versão `.md`, a entrada no `llms.txt` e no `llms-full.txt`, os dados estruturados (BlogPosting, migalhas e FAQ) e o lugar na trilha do tema. Ao escrever, cite a lei ou a fonte oficial e evite prometer resultado fiscal: os artigos são informativos.
 
 ## Formulário de contato e preenchimento prévio
 
