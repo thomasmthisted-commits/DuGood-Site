@@ -15,7 +15,7 @@ Site institucional da DuGood (plataforma de doações) para empresas, ONGs e org
 - Formulário (`Formulario.astro`): envia para `/api/contato`; o Worker valida e repassa para a função `submitSiteLead` do Base44 com o cabeçalho `x-site-token`. Ao mudar campos, mude também `CAMPOS` em `src/worker.js` e na função `base44/functions/submitSiteLead` do repositório `dugood`, e a entidade `SiteLead`.
 - Blog: artigos em `src/content/blog/<slug>.md`, com frontmatter validado em `src/content.config.ts` (título até ~70 caracteres, descrição até 160, resumo, tema, nível, público, fontes). Todo fato precisa de fonte oficial ou de referência em `fontes`, com a data da informação em mente: leis e normas mudam (ex.: LC 222/2025 no esporte, SC COSIT 4/2026 nos limites, CVM 244/2026 no relato ESG). Nunca prometa dedução ou resultado fiscal.
 - Cada tema do blog é uma trilha do básico ao avançado: ao criar artigos, mantenha pelo menos um de cada nível por tema quando fizer sentido.
-- Sobre nós (`src/conteudo/sobre.ts`): os textos vêm da página Quem somos do app; mantenha os dois alinhados.
+- Sobre nós (`src/conteudo/sobre.ts`): os textos vêm da página Quem somos do app; mantenha os dois alinhados. Os marcos principais usam a mesma imagem da jornada do app (`src/assets/jornada.png`); o texto dela fica em `trajetoria`, que vai para o alt e para o `.md`.
 - Ao criar uma página nova: arquivo em `src/conteudo/`, a página `.astro`, o endpoint `.md.ts`, a entrada no `llms.txt` e no `llms-full.txt`, no cabeçalho e no rodapé.
 - Antes de concluir: `npm run build` precisa passar sem erros.
 
