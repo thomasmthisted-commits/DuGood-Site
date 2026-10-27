@@ -283,6 +283,8 @@ export default {
       url.hostname = url.hostname.slice(4);
       return Response.redirect(url.href, 301);
     }
+    // Quem procura o sitemap no endereço mais comum recebe o índice gerado pelo Astro
+    if (url.pathname === '/sitemap.xml') return env.ASSETS.fetch(new Request(new URL('/sitemap-index.xml', url), request));
     if (url.pathname === '/api/contato') return contato(request, env);
     if (url.pathname === '/api/diagnostico') return diagnostico(request, env, ctx);
     const cnpj = url.pathname.match(/^\/api\/cnpj\/(\d{14})$/);
