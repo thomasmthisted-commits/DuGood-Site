@@ -13,7 +13,7 @@ export const dugood = {
 
 // Enquanto for rascunho, o site fica fora dos buscadores e os prints que faltam
 // aparecem como molduras pendentes. Ao lançar: false (prints que faltarem somem).
-export const rascunho = true;
+export const rascunho = false;
 
 export const appLink = (pagina = '') => `${dugood.app}/${pagina}`;
 export const instagramLink = `https://instagram.com/${dugood.instagram}`;

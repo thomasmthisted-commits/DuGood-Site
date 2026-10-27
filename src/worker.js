@@ -266,10 +266,23 @@ const enderecoMarkdown = (pathname) => {
   return /\.[a-z0-9]+$/i.test(pathname) ? null : `${pathname.replace(/\/$/, '')}.md`;
 };
 
+/** O endereço de preview (workers.dev) fica fora do Google, para não concorrer com o domínio */
+const semIndiceNoPreview = (r, url) => {
+  if (!url.hostname.endsWith('.workers.dev')) return r;
+  const resposta = new Response(r.body, r);
+  resposta.headers.set('x-robots-tag', 'noindex');
+  return resposta;
+};
+
 export default {
   /** @param {Request} request @param {Record<string, any>} env @param {ExecutionContext} ctx */
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+    // Um endereço só para o Google: www vira o domínio sem www
+    if (url.hostname.startsWith('www.')) {
+      url.hostname = url.hostname.slice(4);
+      return Response.redirect(url.href, 301);
+    }
     if (url.pathname === '/api/contato') return contato(request, env);
     if (url.pathname === '/api/diagnostico') return diagnostico(request, env, ctx);
     const cnpj = url.pathname.match(/^\/api\/cnpj\/(\d{14})$/);
@@ -294,10 +307,16 @@ export default {
     }
 
     const r = await env.ASSETS.fetch(pathname === url.pathname ? request : new Request(new URL(pathname, url), request));
-    if (!md || !(r.headers.get('content-type') ?? '').includes('text/html') || !r.ok) return r;
+    // Arquivos do build têm o hash no nome: o navegador pode guardar por um ano
+    if (url.pathname.startsWith('/_astro/') && r.ok) {
+      const resposta = new Response(r.body, r);
+      resposta.headers.set('cache-control', 'public, max-age=31536000, immutable');
+      return resposta;
+    }
+    if (!md || !(r.headers.get('content-type') ?? '').includes('text/html') || !r.ok) return semIndiceNoPreview(r, url);
     const resposta = new Response(r.body, r);
     resposta.headers.set('link', `<${md}>; rel="alternate"; type="text/markdown"`);
     resposta.headers.append('vary', 'Accept');
-    return resposta;
+    return semIndiceNoPreview(resposta, url);
   },
 };
