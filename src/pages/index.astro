@@ -9,6 +9,8 @@ import LeiaTambem from '../components/LeiaTambem.astro';
 import { posts } from '../lib/blog';
 import Chamada from '../components/Chamada.astro';
 import Proposito from '../components/Proposito.astro';
+import Filme from '../components/Filme.astro';
+import { filme as dadosFilme } from '../lib/schema';
 import { appLink } from '../config';
 import * as c from '../conteudo/inicio';
 import acenando from '../assets/mascotes/acenando.png';
@@ -22,7 +24,7 @@ const mascotes = [presente, lupa, ingresso];
 const destaques = (await posts()).filter((p) => p.data.destaque).slice(0, 3);
 ---
 
-<Base pagina={c.pagina}>
+<Base pagina={c.pagina} dados={[await dadosFilme(Astro.site)]}>
   <Heroi {...c.heroi}>
     <a class="botao" href="#contato">Fale com a gente</a>
     <a class="botao botao--claro" href={appLink()} target="_blank" rel="noopener">Visitar o app</a>
@@ -31,6 +33,16 @@ const destaques = (await posts()).filter((p) => p.data.destaque).slice(0, 3);
       <Image class="mascote heroi__mascote" src={acenando} alt="" width={220} loading="eager" />
     </Fragment>
   </Heroi>
+
+  <section class="secao secao--nevoa" id="filme">
+    <div class="conteiner">
+      <div class="cabeca-secao cabeca-secao--centro" data-r>
+        <span class="rotulo">{c.filme.rotulo}</span>
+        <h2>{c.filme.titulo}</h2>
+      </div>
+      <Filme filme={c.filme} />
+    </div>
+  </section>
 
   <section class="secao" id="para-quem">
     <div class="conteiner">
