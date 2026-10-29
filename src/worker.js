@@ -274,6 +274,23 @@ const semIndiceNoPreview = (r, url) => {
   return resposta;
 };
 
+// Os arquivos estáticos ignoram o cabeçalho Range, e o Safari (iPhone e Mac) só toca vídeo
+// que responde em pedaços (206). O Worker corta o pedaço pedido do arquivo inteiro.
+async function emPedacos(request, r) {
+  const headers = new Headers(r.headers);
+  headers.set('accept-ranges', 'bytes');
+  const pedido = (request.headers.get('range') ?? '').match(/^bytes=(\d*)-(\d*)$/);
+  if (!r.ok || !pedido || (!pedido[1] && !pedido[2])) return new Response(r.body, { status: r.status, headers });
+  const corpo = await r.arrayBuffer();
+  const total = corpo.byteLength;
+  const inicio = pedido[1] ? Number(pedido[1]) : Math.max(0, total - Number(pedido[2]));
+  const fim = pedido[1] && pedido[2] ? Math.min(Number(pedido[2]), total - 1) : total - 1;
+  if (inicio > fim) return new Response(null, { status: 416, headers: { 'content-range': `bytes */${total}` } });
+  headers.set('content-range', `bytes ${inicio}-${fim}/${total}`);
+  headers.set('content-length', String(fim - inicio + 1));
+  return new Response(corpo.slice(inicio, fim + 1), { status: 206, headers });
+}
+
 export default {
   /** @param {Request} request @param {Record<string, any>} env @param {ExecutionContext} ctx */
   async fetch(request, env, ctx) {
@@ -309,6 +326,7 @@ export default {
     }
 
     const r = await env.ASSETS.fetch(pathname === url.pathname ? request : new Request(new URL(pathname, url), request));
+    if (url.pathname.startsWith('/filme/')) return semIndiceNoPreview(await emPedacos(request, r), url);
     // Arquivos do build têm o hash no nome: o navegador pode guardar por um ano
     if (url.pathname.startsWith('/_astro/') && r.ok) {
       const resposta = new Response(r.body, r);
