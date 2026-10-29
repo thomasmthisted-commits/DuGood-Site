@@ -1,0 +1,38 @@
+---
+// Filme institucional: <video> nativo, sem autoplay. Só baixa o vídeo quando a pessoa dá play
+// (preload="none"); até lá aparece a capa (src/assets/filme-capa.jpg).
+import { getImage } from 'astro:assets';
+import capaOriginal from '../assets/filme-capa.jpg';
+import type { filme as Filme } from '../conteudo/inicio';
+
+interface Props {
+  filme: typeof Filme;
+}
+
+const { filme } = Astro.props;
+const capa = await getImage({ src: capaOriginal, width: 1280, format: 'webp' });
+---
+
+<figure class="filme" data-r>
+  <video controls preload="none" playsinline poster={capa.src} width="1920" height="1080" aria-label="Filme institucional da DuGood">
+    <source src={filme.arquivo} type="video/mp4" />
+    <a href={filme.arquivo}>Baixar o filme da DuGood (MP4)</a>
+  </video>
+</figure>
+
+<style>
+  .filme {
+    margin: 0 auto;
+    max-width: 960px;
+  }
+  video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: var(--raio);
+    border: 1px solid var(--linha);
+    background: var(--nevoa);
+    box-shadow: var(--sombra);
+  }
+</style>

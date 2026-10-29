@@ -2,6 +2,9 @@
 // buscadores e agentes de IA precisam saber vai aqui, nas versões .md e no llms.txt.
 import type { Pagina } from '../conteudo/tipos';
 import { dugood, fundadores, instagramLink } from '../config';
+import { filme as dadosFilme } from '../conteudo/inicio';
+import { getImage } from 'astro:assets';
+import capa from '../assets/filme-capa.jpg';
 
 const id = (site: URL | undefined, ancora: string) => new URL(`/#${ancora}`, site).href;
 
@@ -90,4 +93,21 @@ export function grafo(pagina: Pagina, site: URL | undefined, imagem: string, atu
   }
 
   return { '@context': 'https://schema.org', '@graph': [...nos, ...extras] };
+}
+
+/** VideoObject do filme institucional (página inicial) */
+export async function filme(site: URL | undefined) {
+  const imagem = await getImage({ src: capa, width: 1280, format: 'webp' });
+  return {
+    '@type': 'VideoObject',
+    '@id': id(site, 'filme'),
+    name: `${dadosFilme.titulo.replace(/\.$/, '')} em 2 minutos`,
+    description: dadosFilme.descricao,
+    thumbnailUrl: new URL(imagem.src, site).href,
+    contentUrl: new URL(dadosFilme.arquivo, site).href,
+    uploadDate: dadosFilme.publicado,
+    duration: dadosFilme.duracao,
+    inLanguage: 'pt-BR',
+    publisher: { '@id': id(site, 'organizacao') },
+  };
 }

@@ -40,6 +40,18 @@ export const heroi = {
   lead: 'A DuGood é uma plataforma de doações onde doadores, ONGs e marcas se conectam. Quem doa acumula pontos e desbloqueia benefícios; as ONGs recebem doações direcionadas, com transparência; e as empresas apoiam causas com impacto real.',
 };
 
+export const filme = {
+  rotulo: 'Em 2 minutos',
+  titulo: 'Conheça a DuGood.',
+  /** Arquivo em public/ (MP4 com faststart, até 25 MB por causa do limite do Cloudflare) */
+  arquivo: '/filme/dugood.mp4',
+  /** Duração no formato ISO 8601, para o JSON-LD */
+  duracao: 'PT2M4S',
+  publicado: '2026-10-29',
+  descricao:
+    'Filme institucional da DuGood: quem somos e os fundadores, missão, visão e valores e as três frentes de atuação (ONGs, marcas e Lei de Incentivo ao Esporte), com o painel gratuito para ONGs, os eventos em que a inscrição vira doação, os benefícios das marcas para quem doa e a curadoria dos projetos incentivados.',
+};
+
 export const publicos = [
   { pagina: empresas, botao: 'Sou empresa', rotulo: 'Para empresas', titulo: 'Doação incentivada e benefícios', texto: 'Apoiador da plataforma, com benefícios para quem doa, ou doação incentivada com curadoria e segurança. Sem custo para a empresa.' },
   { pagina: ongs, botao: 'Sou uma ONG', rotulo: 'Para ONGs', titulo: 'Doações, eventos e recibos', texto: 'Taxa zero da DuGood, com CRM de captação, gestão de doadores e gestão financeira grátis.' },
@@ -69,6 +81,7 @@ export const contato = {
 export const markdown = (site: URL | undefined) =>
   juntar(
     cabecalho(pagina, site),
+    secao(`Filme: ${filme.titulo}`, `${filme.descricao} Vídeo (2 min): ${new URL(filme.arquivo, site).href}`),
     secao(
       'Para quem',
       lista(publicos.map((p) => `[${p.rotulo}](${new URL(`${p.pagina.rota}.md`, site).href}): ${p.pagina.resumo}`)),
