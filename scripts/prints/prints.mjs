@@ -8,13 +8,18 @@
 //      npm run prints -- lojista-   (só os que começam com "lojista-")
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import sharp from 'sharp';
 import * as D from './dados.mjs';
 import { gerarCameras } from './camera.mjs';
 const require = createRequire(process.env.PLAYWRIGHT_DIR ?? import.meta.url);
 const { chromium } = require('playwright');
 
 const APP = process.env.APP_URL ?? 'http://127.0.0.1:5173';
-const SAIDA = new URL('../../src/assets/prints/', import.meta.url).pathname;
+const SAIDA = process.env.SAIDA ?? new URL('../../src/assets/prints/', import.meta.url).pathname;
 const tabelas = {
   Organization: [D.org],
   Cause: [...D.causas, D.eventosOrganizador[1]],
@@ -29,7 +34,17 @@ const tabelas = {
   EventRegistration: [],
   ImportedDonation: [],
   DonorNote: [],
+  CauseUpdate: [],
+  OrgMonthlyReport: [],
 };
+
+// Todas as telas com o mini tutorial já visto (sem o pontinho de "novo" no "Como usar esta tela")
+const telas = [
+  'inicio', 'geral', 'causas', 'causas.institucionais', 'doadores.recorrentes', 'eventos.lista', 'eventos.escanear', 'eventos.como',
+  'fiscal.dados', 'fiscal.projetos', 'fiscal.doacoes', 'fiscal.recibos', 'doadores.lista', 'doadores.crm', 'doadores.composicao',
+  'doadores.sorteios', 'instituicao.perfil', 'instituicao.documentos', 'financeiro.extrato', 'relatorios',
+  'beneficios', 'beneficios.clientes', 'doacoes', 'loja', 'eventos', 'eventos.sorteios', 'conta.perfil',
+];
 
 const casa = (linha, q) =>
   Object.entries(q).every(([k, v]) => {
@@ -96,7 +111,12 @@ function funcao(nome, corpo, perfil) {
       return { qrCode: t, donor: { full_name: t.participant_name, email: t.user_email } };
     }
     case 'runRaffle':
-      return { raffles: [] };
+      if (corpo?.action !== 'list') return { raffles: [] };
+      return perfil === 'organizador' ? D.sorteiosOrganizador : D.sorteios;
+    case 'getOrgStatement':
+      return D.extrato(corpo);
+    case 'getOrgReport':
+      return D.relatorio();
     case 'claimGuestDonations':
       return { claimed: 0 };
     case 'getPublicDonationStats':
@@ -128,12 +148,14 @@ for (const job of jobs) {
     locale: 'pt-BR',
     timezoneId: 'America/Sao_Paulo',
   });
-  await ctx.addInitScript(() => {
+  await ctx.clock.setFixedTime(new Date(D.hoje));
+  await ctx.addInitScript((telas) => {
+    for (const painel of ['org', 'merchant', 'organizer']) localStorage.setItem(`tours:${painel}`, JSON.stringify(telas));
     localStorage.setItem('language', 'pt');
     localStorage.setItem('has_seen_tutorial', 'true');
     localStorage.setItem('app_banner_dismissed', String(Date.now()));
     localStorage.setItem('theme', 'light');
-  });
+  }, telas);
   const faltando = new Set();
   await ctx.route((u) => u.pathname.startsWith('/api/'), async (route) => {
     const req = route.request();
@@ -180,7 +202,24 @@ for (const job of jobs) {
     if (passo.rolar) await p.mouse.wheel(0, passo.rolar);
     await p.waitForTimeout(passo.esperar ?? 1200);
   }
-  await p.screenshot({ path: `${SAIDA}${job.nome}.png` });
+  if (job.pdf) {
+    // "pdf": baixa o PDF gerado pelo botão e guarda uma página como imagem (precisa do pdftoppm, do poppler)
+    const [download] = await Promise.all([
+      p.waitForEvent('download', { timeout: 60000 }),
+      p.getByRole('button', { name: new RegExp(job.pdf.botao, 'i') }).first().click(),
+    ]);
+    const arquivo = join(mkdtempSync(join(tmpdir(), 'prints-')), 'relatorio.pdf');
+    await download.saveAs(arquivo);
+    const pagina = String(job.pdf.pagina ?? 1);
+    const png = arquivo.replace(/\.pdf$/, '');
+    execFileSync('pdftoppm', ['-png', '-r', String(job.pdf.dpi ?? 160), '-f', pagina, '-l', pagina, '-singlefile', arquivo, png]);
+    // "altura": fração da página que entra no print, de cima para baixo (1 = a página inteira)
+    const imagem = sharp(`${png}.png`);
+    const { width, height } = await imagem.metadata();
+    await imagem.extract({ left: 0, top: 0, width, height: Math.round(height * (job.pdf.altura ?? 1)) }).toFile(`${SAIDA}${job.nome}.png`);
+  } else {
+    await p.screenshot({ path: `${SAIDA}${job.nome}.png` });
+  }
   console.log(job.nome, '| faltando:', [...faltando], '| erros:', erros);
   await ctx.close();
   if (job.camera) await b.close();

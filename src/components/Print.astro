@@ -9,7 +9,7 @@ import { print } from '../lib/prints';
 interface Props {
   nome: string;
   alt: string;
-  tipo?: 'celular' | 'janela';
+  tipo?: 'celular' | 'janela' | 'documento';
   legenda?: string;
   /** O que precisa aparecer no print, para quem for tirar */
   pendente?: string;
@@ -78,6 +78,10 @@ const tamanhos = tipo === 'celular' ? '300px' : '(min-width: 900px) 560px, 100vw
     border-radius: 14px;
     border: 1px solid var(--linha);
   }
+  .print--documento .print__moldura {
+    border-radius: 4px;
+    border: 1px solid var(--linha);
+  }
   .print__barra {
     display: flex;
     gap: 6px;
@@ -104,7 +108,8 @@ const tamanhos = tipo === 'celular' ? '300px' : '(min-width: 900px) 560px, 100vw
   .print--celular .print__pendente {
     aspect-ratio: 390 / 844;
   }
-  .print--janela .print__pendente {
+  .print--janela .print__pendente,
+  .print--documento .print__pendente {
     aspect-ratio: 16 / 10;
   }
   .print__pendente strong {

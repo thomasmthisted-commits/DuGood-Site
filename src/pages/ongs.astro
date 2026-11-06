@@ -81,7 +81,22 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
     </div>
   </section>
 
-  <section class="secao" id="incentivados">
+  <section class="secao" id="financeiro">
+    <div class="conteiner duo">
+      <div data-r>
+        <span class="rotulo">{c.financeiro.rotulo}</span>
+        <h2>{c.financeiro.titulo}</h2>
+        <p class="lead">{c.financeiro.lead}</p>
+        <Lista itens={c.financeiro.itens} />
+      </div>
+      <div class="financeiro__prints">
+        <Print nome="ong-painel-extrato" tipo="janela" alt="Extrato no painel da ONG: entradas, tarifas, valor líquido e repasses" legenda="O extrato no painel" />
+        <Print nome="ong-relatorio-pdf" tipo="documento" alt="Relatório mensal de captação em PDF: total captado, doações, doadores e de onde veio o dinheiro" legenda="O relatório mensal em PDF" />
+      </div>
+    </div>
+  </section>
+
+  <section class="secao secao--nevoa" id="incentivados">
     <div class="conteiner duo duo--inverso">
       <div data-r>
         <span class="rotulo">{c.incentivados.rotulo}</span>
@@ -98,7 +113,7 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
     </div>
   </section>
 
-  <section class="secao secao--nevoa" id="como-entrar">
+  <section class="secao" id="como-entrar">
     <div class="conteiner">
       <div class="cabeca-secao" data-r>
         <span class="rotulo">{c.passos.rotulo}</span>
@@ -117,7 +132,7 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
     </div>
   </section>
 
-  <section class="secao" id="politica">
+  <section class="secao secao--nevoa" id="politica">
     <div class="conteiner duo">
       <div data-r>
         <span class="rotulo">{c.secaoPolitica.rotulo}</span>
@@ -128,9 +143,9 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
     </div>
   </section>
 
-  <LeiaTambem titulo="Conteúdos para ONGs." posts={artigos} mais={{ texto: 'Ver o tema completo', href: '/blog/categoria/para-ongs' }} nevoa />
+  <LeiaTambem titulo="Conteúdos para ONGs." posts={artigos} mais={{ texto: 'Ver o tema completo', href: '/blog/categoria/para-ongs' }} />
 
-  <Perguntas titulo="O que as ONGs costumam perguntar." perguntas={c.pagina.perguntas} />
+  <Perguntas titulo="O que as ONGs costumam perguntar." perguntas={c.pagina.perguntas} nevoa />
 
   <Contato publico="ong" {...c.contato} mascote={acenando} />
 </Base>
@@ -167,6 +182,16 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
   @media (min-width: 900px) {
     .trio :global(.print:nth-child(2)) {
       margin-top: 48px;
+    }
+  }
+  .financeiro__prints {
+    display: grid;
+    gap: 32px;
+  }
+  @media (min-width: 900px) {
+    .financeiro__prints :global(.print--documento) {
+      width: 82%;
+      margin-left: auto;
     }
   }
   .duo__mascote {
