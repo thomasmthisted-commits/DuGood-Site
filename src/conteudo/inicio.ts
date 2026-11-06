@@ -47,9 +47,9 @@ export const filme = {
   arquivo: '/filme/dugood.mp4',
   /** Duração no formato ISO 8601, para o JSON-LD */
   duracao: 'PT2M4S',
-  publicado: '2026-10-29',
+  publicado: '2026-11-06',
   descricao:
-    'Filme institucional da DuGood: quem somos e os fundadores, missão, visão e valores e as três frentes de atuação (ONGs, marcas e Lei de Incentivo ao Esporte), com o painel gratuito para ONGs, os eventos em que a inscrição vira doação, os benefícios das marcas para quem doa e a curadoria dos projetos incentivados.',
+    'Filme institucional da DuGood: quem somos e os fundadores, missão, visão e valores e as três frentes de atuação (ONGs, marcas e Lei de Incentivo ao Esporte), com todas as ferramentas que a ONG precisa num só painel, de graça (captação, doadores, gestão financeira com relatório mensal automático), os eventos em que a inscrição vira doação, os benefícios das marcas para quem doa e a curadoria dos projetos incentivados.',
 };
 
 export const publicos = [
