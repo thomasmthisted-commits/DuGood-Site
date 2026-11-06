@@ -97,28 +97,40 @@ export const painel: Secao & { abas: Aba[] } = {
   titulo: 'O evento inteiro na palma da mão.',
   abas: [
     {
+      aba: 'Visão geral',
+      texto: 'Eventos no ar, inscritos, check-ins e ingressos a validar, as inscrições mês a mês e os próximos eventos, com atalho para o scanner.',
+      print: 'organizador-geral',
+      pendente: 'Painel do organizador, tela "Visão geral", com os números e o gráfico de inscrições',
+    },
+    {
       aba: 'Meus eventos',
-      texto: 'Crie o evento, escolha a ONG que recebe as doações e acompanhe a arrecadação e os times.',
+      texto: 'Todos os eventos do organizador, no ar ou aguardando a aprovação da ONG que vai receber 100% das doações.',
       print: 'organizador-eventos',
-      pendente: 'Painel do organizador, aba "Meus Eventos", com um evento aprovado e outro aguardando a ONG',
+      pendente: 'Painel do organizador, "Meus eventos", com um evento no ar e outro aguardando a ONG',
+    },
+    {
+      aba: 'Página do evento',
+      texto: 'Arrecadação, inscritos, check-ins e times de cada evento, a lista de inscritos com busca e CSV, inscrições manuais e atualizações para quem doou.',
+      print: 'organizador-evento',
+      pendente: 'Painel do organizador, página de um evento com inscritos e check-ins (use um evento de teste)',
     },
     {
       aba: 'Novo evento',
-      texto: 'Data, horário, local, prazo de inscrição, meta, doação mínima, fotos e a mensagem do e-mail de confirmação.',
+      texto: 'A ONG que recebe as doações, data, horário, local, prazo de inscrição, meta, inscrição mínima, imagem e a mensagem do e-mail de confirmação.',
       print: 'organizador-novo-evento',
       pendente: 'Formulário de criação de evento no painel do organizador',
-    },
-    {
-      aba: 'Inscritos',
-      texto: 'A lista de inscritos de cada evento, separada por time quando houver times.',
-      print: 'organizador-inscritos',
-      pendente: 'Painel do organizador, aba "Inscritos" (use um evento de teste ou borre nomes)',
     },
     {
       aba: 'Escanear ingressos',
       texto: 'Na entrada, o celular lê o QR Code do ingresso e confirma a presença com um toque.',
       print: 'organizador-scanner',
       pendente: 'Painel do organizador: scanner de ingressos com uma validação confirmada',
+    },
+    {
+      aba: 'Sorteios',
+      texto: 'Sorteios entre os inscritos do evento, por time ou entre todos. O sorteio é feito pela DuGood e fica registrado para conferência.',
+      print: 'organizador-sorteios',
+      pendente: 'Painel do organizador, tela "Sorteios", com um sorteio salvo e um realizado',
     },
   ],
 };

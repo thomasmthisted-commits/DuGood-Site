@@ -206,7 +206,13 @@ export const painel: Secao & { abas: Aba[] } = {
   lead: 'Sem integração nem instalação: o lojista cadastra os benefícios e acompanha os resgates pelo próprio painel da DuGood.',
   abas: [
     {
-      aba: 'Benefícios',
+      aba: 'Visão geral',
+      texto: 'Benefícios ativos, desbloqueios, usos na loja e clientes, com os desbloqueios mês a mês e os últimos clientes.',
+      print: 'lojista-geral',
+      pendente: 'Painel do lojista, tela "Visão geral", com os números e o gráfico de desbloqueios',
+    },
+    {
+      aba: 'Meus benefícios',
       texto: 'Crie quantos benefícios quiser, escolha o nível ou badge exigido, o limite de usos e a validade. Pause e reative quando quiser.',
       print: 'lojista-beneficios',
       pendente: 'Painel do lojista, aba "Benefícios": lista de benefícios com status e o botão "Novo benefício"',
