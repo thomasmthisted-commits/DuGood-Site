@@ -90,7 +90,7 @@ export const widget: Secao & { itens: Item[]; nota: string } = {
     { titulo: 'Pronto.', texto: 'Causa nova, evento novo ou foto nova aparecem sozinhos no site. O botão de doar abre a doação na DuGood, com cartão ou Pix.' },
     { titulo: 'Página inteira ou só o botão.', texto: 'Para um espaço pequeno, há a versão com o nome da ONG e o botão de doar.' },
   ],
-  nota: 'Exemplo ao vivo, com a página da própria DuGood.',
+  nota: 'Exemplo ao vivo: a página da Casa do Pequeno Cidadão na DuGood.',
 };
 
 export const voltam: Secao & { itens: ItemIcone[] } = {

@@ -18,10 +18,10 @@ export const rascunho = false;
 export const appLink = (pagina = '') => `${dugood.app}/${pagina}`;
 
 // Widget da ONG (o script mora no app: public/widget.js do repositório dugood). Na página Para ONGs, o exemplo
-// ao vivo mostra a página da própria DuGood (ONG "DuGood Administração de Projetos Sociais").
+// ao vivo mostra a página da Casa do Pequeno Cidadão (precisa ser ONG aprovada e não oculta no app).
 export const widget = {
   script: `${dugood.app}/widget.js`,
-  ongExemplo: '6aa96c2b989e7ff460fce845',
+  ongExemplo: '6a86e0fdf732b1b94c447b66',
 };
 export const widgetCodigo = (ong: string) =>
   `<div data-dugood-ong="${ong}"></div>\n<script async src="${widget.script}"></script>`;
