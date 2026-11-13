@@ -65,7 +65,7 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
           <pre class="widget__codigo"><code>{widgetCodigo('ID_DA_SUA_ONG')}</code></pre>
         </div>
         <div class="widget__exemplo">
-          <div data-dugood-ong={widgetConfig.ongExemplo}></div>
+          <div class="widget__janela"><div data-dugood-ong={widgetConfig.ongExemplo}></div></div>
           <p class="widget__reserva" hidden>
             <a href={appLink(`OrganizationProfile?id=${widgetConfig.ongExemplo}`)} target="_blank" rel="noopener">Ver a página de exemplo na DuGood</a>
           </p>
@@ -226,6 +226,18 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
     white-space: pre-wrap;
     overflow-wrap: anywhere;
     color: var(--tinta-fraca);
+  }
+  /* O exemplo menor: estreito como uma coluna de site e numa janela com rolagem própria */
+  .widget__exemplo {
+    width: 100%;
+    max-width: 380px;
+    justify-self: center;
+  }
+  .widget__janela {
+    max-height: 600px;
+    overflow-y: auto;
+    border-radius: 24px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
   }
   .widget__nota,
   .widget__reserva {
