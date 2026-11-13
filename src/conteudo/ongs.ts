@@ -44,7 +44,7 @@ export const pagina: Pagina = {
     },
     {
       p: 'Dá para colocar a página da ONG no nosso site?',
-      r: 'Sim. No painel, em Instituição › Perfil, fica o código do widget: duas linhas para colar no site da ONG, no bloco de HTML do WordPress, Wix, Squarespace, Google Sites e outros. A página aparece no site sempre atualizada, com causas, eventos, fotos e o botão de doar, que abre a doação na DuGood. Também dá para mostrar só o botão de doar.',
+      r: 'Sim. No painel, em Instituição › Widget para o site, fica o código do widget: duas linhas para colar no site da ONG, no bloco de HTML do WordPress, Wix, Squarespace, Google Sites e outros. A página aparece no site sempre atualizada, com causas, eventos, fotos e o botão de doar, que abre a doação na DuGood. Também dá para mostrar só o botão de doar.',
     },
     {
       p: 'Dá para receber doações mensais?',
@@ -85,7 +85,7 @@ export const widget: Secao & { itens: Item[]; nota: string } = {
   titulo: 'A mesma página, também no site da sua ONG.',
   lead: 'Duas linhas de código, coladas uma vez, e a página da ONG na DuGood aparece no site da instituição, sempre atualizada: causas, eventos, fotos e o botão de doar.',
   itens: [
-    { titulo: 'Copie o código.', texto: 'No painel, em Instituição › Perfil › Widget para o seu site, com a prévia de como fica.' },
+    { titulo: 'Copie o código.', texto: 'No painel, em Instituição › Widget para o site, com a prévia no celular e no computador.' },
     { titulo: 'Cole no site.', texto: 'No bloco de HTML ou de código do WordPress, Wix, Squarespace, Google Sites ou de qualquer site que aceite HTML.' },
     { titulo: 'Pronto.', texto: 'Causa nova, evento novo ou foto nova aparecem sozinhos no site. O botão de doar abre a doação na DuGood, com cartão ou Pix.' },
     { titulo: 'Do jeito do seu site.', texto: 'Fica como no celular em espaços estreitos e muda sozinho para o layout de computador nos largos. A ONG ainda escolhe a cor, a largura, a altura, o que aparece e se quer só o botão de doar.' },
