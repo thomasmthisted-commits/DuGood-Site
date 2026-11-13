@@ -11,7 +11,7 @@ import LeiaTambem from '../components/LeiaTambem.astro';
 import { postsDaCategoria } from '../lib/blog';
 import Contato from '../components/Contato.astro';
 import Onda from '../components/Onda.astro';
-import { termosLink } from '../config';
+import { appLink, termosLink, widget as widgetConfig, widgetCodigo } from '../config';
 import * as c from '../conteudo/ongs';
 import lupa from '../assets/mascotes/lupa.png';
 import trofeu from '../assets/mascotes/trofeu.png';
@@ -55,8 +55,36 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
         <Print nome="causa" alt="Página de uma causa com meta, valor arrecadado e botão Doar" legenda="Uma causa com meta" />
         <Print nome="evento" alt="Página de um evento beneficente com inscrição" legenda="Um evento com inscrição" />
       </div>
+
+      <div class="duo widget" id="widget">
+        <div data-r>
+          <span class="rotulo">{c.widget.rotulo}</span>
+          <h2>{c.widget.titulo}</h2>
+          <p class="lead">{c.widget.lead}</p>
+          <Lista itens={c.widget.itens} />
+          <pre class="widget__codigo"><code>{widgetCodigo('ID_DA_SUA_ONG')}</code></pre>
+        </div>
+        <div class="widget__exemplo">
+          <div data-dugood-ong={widgetConfig.ongExemplo}></div>
+          <p class="widget__reserva" hidden>
+            <a href={appLink(`OrganizationProfile?id=${widgetConfig.ongExemplo}`)} target="_blank" rel="noopener">Ver a página de exemplo na DuGood</a>
+          </p>
+          <p class="widget__nota">{c.widget.nota}</p>
+        </div>
+      </div>
     </div>
   </section>
+  <script is:inline async src={widgetConfig.script}></script>
+  <script is:inline>
+    // Se o widget não carregar (app fora do ar ou bloqueado), fica o link para a página na DuGood
+    window.addEventListener('load', function () {
+      setTimeout(function () {
+        if (window.DuGoodWidget) return;
+        var r = document.querySelector('.widget__reserva');
+        if (r) r.hidden = false;
+      }, 3000);
+    });
+  </script>
 
   <section class="secao">
     <div class="conteiner duo">
@@ -183,6 +211,28 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
     .trio :global(.print:nth-child(2)) {
       margin-top: 48px;
     }
+  }
+  .widget {
+    margin-top: clamp(64px, 9vw, 112px);
+    align-items: start;
+  }
+  .widget__codigo {
+    margin-top: 24px;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid var(--linha);
+    border-radius: 14px;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    color: var(--tinta-fraca);
+  }
+  .widget__nota,
+  .widget__reserva {
+    margin-top: 12px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--tinta-fraca);
   }
   .financeiro__prints {
     display: grid;

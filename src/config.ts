@@ -16,6 +16,15 @@ export const dugood = {
 export const rascunho = false;
 
 export const appLink = (pagina = '') => `${dugood.app}/${pagina}`;
+
+// Widget da ONG (o script mora no app: public/widget.js do repositório dugood). Na página Para ONGs, o exemplo
+// ao vivo mostra a página da própria DuGood (ONG "DuGood Administração de Projetos Sociais").
+export const widget = {
+  script: `${dugood.app}/widget.js`,
+  ongExemplo: '6aa96c2b989e7ff460fce845',
+};
+export const widgetCodigo = (ong: string) =>
+  `<div data-dugood-ong="${ong}"></div>\n<script async src="${widget.script}"></script>`;
 export const instagramLink = `https://instagram.com/${dugood.instagram}`;
 
 // Páginas legais ficam no app, que é onde os termos valem

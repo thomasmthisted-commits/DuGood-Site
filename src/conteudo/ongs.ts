@@ -43,6 +43,10 @@ export const pagina: Pagina = {
       r: 'Sim. Todo mês encerrado tem o relatório de captação salvo automaticamente, desde a entrada da ONG, e o PDF sai com um clique no painel: quanto a ONG captou, de onde veio o dinheiro, o valor líquido recebido, a evolução mês a mês, os eventos e as causas. O extrato mostra cada doação, tarifa e repasse da conta de recebimento. É um resumo gerencial, que não substitui os demonstrativos contábeis.',
     },
     {
+      p: 'Dá para colocar a página da ONG no nosso site?',
+      r: 'Sim. No painel, em Instituição › Perfil, fica o código do widget: duas linhas para colar no site da ONG, no bloco de HTML do WordPress, Wix, Squarespace, Google Sites e outros. A página aparece no site sempre atualizada, com causas, eventos, fotos e o botão de doar, que abre a doação na DuGood. Também dá para mostrar só o botão de doar.',
+    },
+    {
       p: 'Dá para receber doações mensais?',
       r: 'Sim. O doador escolhe doar todo mês no cartão e pode cancelar quando quiser. No painel, a ONG vê a previsão mensal das doações recorrentes.',
     },
@@ -73,6 +77,20 @@ export const noApp: Secao = {
   rotulo: 'Sua ONG dentro do app',
   titulo: 'O doador encontra, conhece e doa em poucos toques.',
   lead: 'Em Explorar, os doadores chegam à página da ONG, veem o trabalho, as causas abertas e os eventos, e doam com cartão ou Pix, uma vez ou todo mês.',
+};
+
+/** Widget: a página da ONG no site da própria ONG */
+export const widget: Secao & { itens: Item[]; nota: string } = {
+  rotulo: 'No site da ONG',
+  titulo: 'A mesma página, também no site da sua ONG.',
+  lead: 'Duas linhas de código, coladas uma vez, e a página da ONG na DuGood aparece no site da instituição, sempre atualizada: causas, eventos, fotos e o botão de doar.',
+  itens: [
+    { titulo: 'Copie o código.', texto: 'No painel, em Instituição › Perfil › Widget para o seu site, com a prévia de como fica.' },
+    { titulo: 'Cole no site.', texto: 'No bloco de HTML ou de código do WordPress, Wix, Squarespace, Google Sites ou de qualquer site que aceite HTML.' },
+    { titulo: 'Pronto.', texto: 'Causa nova, evento novo ou foto nova aparecem sozinhos no site. O botão de doar abre a doação na DuGood, com cartão ou Pix.' },
+    { titulo: 'Página inteira ou só o botão.', texto: 'Para um espaço pequeno, há a versão com o nome da ONG e o botão de doar.' },
+  ],
+  nota: 'Exemplo ao vivo, com a página da própria DuGood.',
 };
 
 export const voltam: Secao & { itens: ItemIcone[] } = {
@@ -210,6 +228,7 @@ export const markdown = (site: URL | undefined) =>
     cabecalho(pagina, site),
     secao(taxaZero.titulo, taxaZero.lead, lista(taxaZero.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto }))), taxaZero.nota),
     secao(noApp.titulo, noApp.lead),
+    secao(widget.titulo, widget.lead, lista(widget.itens)),
     secao(voltam.titulo, voltam.lead, lista(voltam.itens.map((i) => ({ titulo: `${i.titulo}:`, texto: i.texto })))),
     secao(painel.titulo, painel.lead, lista(painel.abas.map((a) => ({ titulo: `${a.aba}:`, texto: a.texto })))),
     secao(financeiro.titulo, financeiro.lead, lista(financeiro.itens)),
