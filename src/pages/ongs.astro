@@ -65,7 +65,12 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
           <pre class="widget__codigo"><code>{widgetCodigo('ID_DA_SUA_ONG')}</code></pre>
         </div>
         <div class="widget__exemplo">
-          <div class="widget__janela"><div data-dugood-ong={widgetConfig.ongExemplo}></div></div>
+          <!-- Mesma moldura de celular dos prints (Print.astro), com o widget de verdade na tela e rolagem própria -->
+          <div class="widget__celular">
+            <div class="widget__tela">
+              <div data-dugood-ong={widgetConfig.ongExemplo} data-layout="celular" data-moldura="nao" data-idioma="pt"></div>
+            </div>
+          </div>
           <p class="widget__reserva" hidden>
             <a href={appLink(`OrganizationProfile?id=${widgetConfig.ongExemplo}`)} target="_blank" rel="noopener">Ver a página de exemplo na DuGood</a>
           </p>
@@ -227,17 +232,26 @@ const artigos = (await postsDaCategoria('para-ongs')).slice(0, 3);
     overflow-wrap: anywhere;
     color: var(--tinta-fraca);
   }
-  /* O exemplo menor: estreito como uma coluna de site e numa janela com rolagem própria */
+  /* O exemplo numa moldura de celular igual à dos prints (Print.astro), com a tela rolando */
   .widget__exemplo {
     width: 100%;
-    max-width: 380px;
+    max-width: 300px;
     justify-self: center;
   }
-  .widget__janela {
-    max-height: 600px;
+  .widget__celular {
+    overflow: hidden;
+    background: #fff;
+    border: 8px solid #17241c;
+    border-radius: 36px;
+    box-shadow: 0 2px 6px rgb(23 36 28 / 0.06), 0 24px 56px rgb(23 36 28 / 0.12);
+  }
+  .widget__tela {
+    aspect-ratio: 390 / 844;
     overflow-y: auto;
-    border-radius: 24px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+    scrollbar-width: none;
+  }
+  .widget__tela::-webkit-scrollbar {
+    display: none;
   }
   .widget__nota,
   .widget__reserva {

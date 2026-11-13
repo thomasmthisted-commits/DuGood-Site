@@ -88,9 +88,9 @@ export const widget: Secao & { itens: Item[]; nota: string } = {
     { titulo: 'Copie o código.', texto: 'No painel, em Instituição › Perfil › Widget para o seu site, com a prévia de como fica.' },
     { titulo: 'Cole no site.', texto: 'No bloco de HTML ou de código do WordPress, Wix, Squarespace, Google Sites ou de qualquer site que aceite HTML.' },
     { titulo: 'Pronto.', texto: 'Causa nova, evento novo ou foto nova aparecem sozinhos no site. O botão de doar abre a doação na DuGood, com cartão ou Pix.' },
-    { titulo: 'Página inteira ou só o botão.', texto: 'Para um espaço pequeno, há a versão com o nome da ONG e o botão de doar.' },
+    { titulo: 'Do jeito do seu site.', texto: 'Fica como no celular em espaços estreitos e muda sozinho para o layout de computador nos largos. A ONG ainda escolhe a cor, a largura, a altura, o que aparece e se quer só o botão de doar.' },
   ],
-  nota: 'Exemplo ao vivo: a página da Casa do Pequeno Cidadão na DuGood.',
+  nota: 'Exemplo ao vivo, com a página da Casa do Pequeno Cidadão na DuGood: role dentro do celular.',
 };
 
 export const voltam: Secao & { itens: ItemIcone[] } = {
