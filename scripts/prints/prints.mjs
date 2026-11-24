@@ -121,6 +121,10 @@ function funcao(nome, corpo, perfil) {
       return { claimed: 0 };
     case 'getPublicDonationStats':
       return { total: 48750 };
+    case 'requestOrgTermsSignature':
+      return { envelopeId: 'env_demo', signerEmail: D.org.email, status: 'sent' };
+    case 'checkSignatureStatus':
+      return { signed: false, org_signed: false };
     case 'accountAccess':
       return D.acessos(corpo, perfil);
     default:
@@ -173,7 +177,8 @@ for (const job of jobs) {
     const ent = caminho.match(/\/entities\/([A-Za-z]+)(?:\/([^/]+))?$/);
     if (ent) {
       const [, nome, id] = ent;
-      const linhas = tabelas[nome] ?? (faltando.add(`entidade ${nome}`), []);
+      // "org": muda campos da ONG fictícia só neste print (ex.: termo ainda não assinado)
+      const linhas = nome === 'Organization' && job.org ? [{ ...D.org, ...job.org }] : tabelas[nome] ?? (faltando.add(`entidade ${nome}`), []);
       if (req.method() === 'GET') {
         if (id) return json(linhas.find((l) => l.id === id) ?? null, linhas.some((l) => l.id === id) ? 200 : 404);
         const q = url.searchParams.get('q') ? JSON.parse(url.searchParams.get('q')) : {};

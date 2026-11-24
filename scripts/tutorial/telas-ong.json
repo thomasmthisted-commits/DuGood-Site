@@ -103,13 +103,25 @@
   ]
  },
  {
-  "nome": "ong-como-usar",
+  "nome": "ong-documentos",
   "perfil": "ong",
-  "url": "/OrganizationDashboard?view=causas",
+  "url": "/OrganizationDashboard?view=instituicao.documentos",
+  "org": {
+   "terms_signatures": []
+  }
+ },
+ {
+  "nome": "ong-termo-email",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=instituicao.documentos",
   "passos": [
    {
-    "clicar": "Como usar esta tela"
+    "seletor": "[data-tut=org-terms-general] button",
+    "esperar": 2500
    }
-  ]
+  ],
+  "org": {
+   "terms_signatures": []
+  }
  }
 ]

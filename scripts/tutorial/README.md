@@ -2,7 +2,7 @@
 
 Vídeo curto, no mesmo estilo do filme institucional (frases com destaque em verde, fundo ondulado, mascotes e as
 telas do app em moldura de navegador), para mandar a quem acabou de receber o link de cadastro do painel.
-Hoje existe o das ONGs (`roteiro-ong.js`): entrar pelo link, equipe e Controle de acessos, Configurações
+Hoje existe o das ONGs (`roteiro-ong.js`): entrar pelo link, assinar o termo de entrada (DocuSign, por e-mail), equipe e Controle de acessos, Configurações
 (notificações e idioma), o menu e a Visão geral, e os primeiros passos (perfil, pagamentos com a Stripe, primeira
 causa, doadores e extrato).
 

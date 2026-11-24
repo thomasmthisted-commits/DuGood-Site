@@ -1,4 +1,4 @@
-// Roteiro do vídeo tutorial para ONGs (onboarding): entrar, equipe e Controle de acessos, Configurações,
+// Roteiro do vídeo tutorial para ONGs (onboarding): entrar, assinar o termo de entrada, equipe e Controle de acessos, Configurações,
 // conhecer o painel e primeiros passos. Cada cena: { dur (s), fundo: 'branca' | 'verde', itens }.
 // Os tempos dos itens (at, ate) contam do começo da cena. Regiões das telas (r) em px da tela de 1200x800.
 // Textos conferidos com o app (repositório dugood): nada aqui pode prometer o que o app não faz.
@@ -27,9 +27,9 @@ window.ROTEIRO = [
     fundo: 'verde',
     itens: [
       { tipo: 'imagem', src: '../../public/marca/logo-dugood-branco.png', x: 610, y: 250, w: 700, at: .2 },
-      { tipo: 'sub', texto: 'Seu painel em <b>5 passos</b>.', y: 610, tam: 40, at: 1.2 },
-      { tipo: 'html', x: 520, y: 700, at: 1.8, dy: 20, conteudo: `<div style="display:flex;gap:14px;font-size:22px;font-weight:600">
-        ${['Entrar', 'Equipe', 'Configurações', 'Painel', 'Primeiros passos'].map((s, i) => `<span style="background:rgba(255,255,255,.18);border-radius:999px;padding:10px 20px">${i + 1}. ${s}</span>`).join('')}</div>` },
+      { tipo: 'sub', texto: 'Seu painel em <b>6 passos</b>.', y: 610, tam: 40, at: 1.2 },
+      { tipo: 'html', x: 360, y: 700, at: 1.8, dy: 20, conteudo: `<div style="display:flex;gap:14px;font-size:22px;font-weight:600">
+        ${['Entrar', 'Termo', 'Equipe', 'Configurações', 'Painel', 'Primeiros passos'].map((s, i) => `<span style="background:rgba(255,255,255,.18);border-radius:999px;padding:10px 20px">${i + 1}. ${s}</span>`).join('')}</div>` },
     ],
   },
 
@@ -58,8 +58,59 @@ window.ROTEIRO = [
     ],
   },
 
-  // 02 Equipe
-  passo('02', 'Sua equipe', 'No Controle de acessos você escolhe quem entra e o que cada pessoa vê.', 'abraco'),
+  // 02 Termo de entrada (Termo de Captação de Causa Comum, DocuSign: a ONG assina e depois a DuGood)
+  passo('02', 'Assinar o termo', 'O contrato de entrada da instituição na DuGood, assinado pela internet.', 'livro'),
+  {
+    dur: 9.5,
+    itens: [
+      { tipo: 'titulo', texto: 'Instituição › Documentos › *Assinar.*', y: 70, tam: 58 },
+      { tipo: 'navegador', src: 'ong-documentos', x: 380, y: 180, w: 1160, at: .4,
+        cam: [{ at: 1.6, r: [240, 150, 520, 260] }],
+        aneis: [{ at: 3.2, r: [596, 301, 99, 39] }] },
+      { tipo: 'chip', texto: 'Termo de Captação de Causa Comum', x: 1180, y: 300, at: 2.4 },
+      { tipo: 'chip', texto: 'Um termo só, para todas as causas e eventos', x: 1060, y: 900, at: 4.4 },
+    ],
+  },
+  {
+    dur: 11,
+    itens: [
+      { tipo: 'titulo', texto: 'O link de assinatura *chega por e-mail.*', y: 70, tam: 58 },
+      { tipo: 'navegador', src: 'ong-termo-email', x: 110, y: 200, w: 1040, at: .4,
+        cam: [{ at: 1.4, r: [330, 150, 540, 500] }],
+        aneis: [{ at: 2.6, r: [362, 342, 476, 174] }] },
+      { tipo: 'html', x: 1230, y: 250, at: 4, dy: 50, conteudo: `<div class="cartao" style="width:580px;padding:0;overflow:hidden">
+          <div style="background:#f1f3f2;padding:16px 26px;font-size:19px;color:#56635b;font-weight:600">Caixa de entrada · e-mail da instituição</div>
+          <div style="padding:26px 30px">
+            <div style="font-size:19px;color:#8a958e">De: DocuSign</div>
+            <div style="font-family:'Plus Jakarta Sans';font-weight:700;font-size:28px;margin-top:8px;line-height:1.25">Assinatura — Termo de Captação de Causa Comum</div>
+            <div style="height:12px;background:#eef1ef;border-radius:6px;margin-top:22px;width:92%"></div>
+            <div style="height:12px;background:#eef1ef;border-radius:6px;margin-top:10px;width:70%"></div>
+            <div style="display:inline-block;margin-top:24px;background:#52b520;color:#fff;font-weight:700;font-size:21px;padding:14px 26px;border-radius:10px">Revisar e assinar</div>
+          </div></div>` },
+      { tipo: 'chip', texto: 'Vai para o e-mail da instituição', x: 1270, y: 700, at: 5.6 },
+      { tipo: 'chip', texto: 'O responsável legal abre e assina', x: 1250, y: 790, at: 6.6 },
+      { tipo: 'sub', texto: 'Não chegou? Confira a caixa de spam e o e-mail em Instituição › Perfil.', y: 990, tam: 25, at: 8 },
+    ],
+  },
+  {
+    dur: 9.5,
+    itens: [
+      { tipo: 'titulo', texto: 'Depois, *a DuGood assina também.*', y: 110, tam: 62 },
+      ...[
+        ['1', 'A instituição pede', 'em Documentos', 'Pendente', 'esp'],
+        ['2', 'O responsável legal assina', 'pelo link do e-mail', 'Aguardando assinatura da DuGood', 'esp'],
+        ['3', 'A DuGood assina', 'e o termo fica em Documentos', 'Assinado', 'ok2'],
+      ].map(([n, a, b, selo, cls], i) => ({
+        tipo: 'html', x: 170 + i * 540, y: 330, at: .9 + i * 1.3,
+        conteudo: `<div class="cartao" style="width:500px;min-height:300px"><div class="avatar" style="background:#52b520">${n}</div>
+          <div class="nome">${a}</div><div class="mail">${b}</div><span class="selo ${cls}">${selo}</span></div>`,
+      })),
+      { tipo: 'sub', texto: 'O termo assinado é necessário para criar causas e eventos na DuGood.', y: 720, at: 5 },
+    ],
+  },
+
+  // 03 Equipe
+  passo('03', 'Sua equipe', 'No Controle de acessos você escolhe quem entra e o que cada pessoa vê.', 'abraco'),
   {
     dur: 9.5,
     itens: [
@@ -101,8 +152,8 @@ window.ROTEIRO = [
     ],
   },
 
-  // 03 Configurações
-  passo('03', 'Configurações', 'Avisos por e-mail e o idioma do painel.', 'ferramentas'),
+  // 04 Configurações
+  passo('04', 'Configurações', 'Avisos por e-mail e o idioma do painel.', 'ferramentas'),
   {
     dur: 10,
     itens: [
@@ -126,8 +177,8 @@ window.ROTEIRO = [
     ],
   },
 
-  // 04 Conheça o painel
-  passo('04', 'Conheça o painel', 'Tudo organizado no menu, por blocos.', 'lupa'),
+  // 05 Conheça o painel
+  passo('05', 'Conheça o painel', 'Tudo organizado no menu, por blocos.', 'lupa'),
   {
     dur: 10,
     itens: [
@@ -151,8 +202,8 @@ window.ROTEIRO = [
     ],
   },
 
-  // 05 Primeiros passos
-  passo('05', 'Primeiros passos', 'O que fazer logo depois de entrar.', 'joinha'),
+  // 06 Primeiros passos
+  passo('06', 'Primeiros passos', 'O que fazer logo depois de entrar.', 'joinha'),
   {
     dur: 26,
     itens: [
