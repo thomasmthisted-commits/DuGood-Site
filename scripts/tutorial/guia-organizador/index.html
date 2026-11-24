@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do organizador na DuGood</title>
+<meta name="description" content="Primeiros passos do organizador de eventos no painel da DuGood, um assunto por página: entrar, termos, equipe e staff, configurações, conta Stripe, criar o evento, portaria e financeiro.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<!--
+  Guia de onboarding para organizadores de eventos, um assunto por página (no PDF, cada .pagina começa numa folha
+  nova e precisa caber nela). Mesmo conteúdo do vídeo tutorial (roteiro-organizador.js). Estilo igual ao do guia
+  da ONG (guia-ong/index.html); imagens comuns (logo, mascotes, fundo) vêm de guia-ong/img. Telas com dados
+  fictícios (Assessoria Corre Junto). Tudo o que está aqui precisa existir no app (repositório dugood).
+  Gerar o PDF: node scripts/tutorial/guia-organizador/gerar-pdf.mjs
+-->
+<style>
+  :root {
+    --branco: #ffffff; --nevoa: #f6f8f7; --cinza-1: #eef1ef; --linha: #e2e7e4;
+    --tinta: #17241c; --tinta-suave: #56635b; --tinta-fraca: #8a958e;
+    --verde-escuro: #1b571b; --verde: #09a673; --verde-claro: #e6f6ee; --verde-claro-2: #d2efe0;
+    --onda-1: #7be83a; --onda-2: #57bc2d; --onda-3: #45a425; --onda-veu: rgb(17 62 17 / 0.55);
+    --titulo: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --raio: 18px; --raio-p: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--branco); color: var(--tinta); font-family: var(--texto); font-size: 15.5px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--titulo); line-height: 1.2; margin: 0; color: var(--tinta); }
+  a { color: var(--verde); }
+  p { margin: 0 0 0.7em; }
+  ul, ol { margin: 0 0 0.7em; padding-left: 1.2em; }
+  li { margin: 0.25em 0; }
+  strong { color: var(--tinta); }
+  .caminho { font-weight: 600; color: var(--verde-escuro); background: var(--verde-claro); padding: 0.05em 0.45em; border-radius: 6px; white-space: nowrap; }
+
+  /* Capa */
+  .capa { position: relative; overflow: hidden; color: #fff; background: linear-gradient(135deg, var(--onda-1), var(--onda-2) 45%, var(--onda-3)); min-height: 100vh; display: flex; flex-direction: column; padding: clamp(28px, 6vw, 64px) clamp(16px, 6vw, 72px); }
+  .capa::before { content: ''; position: absolute; inset: 0; background: url('../guia-ong/img/fundo-verde.jpg') center top / cover no-repeat; }
+  .capa::after { content: ''; position: absolute; inset: 0; background: var(--onda-veu); }
+  .capa > * { position: relative; z-index: 1; }
+  .capa__logo { width: 160px; display: block; }
+  .capa__meio { margin: auto 0; max-width: 600px; padding: 48px 0; }
+  .capa__rotulo { display: inline-block; font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: rgb(255 255 255 / 0.16); border: 1px solid rgb(255 255 255 / 0.3); padding: 5px 12px; border-radius: 999px; margin-bottom: 20px; }
+  .capa h1 { color: #fff; font-size: clamp(38px, 6.4vw, 62px); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 18px; }
+  .capa__sub { font-size: clamp(17px, 2.2vw, 20px); color: rgb(255 255 255 / 0.92); max-width: 500px; margin: 0; }
+  .capa__mascote { position: absolute; right: clamp(8px, 6vw, 80px); bottom: clamp(60px, 9vw, 110px); width: clamp(140px, 22vw, 240px); z-index: 1; }
+  .capa__rodape { display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 13.5px; color: rgb(255 255 255 / 0.85); }
+
+  /* Páginas */
+  main { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+  .pagina { padding-top: 64px; }
+  .topo { display: flex; align-items: center; gap: 20px; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 2px solid var(--verde-claro-2); }
+  .topo img { width: 80px; flex: none; }
+  .num { font-family: var(--titulo); font-weight: 700; font-size: 12.5px; color: var(--verde); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .pagina h2 { font-size: clamp(25px, 3.4vw, 30px); font-weight: 800; letter-spacing: -0.015em; }
+  .pagina h3 { font-size: 16.5px; font-weight: 700; margin: 18px 0 8px; }
+  .lead { font-size: 16.5px; color: var(--tinta-suave); }
+
+  .resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 4px; }
+  .caixa { border-radius: var(--raio-p); padding: 10px 16px; font-size: 14px; }
+  .caixa b { display: block; font-family: var(--titulo); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--verde); margin-bottom: 3px; }
+  .caixa--onde { background: var(--verde-claro); border: 1px solid var(--verde-claro-2); }
+  .caixa--quem { background: var(--nevoa); border: 1px solid var(--linha); }
+
+  .numerada { list-style: none; padding: 0; counter-reset: n; margin: 8px 0 12px; }
+  .numerada li { position: relative; padding-left: 40px; margin: 10px 0; counter-increment: n; }
+  .numerada li::before { content: counter(n); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--verde); color: #fff; display: grid; place-items: center; font-family: var(--titulo); font-weight: 800; font-size: 13px; }
+  .numerada li span { display: block; color: var(--tinta-suave); font-size: 14px; }
+
+  .destaque { position: relative; overflow: hidden; border-radius: var(--raio); padding: 18px 24px; margin: 16px 0; color: #fff; background: linear-gradient(135deg, var(--onda-1), var(--onda-2) 45%, var(--onda-3)); }
+  .destaque::before { content: ''; position: absolute; inset: 0; background: url('../guia-ong/img/fundo-verde.jpg') center / cover no-repeat; }
+  .destaque::after { content: ''; position: absolute; inset: 0; background: var(--onda-veu); }
+  .destaque > * { position: relative; z-index: 1; }
+  .destaque h3 { color: #fff; margin: 0 0 6px; font-size: 18px; }
+  .destaque p { margin: 0; color: rgb(255 255 255 / 0.93); }
+  .destaque strong { color: #fff; }
+  .dica { position: relative; background: var(--verde-claro); border: 1px solid var(--verde-claro-2); border-radius: var(--raio-p); padding: 11px 16px 11px 48px; margin: 12px 0; font-size: 14px; }
+  .dica::before { content: '!'; position: absolute; left: 14px; top: 11px; width: 22px; height: 22px; border-radius: 50%; background: var(--verde); color: #fff; font-family: var(--titulo); font-weight: 800; font-size: 13px; display: grid; place-items: center; }
+  .dica p:last-child { margin-bottom: 0; }
+  .dica--cinza { background: var(--nevoa); border-color: var(--linha); }
+  .dica--cinza::before { background: var(--tinta-fraca); }
+
+  figure { margin: 12px 0 14px; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid var(--linha); border-radius: var(--raio-p); }
+  figcaption { font-size: 12.5px; color: var(--tinta-fraca); text-align: center; margin-top: 6px; }
+  .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .duas--texto { grid-template-columns: 1.15fr 0.85fr; }
+  .duas figure { margin-top: 2px; }
+
+  .tabela { width: 100%; margin: 10px 0 12px; border: 1px solid var(--linha); border-radius: var(--raio-p); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; vertical-align: top; padding: 7px 12px; border-bottom: 1px solid var(--linha); }
+  th { background: var(--nevoa); font-family: var(--titulo); font-weight: 700; font-size: 12.5px; color: var(--tinta-suave); }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child { font-weight: 600; }
+  .selo { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .selo--cinza { background: var(--cinza-1); color: var(--tinta-suave); }
+  .selo--verde { background: var(--verde-claro-2); color: var(--verde-escuro); }
+  .selo--cheio { background: var(--verde); color: #fff; }
+
+  .indice { list-style: none; padding: 0; margin: 10px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 7px 20px; counter-reset: i; }
+  .indice li { counter-increment: i; display: flex; gap: 12px; align-items: baseline; padding: 7px 12px; background: var(--nevoa); border: 1px solid var(--linha); border-radius: 10px; margin: 0; font-size: 14px; }
+  .indice li::before { content: counter(i, decimal-leading-zero); font-family: var(--titulo); font-weight: 800; color: var(--verde); font-size: 13px; }
+  .indice a { color: var(--tinta); text-decoration: none; font-weight: 600; }
+
+  .checklist { list-style: none; padding: 0; margin: 8px 0; }
+  .checklist li { position: relative; padding-left: 30px; margin: 8px 0; }
+  .checklist li::before { content: ''; position: absolute; left: 0; top: 3px; width: 17px; height: 17px; border-radius: 5px; border: 2px solid var(--verde); }
+  .checklist small { display: block; color: var(--tinta-suave); font-size: 13.5px; }
+
+  .faq-item { padding: 9px 0; border-bottom: 1px solid var(--linha); }
+  .faq-item h3 { font-size: 15px; margin: 0 0 3px; }
+  .faq-item p { color: var(--tinta-suave); margin: 0; font-size: 14px; }
+  .contato { display: flex; gap: 22px; align-items: center; background: var(--nevoa); border: 1px solid var(--linha); border-radius: var(--raio); padding: 18px 24px; margin-top: 18px; }
+  .contato img { width: 80px; flex: none; }
+  .contato h3 { margin: 0 0 4px; }
+  .contato p { margin: 0; color: var(--tinta-suave); }
+
+  @media (max-width: 640px) {
+    .duas, .duas--texto, .resumo, .indice { grid-template-columns: 1fr; }
+    .capa__mascote { opacity: 0.35; }
+    .contato { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* Impressão / PDF (A4): cada .pagina começa numa folha nova */
+  @page { size: A4; margin: 14mm 15mm 16mm; }
+  @page :first { margin: 0; }
+  @media print {
+    body { font-size: 10pt; line-height: 1.5; }
+    .capa { min-height: 297mm; height: 297mm; padding: 22mm 20mm; }
+    .capa__mascote { right: 18mm; bottom: 30mm; width: 62mm; opacity: 1; }
+    main { max-width: none; padding: 0; }
+    .pagina { break-before: page; padding-top: 0; }
+    .lead { font-size: 10.8pt; }
+    .numerada li span, .caixa, .dica, table, .faq-item p, .checklist small { font-size: 9.2pt; }
+    figure img { max-height: 88mm; width: auto; max-width: 100%; margin: 0 auto; }
+    figure.baixa img { max-height: 62mm; }
+    #termo figure img { max-height: 42mm; }
+    #antes .indice { grid-template-columns: 1fr 1fr 1fr; gap: 6px 12px; }
+    #antes .indice li { padding: 6px 10px; font-size: 9pt; }
+    #antes .checklist li { margin: 6px 0; }
+    #painel figure.baixa img { max-height: 50mm; }
+    #painel .duas figure img { max-height: 78mm; }
+    #termo .numerada li { margin: 6px 0; }
+    #termo figcaption { display: none; }
+    #termo figure { margin: 6px 0 8px; }
+    #termo td, #termos th { padding: 5px 12px; }
+    #termo h3 { margin-top: 10px; }
+    .duas figure img { max-height: 105mm; }
+    .tabela, tr, figure, .dica, .destaque, .contato, .numerada li { break-inside: avoid; }
+    a { text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<header class="capa">
+  <img class="capa__logo" src="../guia-ong/img/logo-branco.png" alt="DuGood">
+  <div class="capa__meio">
+    <span class="capa__rotulo">Guia para organizadores de eventos</span>
+    <h1>Boas-vindas à DuGood</h1>
+    <p class="capa__sub">O passo a passo para entrar no painel, organizar a equipe e criar eventos em que a inscrição vira doação.</p>
+  </div>
+  <img class="capa__mascote" src="../guia-ong/img/acenando.png" alt="">
+  <div class="capa__rodape">
+    <span>Versão de novembro de 2026</span>
+    <span>As telas deste guia usam dados fictícios</span>
+    <span>dugood.com.br</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- 01 -->
+  <section class="pagina" id="antes">
+    <div class="topo"><img src="../guia-ong/img/coracao.png" alt=""><div><div class="num">01 · Antes de começar</div><h2>Como usar este guia</h2></div></div>
+    <p class="lead">Na DuGood, o organizador cria eventos sociais (corridas, caminhadas, shows, jantares…) em que a inscrição vira doação para uma ou mais instituições. O painel cuida da venda dos ingressos, da lista de inscritos, da portaria e do financeiro. Este guia explica, um assunto por página, tudo o que é preciso para começar.</p>
+    <p>Na primeira vez, leia na ordem. Depois, use como consulta. O mesmo conteúdo está no vídeo tutorial que acompanha este guia.</p>
+    <h3>Neste guia</h3>
+    <ol class="indice">
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#entrar">Entrar no painel</a></li>
+      <li><a href="#termos">Aceitar os Termos de Parceria</a></li>
+      <li><a href="#equipe">Convidar a equipe</a></li>
+      <li><a href="#niveis">O que cada pessoa vê ou edita</a></li>
+      <li><a href="#staff">Equipe da portaria (staff)</a></li>
+      <li><a href="#configuracoes">Avisos por e-mail e idioma</a></li>
+      <li><a href="#painel">O menu e a Visão geral</a></li>
+      <li><a href="#perfil">Perfil do organizador</a></li>
+      <li><a href="#stripe">Conta Stripe</a></li>
+      <li><a href="#evento">Criar o evento</a></li>
+      <li><a href="#divisao">Venda em seu nome</a></li>
+      <li><a href="#pagina">A página do evento</a></li>
+      <li><a href="#portaria">No dia do evento</a></li>
+      <li><a href="#financeiro">Financeiro</a></li>
+      <li><a href="#duvidas">Dúvidas frequentes</a></li>
+    </ol>
+    <h3>Tenha à mão</h3>
+    <ul class="checklist">
+      <li><strong>O link de cadastro do painel</strong><small>Enviado pela equipe da DuGood. É por ele que a primeira pessoa entra.</small></li>
+      <li><strong>Os dados para a conta Stripe</strong><small>Pessoa física (CPF, data de nascimento, endereço e conta no CPF) ou jurídica (CNPJ, dados dos sócios e conta no CNPJ). Só é necessária para vender em seu nome.</small></li>
+      <li><strong>As instituições que o evento vai apoiar</strong><small>Cada uma aprova o evento antes de ele ir ao ar.</small></li>
+      <li><strong>Quem vai trabalhar na portaria</strong><small>Cada pessoa usa a própria conta da DuGood.</small></li>
+    </ul>
+    <div class="destaque">
+      <h3>A parte das instituições vai inteira para elas</h3>
+      <p>Hoje a DuGood <strong>não cobra taxa de administração</strong> nas vendas, e as ferramentas do painel são grátis. Só a Stripe, que processa os pagamentos, cobra as tarifas dela, e em cada evento você escolhe se absorve a tarifa ou se o comprador paga.</p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="pagina" id="entrar">
+    <div class="topo"><img src="../guia-ong/img/celular.png" alt=""><div><div class="num">02 · Entrar no painel</div><h2>O primeiro acesso, pelo link de cadastro</h2></div></div>
+    <p class="lead">A entrada no painel do organizador é sempre pelo <strong>link de cadastro</strong> que a DuGood mandou. É ele que liga a sua conta ao seu painel.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b>O link de cadastro que a DuGood mandou por e-mail ou WhatsApp.</div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>Primeiro, quem vai cuidar do painel (vira o administrador). Depois, o resto da equipe.</div>
+    </div>
+    <div class="duas duas--texto">
+      <div>
+        <h3>Passo a passo</h3>
+        <ol class="numerada">
+          <li><strong>Abra o link de cadastro.</strong><span>Funciona no computador e no celular. A tela de entrada da DuGood abre.</span></li>
+          <li><strong>Entre com Google, Apple ou e-mail e senha.</strong><span>Se você já usa a DuGood para doar, pode usar a mesma conta.</span></li>
+          <li><strong>Sem conta? Clique em Cadastrar.</strong><span>Informe e-mail, telefone, CPF e uma senha. Um código chega no seu e-mail: digite-o para confirmar.</span></li>
+          <li><strong>Aceite os Termos de Parceria.</strong><span>Na primeira entrada, eles aparecem no próprio painel (veja a próxima página).</span></li>
+        </ol>
+      </div>
+      <figure><img src="../guia-ong/img/login.jpg" alt="Tela de entrada da DuGood"><figcaption>A tela de entrada</figcaption></figure>
+    </div>
+    <h3>Quem entra primeiro vira o administrador</h3>
+    <p>A primeira pessoa que entra pelo link vira o <strong>administrador do painel</strong>: tem acesso a tudo e decide quem mais entra. Quem entra depois pelo mesmo link <strong>pede acesso</strong>, e o administrador recebe um aviso por e-mail para aprovar (página 04).</p>
+    <div class="dica">
+      <p><strong>Combine quem entra primeiro.</strong> O ideal é que seja a pessoa que vai cuidar do painel no dia a dia. A administração pode ser passada para outra pessoa depois.</p>
+    </div>
+    <div class="dica dica--cinza">
+      <p><strong>Um e-mail, um painel.</strong> Cada conta da DuGood fica ligada a um painel só. Se a pessoa já usa o e-mail no painel de uma ONG, de uma loja ou de outro organizador, precisa entrar com outro e-mail.</p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="pagina" id="termos">
+    <div class="topo"><img src="../guia-ong/img/livro.png" alt=""><div><div class="num">03 · Aceitar os Termos de Parceria</div><h2>O acordo do organizador com a DuGood</h2></div></div>
+    <p class="lead">Na primeira vez que entra no painel, cada pessoa vê os <strong>Termos de Parceria — Organizador de Eventos DuGood</strong>. O aceite é feito no próprio painel, em poucos segundos, e só aparece uma vez para cada pessoa.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b>Abre sozinho na primeira entrada no painel.</div>
+      <div class="caixa caixa--quem"><b>Quem aceita</b>Cada pessoa da equipe, na primeira vez que entra.</div>
+    </div>
+    <div class="duas duas--texto">
+      <div>
+        <h3>O que os termos dizem</h3>
+        <ol class="numerada">
+          <li><strong>Uso da imagem e da marca.</strong><span>Você autoriza a DuGood a usar o nome, o logo e a identidade visual do seu evento ou organização na plataforma, em materiais de divulgação, nas redes sociais e em campanhas de impacto social. A autorização é gratuita, não exclusiva e vale enquanto a parceria estiver ativa.</span></li>
+          <li><strong>Validação dos ingressos.</strong><span>Você se compromete a validar os QR codes na entrada do evento, manter o scanner funcionando, conferir os dados de quem entra, manter os times do evento atualizados e avisar a DuGood se encontrar algum problema.</span></li>
+        </ol>
+        <h3>Para aceitar</h3>
+        <p>Leia o texto, marque as duas opções no fim e clique em <strong>Aceitar e continuar</strong>. O painel abre em seguida.</p>
+      </div>
+      <figure><img src="img/termos.jpg" alt="Termos de Parceria do organizador de eventos"><figcaption>Os Termos de Parceria, na primeira entrada</figcaption></figure>
+    </div>
+    <div class="dica">
+      <p><strong>Quer encerrar a parceria?</strong> A autorização de uso da marca pode ser revogada pedindo o encerramento da parceria à equipe da DuGood.</p>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="pagina" id="equipe">
+    <div class="topo"><img src="../guia-ong/img/abraco.png" alt=""><div><div class="num">04 · Convidar a equipe</div><h2>Mais gente cuidando do painel</h2></div></div>
+    <p class="lead">Cada pessoa da equipe entra com a própria conta, pelo mesmo link de cadastro do painel. Assim cada um tem o seu login, e você controla quem entra e o que cada um pode fazer, sem compartilhar senha.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Configurações › Controle de acessos</span> (botão Configurações, no rodapé do menu).</div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>Só o administrador do painel vê esta aba.</div>
+    </div>
+    <figure><img src="img/acessos.jpg" alt="Controle de acessos: link de cadastro e pessoas da equipe"><figcaption>O link de cadastro e a lista de pessoas</figcaption></figure>
+    <h3>Passo a passo</h3>
+    <ol class="numerada">
+      <li><strong>Copie o link de cadastro.</strong><span>Clique em Copiar e mande para a pessoa como preferir, ou use Enviar no WhatsApp.</span></li>
+      <li><strong>A pessoa entra pelo link.</strong><span>Ela entra com a conta dela (ou cria uma). O painel ainda não abre: fica o pedido de acesso.</span></li>
+      <li><strong>Você recebe o aviso e aprova.</strong><span>Chega um e-mail para o administrador, e o pedido aparece em Controle de acessos e nas Pendências da Visão geral. Clique em Aprovar ou Recusar.</span></li>
+      <li><strong>Pronto: a pessoa já pode usar o painel.</strong><span>Quem é aprovado começa podendo editar tudo. Para limitar, veja a próxima página.</span></li>
+    </ol>
+    <div class="dica">
+      <p><strong>Para a portaria, use o link de staff</strong> (página 06): quem só valida ingressos no dia do evento não precisa entrar no painel.</p>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="pagina" id="niveis">
+    <div class="topo"><img src="../guia-ong/img/ferramentas.png" alt=""><div><div class="num">05 · O que cada pessoa vê ou edita</div><h2>Acesso por bloco do menu</h2></div></div>
+    <p class="lead">Nem todo mundo precisa ver tudo: quem cuida da divulgação não precisa ver o financeiro, por exemplo. Para cada pessoa, você escolhe o acesso a cada bloco do menu: <strong>Início, Eventos, Conta e Financeiro</strong>.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Configurações › Controle de acessos</span>, abaixo do nome de cada pessoa.</div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>O administrador do painel.</div>
+    </div>
+    <div class="tabela"><table>
+      <thead><tr><th style="width:22%">Nível</th><th>O que acontece para a pessoa</th></tr></thead>
+      <tbody>
+        <tr><td>Sem acesso</td><td>O bloco some do menu dela, como se não existisse.</td></tr>
+        <tr><td>Ver</td><td>Ela vê as telas do bloco, com um aviso de que o acesso é só para ver, e não consegue salvar nada.</td></tr>
+        <tr><td>Editar</td><td>Ela vê e muda tudo no bloco. É o padrão para quem acabou de ser aprovado.</td></tr>
+      </tbody>
+    </table></div>
+    <figure><img src="img/acessos-blocos.jpg" alt="Escolha de Sem acesso, Ver ou Editar em cada bloco"><figcaption>Neste exemplo, Pedro edita tudo e só vê o Financeiro</figcaption></figure>
+    <h3>Um administrador por painel</h3>
+    <ul>
+      <li>Cada painel tem <strong>um administrador só</strong>. Ele tem acesso a tudo, é o único que vê o Controle de acessos e o único que muda os avisos por e-mail.</li>
+      <li><strong>Passar administração:</strong> quando a pessoa responsável muda, o administrador passa o papel para outra pessoa da equipe.</li>
+      <li><strong>Bloquear, liberar e excluir:</strong> bloquear tira o acesso na hora, e dá para liberar de novo depois. Excluir tira a pessoa da lista: se ela entrar pelo link outra vez, vira um pedido novo.</li>
+      <li><strong>Gerar novo link:</strong> o link antigo para de funcionar, e quem já tem acesso continua com acesso.</li>
+    </ul>
+  </section>
+
+  <!-- 06 -->
+  <section class="pagina" id="staff">
+    <div class="topo"><img src="../guia-ong/img/ingresso.png" alt=""><div><div class="num">06 · Equipe da portaria (staff)</div><h2>Voluntários validando ingressos, sem ver o resto</h2></div></div>
+    <p class="lead">Cada evento tem o seu <strong>link de staff</strong>, para quem trabalha na entrada. Com ele, a pessoa só vê a lista de inscritos do evento e confirma as presenças, pelo QR Code ou à mão. Ela não vê valores, não baixa a lista e não altera o evento.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b>Na página do evento, aba <strong>Staff</strong>.</div>
+      <div class="caixa caixa--quem"><b>Quem usa</b>Voluntários e equipe da portaria, cada um com a própria conta da DuGood.</div>
+    </div>
+    <figure><img src="img/staff.jpg" alt="Aba Staff do evento com o link de staff"><figcaption>A aba Staff, com o link para a equipe da portaria</figcaption></figure>
+    <h3>Passo a passo</h3>
+    <ol class="numerada">
+      <li><strong>Crie o link de staff.</strong><span>Na aba Staff do evento, clique em Criar link de staff. Só dá para criar em eventos aprovados e não encerrados.</span></li>
+      <li><strong>Mande para a equipe.</strong><span>Copie o link ou use Enviar no WhatsApp. Quem entra pelo link (com a conta da DuGood) pede acesso.</span></li>
+      <li><strong>Aprove quem vai trabalhar.</strong><span>Os pedidos aparecem na mesma aba. Aprove para liberar a lista e o check-in. Você pode bloquear ou excluir quando quiser.</span></li>
+      <li><strong>No dia, cada um abre o link no celular.</strong><span>Lê o QR Code do ingresso ou procura o nome na lista e confirma a chegada.</span></li>
+    </ol>
+    <div class="dica">
+      <p><strong>O acesso termina sozinho.</strong> O link vale até o fim do dia seguinte ao término do evento (se a data mudar, a validade acompanha). Você também pode desativar o link ou gerar um novo a qualquer momento.</p>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="pagina" id="configuracoes">
+    <div class="topo"><img src="../guia-ong/img/balao.png" alt=""><div><div class="num">07 · Avisos por e-mail e idioma</div><h2>As suas preferências</h2></div></div>
+    <h3>Avisos de inscrição</h3>
+    <p>Toda inscrição nos seus eventos pode virar um e-mail. Em eventos grandes, é melhor receber um resumo. Em <span class="caminho">Configurações › Notificações</span>, escolha:</p>
+    <div class="duas">
+      <div>
+        <ul>
+          <li><strong>A cada vez:</strong> um e-mail por inscrição.</li>
+          <li><strong>Uma vez por dia:</strong> um resumo com as inscrições do dia.</li>
+          <li><strong>Nunca:</strong> sem e-mail de inscrição. As inscrições continuam aparecendo no painel.</li>
+        </ul>
+        <p>Os avisos vão para o e-mail de contato da conta. Todos veem a tela; só o administrador salva. <strong>Desligar todas as notificações da plataforma</strong> corta os avisos de inscrição e os resumos.</p>
+      </div>
+      <figure><img src="img/notificacoes.jpg" alt="Configurações, Notificações do organizador"><figcaption>Configurações › Notificações</figcaption></figure>
+    </div>
+    <div class="dica">
+      <p><strong>Avisos importantes chegam sempre.</strong> Pedidos de acesso ao painel e outros avisos de operação não dependem dessas escolhas.</p>
+    </div>
+    <h3>Idioma</h3>
+    <p>Em <span class="caminho">Configurações › Idioma</span>, cada pessoa escolhe ver o painel em <strong>português, inglês ou espanhol</strong>. Vale só para quem escolheu, em todos os aparelhos em que entrar, e a página recarrega no idioma novo.</p>
+    <figure class="baixa"><img src="img/idioma.jpg" alt="Configurações, Idioma"><figcaption>Configurações › Idioma</figcaption></figure>
+    <p>Quem se inscreve nos seus eventos recebe tudo no idioma dele: a página de pagamento, a confirmação e os ingressos saem em português, inglês ou espanhol. Os textos que você escreve aparecem como você escreveu.</p>
+  </section>
+
+  <!-- 08 -->
+  <section class="pagina" id="painel">
+    <div class="topo"><img src="../guia-ong/img/lupa.png" alt=""><div><div class="num">08 · O menu e a Visão geral</div><h2>Onde fica cada coisa</h2></div></div>
+    <div class="duas duas--texto">
+      <div class="tabela" style="margin-top:2px"><table>
+        <thead><tr><th style="width:30%">Bloco</th><th>O que tem</th></tr></thead>
+        <tbody>
+          <tr><td>Início</td><td>Visão geral: eventos no ar, inscritos, check-ins, ingressos a validar, pendências, inscrições por mês e próximos eventos.</td></tr>
+          <tr><td>Eventos</td><td>Meus eventos (criar e cuidar de cada evento), Escanear ingressos e Sorteios e leilões.</td></tr>
+          <tr><td>Conta</td><td>Perfil: como você aparece nas páginas dos seus eventos.</td></tr>
+          <tr><td>Financeiro</td><td>Pagamentos (conta Stripe e repasses), Extrato e Relatórios mensais.</td></tr>
+        </tbody>
+      </table></div>
+      <figure><img src="img/menu-lateral.jpg" alt="Menu lateral do painel do organizador"><figcaption>O menu do organizador</figcaption></figure>
+    </div>
+    <p>No rodapé do menu ficam <strong>Configurações</strong> (notificações, idioma e, para o administrador, Controle de acessos e Histórico), <strong>Tutoriais</strong> e <strong>Sair</strong>.</p>
+    <h3>A Visão geral</h3>
+    <figure class="baixa"><img src="img/geral.jpg" alt="Visão geral do organizador"><figcaption>Início › Visão geral</figcaption></figure>
+    <p>É a primeira tela do painel. Mostra os números dos seus eventos, as <strong>Pendências</strong> (pedidos de acesso, eventos aguardando a aprovação da ONG, eventos recusados) e os próximos eventos, com um botão para escanear. No começo, mostra também o que falta: completar o perfil, configurar os recebimentos na Stripe, criar o primeiro evento e ter um evento aprovado pela ONG.</p>
+    <div class="dica">
+      <p><strong>Ficou com dúvida em alguma tela?</strong> Clique em <strong>Como usar esta tela</strong>, ao lado do título. Os tutoriais completos ficam em <strong>Tutoriais</strong>, no menu.</p>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="pagina" id="perfil">
+    <div class="topo"><img src="../guia-ong/img/acenando.png" alt=""><div><div class="num">09 · Perfil do organizador</div><h2>Quem está por trás dos eventos</h2></div></div>
+    <p class="lead">O perfil aparece na seção <strong>"Sobre o organizador"</strong> da página de cada um dos seus eventos. É onde o participante conhece você antes de se inscrever.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Conta › Perfil</span></div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>Quem tem acesso para editar o bloco Conta.</div>
+    </div>
+    <div class="duas duas--texto">
+      <div>
+        <h3>O que preencher</h3>
+        <ul>
+          <li><strong>Logo</strong> da sua organização ou do seu evento.</li>
+          <li><strong>Sobre você:</strong> quem você é e que tipo de evento organiza. Conte a sua história e os eventos que já fez.</li>
+          <li><strong>Site ou rede social</strong>, para quem quiser conhecer mais.</li>
+        </ul>
+        <p>Clique em <strong>Salvar</strong>: as páginas dos seus eventos já mostram o perfil novo.</p>
+      </div>
+      <figure><img src="img/perfil.jpg" alt="Conta, Perfil do organizador"><figcaption>Conta › Perfil</figcaption></figure>
+    </div>
+    <div class="dica">
+      <p><strong>Para mudar o nome do organizador</strong>, clique no lápis ao lado do nome, no topo do painel. O nome novo vai para os seus eventos e para as contas da equipe.</p>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="pagina" id="stripe">
+    <div class="topo"><img src="../guia-ong/img/trofeu.png" alt=""><div><div class="num">10 · Conta Stripe</div><h2>Onde caem as suas vendas</h2></div></div>
+    <p class="lead">Para <strong>vender em seu nome</strong> (página 12), as vendas são cobradas numa conta sua na <strong>Stripe</strong>, a empresa que processa os pagamentos. O comprovante sai no seu nome, e da conta Stripe o dinheiro vai para a sua conta bancária nos repasses. Nos eventos 100% para uma instituição, a conta não é necessária.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Financeiro › Pagamentos</span></div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>O titular da conta, com os documentos em mãos.</div>
+    </div>
+    <div class="duas duas--texto">
+      <div>
+        <ol class="numerada">
+          <li><strong>Escolha pessoa física ou jurídica.</strong><span>Física: CPF, data de nascimento, endereço e conta bancária no CPF. Jurídica: CNPJ, dados dos sócios e conta bancária no CNPJ.</span></li>
+          <li><strong>Faça o cadastro no site da Stripe.</strong><span>Clique em Cadastrar minha conta na Stripe. A Stripe confere os dados e libera a conta; no fim, você volta para o painel.</span></li>
+          <li><strong>Pronto: "Conta pronta para receber".</strong><span>Escolha a frequência dos repasses para o banco (diário, semanal, mensal ou sob demanda).</span></li>
+        </ol>
+      </div>
+      <figure><img src="img/pagamentos.jpg" alt="Financeiro, Pagamentos do organizador"><figcaption>Financeiro › Pagamentos</figcaption></figure>
+    </div>
+    <h3>Bom saber</h3>
+    <ul>
+      <li>Os seus eventos aceitam <strong>cartão e Pix</strong>. A tarifa da Stripe de cada meio aparece nesta tela.</li>
+      <li><strong>Abrir painel da Stripe</strong> leva ao painel da sua conta: recebimentos, documentos e a troca de conta bancária, com confirmação de identidade.</li>
+      <li>Sem a conta pronta, o Extrato e os Relatórios mensais ficam apagados, com o convite para configurar.</li>
+    </ul>
+    <div class="dica">
+      <p><strong>A Stripe pode pedir mais informações.</strong> Se aparecer "Cadastro na Stripe incompleto", clique em Continuar cadastro na Stripe e complete o que falta.</p>
+    </div>
+  </section>
+
+  <!-- 11 -->
+  <section class="pagina" id="evento">
+    <div class="topo"><img src="../guia-ong/img/festa.png" alt=""><div><div class="num">11 · Criar o evento</div><h2>Os dados e para onde vai o dinheiro</h2></div></div>
+    <p class="lead">Em <span class="caminho">Eventos › Meus eventos</span>, clique em <strong>Novo Evento</strong>. O formulário pede o básico; o resto você ajusta depois, direto na página do evento.</p>
+    <h3>O que o formulário pede</h3>
+    <ul>
+      <li><strong>Nome e descrição</strong> do evento e o impacto que ele vai gerar para a instituição.</li>
+      <li><strong>Data, horário de entrada e endereço</strong>.</li>
+      <li><strong>Imagem principal e galeria</strong> de fotos e vídeos.</li>
+      <li><strong>Ingressos e produtos</strong> (com preço e estoque, se houver limite).</li>
+      <li><strong>Dados da inscrição:</strong> nome completo e telefone são sempre pedidos; você marca se o evento precisa também de CPF, data de nascimento, endereço ou empresa.</li>
+    </ul>
+    <h3>Para onde vai o dinheiro</h3>
+    <figure class="baixa"><img src="img/destino.jpg" alt="Escolha entre 100% para uma instituição e venda em meu nome"><figcaption>As duas formas de captar</figcaption></figure>
+    <div class="tabela"><table>
+      <thead><tr><th style="width:28%">Forma</th><th>Como funciona</th></tr></thead>
+      <tbody>
+        <tr><td>100% para uma instituição</td><td>Tudo o que os participantes pagam vai para a instituição escolhida, cobrado na conta dela. Ela recebe um pedido por e-mail, e o evento só vai ao ar depois que ela aprovar. Aqui você escolhe também quem paga a tarifa da Stripe (a instituição, o comprador ou o comprador escolhe).</td></tr>
+        <tr><td>Venda em meu nome</td><td>A venda é sua e o dinheiro cai na sua conta Stripe; uma parte vai para uma ou mais instituições (a contribuição social). Veja a próxima página.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="dica">
+      <p><strong>Times, data limite das inscrições, mensagens e o visual do e-mail do ingresso</strong> (uma capa sua e o Du, o mascote da DuGood) você ajusta depois, na página do evento.</p>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="pagina" id="divisao">
+    <div class="topo"><img src="../guia-ong/img/presente.png" alt=""><div><div class="num">12 · Venda em seu nome</div><h2>O evento é seu, com contribuição social</h2></div></div>
+    <p class="lead">Na venda em seu nome, você é o vendedor: o pagamento cai na sua conta Stripe e o comprovante sai no seu nome. De cada venda, a parte das instituições e a doação extra dos compradores são separadas e repassadas a elas pela DuGood.</p>
+    <div class="duas duas--texto">
+      <div>
+        <h3>Como montar a divisão</h3>
+        <ol class="numerada">
+          <li><strong>Escolha as instituições.</strong><span>Uma ou mais, cada uma com o percentual do valor bruto dos ingressos e produtos. Se quiser, a contribuição vale só para alguns ingressos ou produtos.</span></li>
+          <li><strong>Escolha quem recebe a doação extra.</strong><span>Quem compra pode doar um valor a mais, que vai 100% para a instituição que você marcar.</span></li>
+          <li><strong>Escolha a taxa de pagamento.</strong><span>Eu absorvo a taxa (a tarifa da Stripe sai da sua parte) ou O comprador paga a taxa (somada ao valor pago). A parte das instituições não muda.</span></li>
+          <li><strong>Envie para as instituições.</strong><span>Cada uma recebe um pedido por e-mail para captar no nome dela, vendo a divisão. O evento vai ao ar quando todas aprovarem.</span></li>
+        </ol>
+      </div>
+      <figure><img src="img/divisao.jpg" alt="Contribuição social e taxa de pagamento"><figcaption>Contribuição social e taxa de pagamento</figcaption></figure>
+    </div>
+    <p>O formulário mostra, para cada ingresso e produto, a parte de cada instituição, a tarifa, o total descontado e <strong>quanto você recebe</strong>. O painel não aceita uma divisão em que as instituições e a tarifa passem do preço do ingresso.</p>
+    <div class="tabela"><table>
+      <thead><tr><th>Situação</th><th>O que fazer</th></tr></thead>
+      <tbody>
+        <tr><td><span class="selo selo--cinza">Aguardando ONG</span></td><td>As instituições ainda estão analisando. Nada a fazer.</td></tr>
+        <tr><td><span class="selo selo--verde">Recusado pela ONG</span></td><td>Ajuste a divisão ou troque a instituição e envie de novo.</td></tr>
+        <tr><td><span class="selo selo--cheio">No ar</span></td><td>Todas aprovaram: o evento está recebendo inscrições.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="dica">
+      <p><strong>Você nunca repassa nada à mão.</strong> Nos eventos com contribuição social, todo pagamento passa pelo app e a DuGood repassa a parte de cada instituição. Por isso, a inscrição feita à mão nesses eventos é sempre cortesia, sem valor.</p>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="pagina" id="pagina">
+    <div class="topo"><img src="../guia-ong/img/joinha.png" alt=""><div><div class="num">13 · A página do evento</div><h2>Tudo do evento num lugar só</h2></div></div>
+    <p class="lead">Clique no evento em <span class="caminho">Eventos › Meus eventos</span> para abrir a página dele. É ali que você acompanha as inscrições e muda o que precisar, sem voltar ao formulário.</p>
+    <figure><img src="img/evento.jpg" alt="Página do evento do organizador"><figcaption>A página do evento</figcaption></figure>
+    <div class="tabela"><table>
+      <thead><tr><th style="width:22%">Aba</th><th>Para que serve</th></tr></thead>
+      <tbody>
+        <tr><td>Inscritos</td><td>A lista de quem se inscreveu, com busca, Baixar CSV, Adicionar inscrito, marcar chegada, reenviar o ingresso, mandar mensagem e cancelar ingresso.</td></tr>
+        <tr><td>Informações</td><td>Nome e descrição, data e local, fotos e divulgação. Cada bloco tem um botão Alterar.</td></tr>
+        <tr><td>Configurações</td><td>Gestão (copiar link, suspender, encerrar inscrições, encerrar evento), ingressos, prazo e dados da inscrição, taxa, ingresso e e-mail.</td></tr>
+        <tr><td>Times e Staff</td><td>Os times do evento e o link de staff para a portaria (página 06).</td></tr>
+        <tr><td>Estatísticas</td><td>Os números das inscrições.</td></tr>
+      </tbody>
+    </table></div>
+    <ul>
+      <li>No topo: <strong>Escanear ingressos</strong>, <strong>Enviar atualização aos doadores</strong> (e-mail e notificação para os inscritos) e <strong>Sorteios e leilões</strong>.</li>
+      <li>Qualquer pessoa pode se inscrever <strong>sem ter conta</strong>: informa o e-mail e os dados pedidos, e os ingressos vão para esse e-mail.</li>
+      <li><strong>Cancelar ingresso</strong> tira o ingresso da portaria, do estoque e das vendas. O valor é acertado por fora com a pessoa; o app não faz reembolso.</li>
+    </ul>
+  </section>
+
+  <!-- 14 -->
+  <section class="pagina" id="portaria">
+    <div class="topo"><img src="../guia-ong/img/ingresso.png" alt=""><div><div class="num">14 · No dia do evento</div><h2>A entrada, ingresso por ingresso</h2></div></div>
+    <p class="lead">Cada inscrição gera um ingresso com QR code, que chega por e-mail para quem se inscreveu. Na entrada, a equipe lê o QR code e confirma a presença. Assim você sabe quem chegou, e o mesmo ingresso não entra duas vezes.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Eventos › Escanear ingressos</span>, ou o botão na página do evento.</div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>A equipe do painel ou o staff, pelo link de staff (página 06).</div>
+    </div>
+    <div class="duas duas--texto">
+      <div>
+        <h3>Passo a passo</h3>
+        <ol class="numerada">
+          <li><strong>Abra o scanner no celular.</strong><span>Clique em Iniciar Scanner e permita o uso da câmera.</span></li>
+          <li><strong>Aponte para o QR code do ingresso.</strong><span>Aparecem o participante, o evento, o valor e o time.</span></li>
+          <li><strong>Confira e clique em Confirmar Validação.</strong><span>A chegada fica registrada e o ingresso não vale de novo.</span></li>
+        </ol>
+      </div>
+      <figure><img src="img/scanner.jpg" alt="Escanear ingressos: ingresso encontrado"><figcaption>Ingresso encontrado</figcaption></figure>
+    </div>
+    <ul>
+      <li><strong>Sem QR code?</strong> Procure o nome na aba Inscritos e use Marcar chegada.</li>
+      <li>Ingresso <strong>cancelado</strong> não vale na portaria.</li>
+      <li>Os números de check-ins e ingressos a validar aparecem na Visão geral e na página do evento.</li>
+    </ul>
+    <div class="dica">
+      <p><strong>Teste antes.</strong> Abra o scanner no celular de cada pessoa da portaria um dia antes, para a câmera já estar liberada no dia do evento.</p>
+    </div>
+  </section>
+
+  <!-- 15 -->
+  <section class="pagina" id="financeiro">
+    <div class="topo"><img src="../guia-ong/img/trofeu.png" alt=""><div><div class="num">15 · Financeiro</div><h2>Extrato, repasses e relatórios</h2></div></div>
+    <p class="lead">O menu Financeiro mostra o que entrou na sua conta Stripe, o que foi para as instituições e o resultado de cada evento no mês. Ele aparece com a conta Stripe pronta.</p>
+    <h3>Extrato</h3>
+    <p>Em <span class="caminho">Financeiro › Extrato</span>: as vendas, a parte das ONGs e as tarifas, o valor líquido recebido e os repasses para o banco, com filtros e exportação em CSV. O saldo disponível, o que está a liberar e o próximo repasse ficam no topo. Com a frequência sob demanda, use <strong>Repassar agora</strong>.</p>
+    <figure class="baixa"><img src="img/extrato.jpg" alt="Financeiro, Extrato do organizador"><figcaption>Financeiro › Extrato</figcaption></figure>
+    <h3>Repasses às instituições</h3>
+    <p>No fim do Extrato, a lista de quanto cada instituição recebeu das vendas de cada evento. A DuGood faz esses repasses: você não precisa transferir nada.</p>
+    <h3>Relatórios mensais</h3>
+    <p>Em <span class="caminho">Financeiro › Relatórios mensais</span>: o que cada evento seu vendeu no mês (ingressos e produtos por tipo, doação extra, cancelados, a parte das instituições e a sua parte), em <strong>PDF</strong> ou <strong>planilha</strong>, no idioma que você escolher.</p>
+    <div class="dica">
+      <p><strong>Ingressos cancelados</strong> ficam fora das contas do relatório e saem da parte das instituições. O valor já pago é acertado por fora.</p>
+    </div>
+  </section>
+
+  <!-- 16 -->
+  <section class="pagina" id="duvidas">
+    <div class="topo"><img src="../guia-ong/img/acenando.png" alt=""><div><div class="num">16 · Dúvidas frequentes</div><h2>Perguntas que sempre aparecem</h2></div></div>
+    <div class="faq-item"><h3>Quanto a DuGood cobra?</h3><p>Hoje, nada: a DuGood não cobra taxa de administração, e as ferramentas do painel são grátis. A Stripe cobra as tarifas dela por pagamento, e em cada evento você escolhe se absorve ou se o comprador paga.</p></div>
+    <div class="faq-item"><h3>Preciso de conta Stripe?</h3><p>Só para vender em seu nome. Nos eventos 100% para uma instituição, o pagamento é cobrado na conta da instituição.</p></div>
+    <div class="faq-item"><h3>Por que o meu evento ainda não está no ar?</h3><p>Toda instituição do evento precisa aprovar. Enquanto isso, ele fica "Aguardando ONG". Se uma recusar, ajuste o evento ou escolha outra instituição.</p></div>
+    <div class="faq-item"><h3>Alguém da equipe entrou, mas o painel não abre.</h3><p>O pedido de acesso precisa ser aprovado pelo administrador em Configurações › Controle de acessos. Para quem trabalha só na portaria, use o link de staff do evento.</p></div>
+    <div class="faq-item"><h3>Como cancelo um ingresso?</h3><p>Na aba Inscritos do evento, use Cancelar ingresso. O ingresso deixa de valer na entrada e sai das vendas; o valor é acertado por fora com a pessoa.</p></div>
+    <div class="faq-item"><h3>Posso inscrever alguém à mão?</h3><p>Sim, com Adicionar inscrito, pedindo os mesmos dados. Nos eventos com contribuição social, a inscrição à mão é sempre cortesia: para cobrar, a pessoa compra pelo app.</p></div>
+    <div class="faq-item"><h3>O administrador saiu da organização.</h3><p>Se ele ainda consegue entrar, use Passar administração para outra pessoa da equipe. Se não consegue, fale com a DuGood.</p></div>
+    <div class="faq-item"><h3>Quando o dinheiro cai na conta bancária?</h3><p>Conforme a frequência de repasses escolhida em Financeiro › Pagamentos, assim que a Stripe libera o saldo (cartão leva mais dias que o Pix).</p></div>
+    <div class="contato">
+      <img src="../guia-ong/img/joinha.png" alt="">
+      <div>
+        <h3>Conte com a gente</h3>
+        <p>Ficou alguma dúvida? Fale com a DuGood: <a href="mailto:comercial@dugood.com.br">comercial@dugood.com.br</a> · WhatsApp <a href="https://wa.me/5511994299400">(11) 99429-9400</a></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

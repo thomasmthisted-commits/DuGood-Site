@@ -1,0 +1,218 @@
+[
+ {
+  "nome": "org-termos",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=geral",
+  "usuario": {
+   "organizer_consent_accepted": false
+  },
+  "passos": [
+   {
+    "esperar": 3000
+   }
+  ]
+ },
+ {
+  "nome": "org-geral",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=geral"
+ },
+ {
+  "nome": "org-menu",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=geral",
+  "passos": [
+   {
+    "clicar": "Eventos",
+    "exato": true
+   },
+   {
+    "clicar": "Financeiro",
+    "exato": true
+   }
+  ]
+ },
+ {
+  "nome": "org-acessos",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=acessos",
+  "passos": [
+   {
+    "substituir": [
+     "http://127.0.0.1:5173",
+     "https://dugood.com.br"
+    ],
+    "esperar": 300
+   }
+  ]
+ },
+ {
+  "nome": "org-acessos-blocos",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=acessos",
+  "passos": [
+   {
+    "substituir": [
+     "http://127.0.0.1:5173",
+     "https://dugood.com.br"
+    ],
+    "esperar": 300
+   },
+   {
+    "rolar": 500
+   }
+  ]
+ },
+ {
+  "nome": "org-notificacoes",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=configuracoes"
+ },
+ {
+  "nome": "org-idioma",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=configuracoes",
+  "passos": [
+   {
+    "clicar": "Idioma",
+    "exato": true
+   }
+  ]
+ },
+ {
+  "nome": "org-perfil",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=conta.perfil"
+ },
+ {
+  "nome": "org-pagamentos",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=financeiro.pagamentos"
+ },
+ {
+  "nome": "org-eventos",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=eventos"
+ },
+ {
+  "nome": "org-novo-evento",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=eventos",
+  "passos": [
+   {
+    "botao": "Novo Evento"
+   }
+  ]
+ },
+ {
+  "nome": "org-novo-evento-divisao",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=eventos",
+  "passos": [
+   {
+    "botao": "Novo Evento"
+   },
+   {
+    "ver": "Para onde vai o dinheiro",
+    "esperar": 500
+   },
+   {
+    "clicar": "Venda em meu nome",
+    "exato": true,
+    "esperar": 1000
+   },
+   {
+    "ver": "Para onde vai o dinheiro",
+    "esperar": 500
+   },
+   {
+    "mouse": [
+     600,
+     400
+    ]
+   },
+   {
+    "rolar": 120,
+    "esperar": 800
+   }
+  ]
+ },
+ {
+  "nome": "org-evento",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=eventos&evento=c3"
+ },
+ {
+  "nome": "org-evento-config",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=eventos&evento=c3",
+  "passos": [
+   {
+    "seletor": "[role=tab]:has-text('Configurações')"
+   }
+  ]
+ },
+ {
+  "nome": "org-evento-staff",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=eventos&evento=c3",
+  "passos": [
+   {
+    "seletor": "[role=tab]:has-text('Staff')"
+   },
+   {
+    "substituir": [
+     "http://127.0.0.1:5173",
+     "https://dugood.com.br"
+    ],
+    "esperar": 300
+   }
+  ]
+ },
+ {
+  "nome": "org-scanner",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=eventos.escanear",
+  "camera": "ingresso",
+  "passos": [
+   {
+    "botao": "Iniciar Scanner",
+    "esperar": 5000
+   }
+  ]
+ },
+ {
+  "nome": "org-extrato",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=financeiro.extrato"
+ },
+ {
+  "nome": "org-relatorios",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=financeiro.relatorios"
+ },
+ {
+  "nome": "org-novo-evento-destino",
+  "perfil": "organizador",
+  "url": "/EventOrganizerDashboard?view=eventos",
+  "passos": [
+   {
+    "botao": "Novo Evento"
+   },
+   {
+    "ver": "Para onde vai o dinheiro",
+    "esperar": 600
+   },
+   {
+    "mouse": [
+     600,
+     400
+    ]
+   },
+   {
+    "rolar": 120,
+    "esperar": 800
+   }
+  ]
+ }
+]

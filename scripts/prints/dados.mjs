@@ -298,3 +298,12 @@ export function acessos(corpo = {}, perfil = 'ong') {
     default: return { success: true };
   }
 }
+
+// Link de staff de um evento do organizador (função eventStaff › get)
+export const staff = {
+  link: { token: 'staff-exemplo', expires_at: '2026-11-30T02:59:59Z', disabled: false, expired: false },
+  members: [
+    { id: 's1', user_email: 'lucas.portaria@exemplo.com', user_name: 'Lucas Ferreira', status: 'approved', requested_at: '2026-10-20T12:00:00Z', decided_at: '2026-10-20T13:00:00Z', check_ins: 12, last_check_in_at: null },
+    { id: 's2', user_email: 'bia.voluntaria@exemplo.com', user_name: 'Beatriz Nunes', status: 'pending', requested_at: '2026-10-26T19:10:00Z', decided_at: null, check_ins: 0, last_check_in_at: null },
+  ],
+};

@@ -127,6 +127,12 @@ function funcao(nome, corpo, perfil) {
       return { signed: false, org_signed: false };
     case 'accountAccess':
       return D.acessos(corpo, perfil);
+    case 'organizerStripeAccount':
+      if (corpo?.action === 'status') return { connected: true, business_type: 'company', charges_enabled: true, payouts_enabled: true, details_submitted: true, requirements_due: [], platform_fee_percent: 0 };
+      return null;
+    case 'eventStaff':
+      if (corpo?.action === 'get') return D.staff;
+      return { success: true };
     default:
       return null;
   }
@@ -173,7 +179,8 @@ for (const job of jobs) {
     if (caminho.includes('/analytics/') || caminho.includes('/app-logs/')) return json({});
     if (caminho.includes('/public-settings/')) return json({ id: 'demo', public_settings: { auth_required: false } });
     // "deslogado": ninguém entrou (tela de login)
-    if (caminho.endsWith('/entities/User/me')) return job.deslogado ? json({ message: 'Unauthorized' }, 401) : json(D.pessoas[job.perfil]);
+    // "usuario": muda campos da conta fictícia só neste print (ex.: termos ainda não aceitos)
+    if (caminho.endsWith('/entities/User/me')) return job.deslogado ? json({ message: 'Unauthorized' }, 401) : json({ ...D.pessoas[job.perfil], ...job.usuario });
     const ent = caminho.match(/\/entities\/([A-Za-z]+)(?:\/([^/]+))?$/);
     if (ent) {
       const [, nome, id] = ent;
@@ -209,6 +216,9 @@ for (const job of jobs) {
     if (passo.clicar) await p.getByText(passo.clicar, { exact: passo.exato ?? false }).first().click();
     if (passo.botao) await p.getByRole('button', { name: new RegExp(passo.botao, 'i') }).first().click();
     if (passo.seletor) await p.locator(passo.seletor).first().click();
+    // "ver": rola a tela até um texto (dentro de modais também)
+    if (passo.ver) await p.getByText(passo.ver, { exact: passo.exato ?? false }).first().scrollIntoViewIfNeeded();
+    if (passo.mouse) await p.mouse.move(...passo.mouse);
     if (passo.rolar) await p.mouse.wheel(0, passo.rolar);
     // "substituir": troca um texto da tela (ex.: o endereço local do app pelo endereço público no link de cadastro)
     if (passo.substituir) await p.evaluate(([de, para]) => {
@@ -216,6 +226,10 @@ for (const job of jobs) {
       while (w.nextNode()) if (w.currentNode.nodeValue.includes(de)) w.currentNode.nodeValue = w.currentNode.nodeValue.replaceAll(de, para);
       for (const i of document.querySelectorAll('input, textarea')) if (i.value.includes(de)) i.value = i.value.replaceAll(de, para);
     }, passo.substituir);
+    // "rolarEm": rola por dentro de um elemento (ex.: o formulário num modal), em px
+    if (passo.rolarEm) await p.evaluate(([sel, y]) => {
+      for (const el of document.querySelectorAll(`${sel}, ${sel} *`)) if (el.scrollHeight > el.clientHeight + 20 && getComputedStyle(el).overflowY !== 'visible') el.scrollTop += y;
+    }, [passo.rolarEm.seletor, passo.rolarEm.y]);
     if (passo.preencher) await p.locator(passo.preencher.seletor).first().fill(passo.preencher.texto);
     await p.waitForTimeout(passo.esperar ?? 1200);
   }
