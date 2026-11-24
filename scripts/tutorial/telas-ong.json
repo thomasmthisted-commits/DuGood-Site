@@ -1,0 +1,115 @@
+[
+ {
+  "nome": "ong-login",
+  "perfil": "ong",
+  "deslogado": true,
+  "url": "/Login"
+ },
+ {
+  "nome": "ong-geral",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=geral"
+ },
+ {
+  "nome": "ong-notificacoes",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=configuracoes"
+ },
+ {
+  "nome": "ong-idioma",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=configuracoes",
+  "passos": [
+   {
+    "clicar": "Idioma",
+    "exato": true
+   }
+  ]
+ },
+ {
+  "nome": "ong-acessos",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=acessos",
+  "passos": [
+   {
+    "substituir": [
+     "http://127.0.0.1:5173",
+     "https://dugood.com.br"
+    ],
+    "esperar": 300
+   }
+  ]
+ },
+ {
+  "nome": "ong-acessos-blocos",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=acessos",
+  "passos": [
+   {
+    "substituir": [
+     "http://127.0.0.1:5173",
+     "https://dugood.com.br"
+    ],
+    "esperar": 300
+   },
+   {
+    "rolar": 500
+   }
+  ]
+ },
+ {
+  "nome": "ong-perfil",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=instituicao.perfil"
+ },
+ {
+  "nome": "ong-pagamentos",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=financeiro.pagamentos"
+ },
+ {
+  "nome": "ong-causas",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=causas"
+ },
+ {
+  "nome": "ong-eventos",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=eventos.lista"
+ },
+ {
+  "nome": "ong-doadores",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=doadores.lista"
+ },
+ {
+  "nome": "ong-extrato",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=financeiro.extrato"
+ },
+ {
+  "nome": "ong-menu",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=geral",
+  "passos": [
+   {
+    "clicar": "Captação",
+    "exato": true
+   },
+   {
+    "clicar": "Financeiro",
+    "exato": true
+   }
+  ]
+ },
+ {
+  "nome": "ong-como-usar",
+  "perfil": "ong",
+  "url": "/OrganizationDashboard?view=causas",
+  "passos": [
+   {
+    "clicar": "Como usar esta tela"
+   }
+  ]
+ }
+]

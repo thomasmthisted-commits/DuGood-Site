@@ -271,3 +271,30 @@ export const sorteiosOrganizador = {
   ],
   raffles: sorteios.raffles.map((r) => ({ ...r, drawn_by_email: organizador.email })),
 };
+
+// Controle de acessos e notificações (função accountAccess): a equipe fictícia do painel
+const blocos = {
+  ong: ['geral', 'causas', 'eventos', 'doadores', 'fiscal', 'instituicao', 'financeiro'],
+  organizador: ['geral', 'eventos', 'conta', 'financeiro'],
+  lojista: ['geral', 'beneficios', 'doacoes', 'loja'],
+};
+const rotulosBlocos = { geral: 'Início', causas: 'Captação', eventos: 'Eventos', doadores: 'CRM e campanhas', fiscal: 'Incentivos fiscais', instituicao: 'Instituição', financeiro: 'Financeiro', conta: 'Conta', beneficios: 'Benefícios', doacoes: 'Doações', loja: 'Conta' };
+const tudo = (perfil, nivel = 'edit') => Object.fromEntries(blocos[perfil].map((b) => [b, nivel]));
+export function acessos(corpo = {}, perfil = 'ong') {
+  const eu = pessoas[perfil];
+  const tipo = { ong: 'invite', organizador: 'organizer_invite', lojista: 'merchant_invite' }[perfil];
+  const equipe = [
+    { id: 'am1', user_email: eu.email, user_name: eu.full_name, role: 'admin', self: true, status: 'approved', requested_at: '2026-03-02T13:10:00Z', decided_at: '2026-03-02T13:10:00Z', permissions: tudo(perfil) },
+    { id: 'am2', user_email: 'pedro.santos@exemplo.com', user_name: 'Pedro Santos', role: 'member', status: 'approved', requested_at: '2026-04-10T15:00:00Z', decided_at: '2026-04-10T16:20:00Z', permissions: { ...tudo(perfil), [blocos[perfil].at(-1)]: 'view' } },
+    { id: 'am3', user_email: 'juliana.costa@exemplo.com', user_name: 'Juliana Costa', role: 'member', status: 'pending', requested_at: '2026-10-26T18:42:00Z', decided_at: null, permissions: tudo(perfil) },
+  ];
+  switch (corpo.action) {
+    case 'me': return { is_admin: true, permissions: tudo(perfil) };
+    case 'team': return { members: equipe.filter((m) => m.status === 'approved').map((m) => ({ email: m.user_email, name: m.user_name })) };
+    case 'get_notifications':
+      return { can_edit: true, settings: perfil === 'organizador' ? { all_off: false, registration: 'instant' } : { all_off: false, donation: 'instant', own_event_registration: 'daily', partner_event_registration: 'weekly' } };
+    case 'list':
+      return { account: { id: 'x', name: eu.full_name }, invite_param: tipo, invite_token: 'exemplo-7f3k9q', members: equipe, blocks: blocos[perfil].map((id) => ({ id, label: rotulosBlocos[id] })) };
+    default: return { success: true };
+  }
+}

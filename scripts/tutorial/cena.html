@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<title>Tutorial DuGood</title>
+<!-- Palco do vídeo tutorial (1920x1080). O render.mjs abre esta página, chama render(t) quadro a quadro e
+     grava. O roteiro (cenas, textos e telas) vem de roteiro-<painel>.js, escolhido por ?roteiro=. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=block" />
+<style>
+  :root {
+    --tinta: #17241c; --tinta-suave: #56635b; --verde-lima: #52b520; --verde: #09a673;
+    --onda-1: #6fd62c; --onda-2: #5cc21f; --onda-3: #4cae1a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1920px; height: 1080px; overflow: hidden; background: #fafbfa; }
+  body { font-family: 'Inter', sans-serif; color: var(--tinta); }
+  #palco { position: relative; width: 1920px; height: 1080px; overflow: hidden; }
+  .cena { position: absolute; inset: 0; overflow: hidden; }
+  .cena.branca { background: #fafbfa; }
+  .cena.verde { background: linear-gradient(160deg, var(--onda-1), var(--onda-2) 45%, var(--onda-3)); color: #fff; }
+  .ondas { position: absolute; left: -5%; width: 110%; bottom: 0; height: 420px; }
+  .linhas { position: absolute; inset: 0; opacity: .55; }
+  .abs { position: absolute; will-change: transform, opacity, filter; }
+  .titulo { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; letter-spacing: -0.035em; line-height: 1.08; text-align: center; left: 0; right: 0; }
+  .titulo .p { display: inline-block; white-space: pre; }
+  .titulo .d { color: var(--verde-lima); }
+  .verde .titulo .d { color: #fff; opacity: .78; }
+  .sub { font-size: 30px; color: var(--tinta-suave); text-align: center; left: 0; right: 0; line-height: 1.4; }
+  .verde .sub { color: rgba(255,255,255,.92); }
+  .rotulo { font-size: 17px; font-weight: 600; letter-spacing: .32em; text-transform: uppercase; color: var(--verde-lima); text-align: center; left: 0; right: 0; }
+  .verde .rotulo { color: rgba(255,255,255,.85); }
+  .navegador { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 4px rgba(23,36,28,.05), 0 30px 70px rgba(23,36,28,.16); }
+  .barra { height: 40px; background: #f1f3f2; display: flex; align-items: center; padding: 0 16px; gap: 8px; }
+  .barra i { width: 12px; height: 12px; border-radius: 50%; background: #dfe3e1; display: block; }
+  .barra span { flex: 1; text-align: center; font-size: 15px; color: #8a958e; margin-right: 52px; }
+  .janela { position: relative; overflow: hidden; }
+  .camada { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+  .camada img { position: absolute; left: 0; top: 0; width: 1200px; height: 800px; }
+  .anel { position: absolute; border: 4px solid var(--verde-lima); border-radius: 14px; box-shadow: 0 0 0 9999px rgba(23,36,28,.0); }
+  .chip { display: flex; align-items: center; gap: 12px; background: #fff; color: var(--tinta); border-radius: 999px; padding: 14px 24px 14px 16px; font-size: 24px; font-weight: 600; box-shadow: 0 2px 4px rgba(23,36,28,.06), 0 14px 34px rgba(23,36,28,.14); white-space: nowrap; }
+  .chip.verde-chip { background: var(--verde-lima); color: #fff; }
+  .chip .ok { width: 32px; height: 32px; border-radius: 50%; background: var(--verde-lima); display: grid; place-items: center; flex: none; }
+  .chip.verde-chip .ok { background: #fff; }
+  .chip.verde-chip .ok svg path { stroke: var(--verde-lima); }
+  .mascote { filter: drop-shadow(0 18px 24px rgba(0,0,0,.14)); }
+  .passo-num { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 26px; letter-spacing: .2em; }
+  .passo-num::before { content: ''; display: block; width: 46px; height: 4px; background: currentColor; border-radius: 2px; margin-bottom: 14px; opacity: .8; }
+  .passo-tit { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 96px; letter-spacing: -0.04em; line-height: 1.02; }
+  .passo-sub { font-size: 32px; line-height: 1.4; opacity: .92; }
+  .cartao { background: #fff; border-radius: 22px; box-shadow: 0 2px 4px rgba(23,36,28,.05), 0 24px 50px rgba(23,36,28,.10); padding: 30px 34px; color: var(--tinta); }
+  .cartao .nome { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; font-size: 30px; margin-top: 18px; }
+  .cartao .mail { font-size: 19px; color: #8a958e; margin-top: 4px; }
+  .selo { display: inline-block; font-size: 18px; font-weight: 600; padding: 7px 16px; border-radius: 999px; margin-top: 18px; }
+  .selo.adm { background: var(--verde); color: #fff; }
+  .selo.esp { background: #eef1ef; color: #56635b; }
+  .selo.ok2 { background: #e6f6ee; color: #078a5f; }
+  .avatar { width: 76px; height: 76px; border-radius: 50%; display: grid; place-items: center; font-family: 'Plus Jakarta Sans'; font-weight: 700; font-size: 30px; color: #fff; }
+  .item { display: flex; align-items: center; gap: 18px; background: #fff; border-radius: 18px; padding: 20px 26px; font-size: 26px; font-weight: 600; box-shadow: 0 2px 4px rgba(23,36,28,.05), 0 14px 30px rgba(23,36,28,.08); width: 640px; }
+  .item .bola { width: 40px; height: 40px; border-radius: 50%; border: 3px solid #d6dcd8; flex: none; display: grid; place-items: center; }
+  .item small { display: block; font-size: 19px; font-weight: 400; color: #56635b; margin-top: 4px; }
+  .contato { font-size: 34px; font-weight: 600; text-align: center; left: 0; right: 0; }
+</style>
+</head>
+<body>
+<div id="palco"></div>
+<script>
+const CHECK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M5 12.5l4.2 4.2L19 7" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const A = '../../src/assets/';
+
+/* ---------- utilitários de tempo ---------- */
+const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
+const easeOut = (x) => 1 - Math.pow(1 - clamp(x), 3);
+const easeInOut = (x) => { x = clamp(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const back = (x) => { x = clamp(x); const c = 1.5; return 1 + (c + 1) * Math.pow(x - 1, 3) + c * Math.pow(x - 1, 2); };
+const prog = (t, at, dur = .6) => clamp((t - at) / dur);
+
+/* ---------- fundos ---------- */
+function ondas(el) {
+  const svg = `<svg class="ondas" viewBox="0 0 2112 420" preserveAspectRatio="none">
+    <path data-o="0" fill="rgba(255,255,255,.07)" d=""/><path data-o="1" fill="rgba(40,120,10,.16)" d=""/><path data-o="2" fill="rgba(40,120,10,.22)" d=""/></svg>`;
+  el.insertAdjacentHTML('beforeend', svg);
+}
+function desenhaOndas(el, t) {
+  el.querySelectorAll('.ondas path').forEach((p) => {
+    const o = +p.dataset.o, base = 150 + o * 70, amp = 34 - o * 6, f = 0.0023 + o * 0.0006, fase = t * (0.35 + o * 0.12) + o * 2;
+    let d = `M0 420 L0 ${base}`;
+    for (let x = 0; x <= 2112; x += 48) d += ` L${x} ${(base + Math.sin(x * f + fase) * amp + Math.sin(x * f * 2.3 - fase * .7) * amp * .35).toFixed(1)}`;
+    p.setAttribute('d', d + ' L2112 420 Z');
+  });
+}
+function linhas(el) {
+  let paths = '';
+  for (let i = 0; i < 9; i++) paths += `<path data-l="${i}" fill="none" stroke="#e7ebe8" stroke-width="2" d=""/>`;
+  el.insertAdjacentHTML('beforeend', `<svg class="linhas" viewBox="0 0 1920 1080">${paths}</svg>`);
+}
+function desenhaLinhas(el, t) {
+  el.querySelectorAll('.linhas path').forEach((p) => {
+    const i = +p.dataset.l, y0 = 80 + i * 120;
+    let d = `M-20 ${y0}`;
+    for (let x = 0; x <= 1960; x += 40) d += ` L${x} ${(y0 + Math.sin(x * 0.004 + t * 0.25 + i) * 14).toFixed(1)}`;
+    p.setAttribute('d', d);
+  });
+}
+
+/* ---------- elementos ---------- */
+// Texto com destaque: "Fazer o bem deveria ser *simples.*" (entre asteriscos fica em verde); "\n" quebra a linha
+function palavras(texto) {
+  let html = '', destaque = false, i = 0;
+  for (const parte of texto.split('*')) {
+    for (const linha of parte.split('\n').map((l, k) => [l, k])) {
+      if (linha[1] > 0) html += '<br>';
+      for (const w of linha[0].split(/(?<= )/)) if (w) html += `<span class="p${destaque ? ' d' : ''}" data-i="${i++}">${w}</span>`;
+    }
+    destaque = !destaque;
+  }
+  return html;
+}
+function revela(el, t, at) {
+  el.querySelectorAll('.p').forEach((s) => {
+    const k = easeOut(prog(t, at + s.dataset.i * 0.07, 0.6));
+    s.style.opacity = k; s.style.filter = `blur(${(1 - k) * 12}px)`; s.style.transform = `translateY(${(1 - k) * 22}px)`;
+  });
+}
+const entra = (el, k, { dx = 0, dy = 30, escala = 1, blur = 0 } = {}) => {
+  el.style.opacity = k;
+  el.style.transform = `translate(${(1 - k) * dx}px, ${(1 - k) * dy}px) scale(${escala + (1 - escala) * k})`;
+  if (blur) el.style.filter = `blur(${(1 - k) * blur}px)`;
+};
+
+const TIPOS = {
+  titulo: {
+    cria: (it) => `<div class="abs titulo" style="top:${it.y ?? 90}px;font-size:${it.tam ?? 66}px">${palavras(it.texto)}</div>`,
+    anima: (el, it, t) => revela(el, t, it.at ?? 0),
+  },
+  sub: {
+    cria: (it) => `<div class="abs sub" style="top:${it.y}px;${it.tam ? `font-size:${it.tam}px` : ''}">${it.texto}</div>`,
+    anima: (el, it, t) => entra(el, easeOut(prog(t, it.at ?? .5, .7)), { dy: 16, blur: 8 }),
+  },
+  rotulo: {
+    cria: (it) => `<div class="abs rotulo" style="top:${it.y}px">${it.texto}</div>`,
+    anima: (el, it, t) => entra(el, easeOut(prog(t, it.at ?? 0, .6)), { dy: 10 }),
+  },
+  imagem: {
+    cria: (it) => `<img class="abs ${it.mascote ? 'mascote' : ''}" src="${A}${it.src}" style="left:${it.x}px;top:${it.y}px;width:${it.w}px">`,
+    anima: (el, it, t) => {
+      const k = it.mascote ? back(prog(t, it.at ?? .2, .8)) : easeOut(prog(t, it.at ?? .2, .8));
+      entra(el, clamp(k, 0, 1.2), { dy: it.mascote ? 60 : 20, escala: it.mascote ? .7 : .96 });
+      el.style.opacity = clamp(k);
+      if (it.mascote) el.style.transform += ` translateY(${Math.sin(t * 2.2) * 6}px) rotate(${Math.sin(t * 1.6) * 1.5}deg)`;
+    },
+  },
+  passo: {
+    cria: (it) => `<div class="abs" style="left:${it.x ?? 860}px;top:${it.y ?? 340}px;width:900px">
+        <div class="passo-num">${it.num}</div><div class="passo-tit" style="margin-top:18px">${it.titulo}</div>
+        <div class="passo-sub" style="margin-top:26px">${it.sub}</div></div>`,
+    anima: (el, it, t) => {
+      const [n, ti, su] = el.children;
+      entra(n, easeOut(prog(t, .2, .6)), { dx: -30, dy: 0 });
+      entra(ti, easeOut(prog(t, .4, .7)), { dx: -40, dy: 0, blur: 10 });
+      entra(su, easeOut(prog(t, .8, .7)), { dx: -30, dy: 0, blur: 6 });
+    },
+  },
+  navegador: {
+    // Tela do app numa moldura de navegador. cam: [{ at, r: [x, y, w, h] }] em px da tela (1200x800);
+    // aneis: [{ at, ate, r }] destacam um ponto; trocas: [{ at, src }] trocam a tela com fade.
+    cria: (it) => {
+      const h = Math.round(it.w * 800 / 1200);
+      return `<div class="abs navegador" style="left:${it.x}px;top:${it.y}px;width:${it.w}px">
+        <div class="barra"><i></i><i></i><i></i><span>${it.url ?? 'dugood.com.br'}</span></div>
+        <div class="janela" style="height:${h}px"><div class="camada">
+          ${[it.src, ...(it.trocas ?? []).map((x) => x.src)].map((s, k) => `<img data-k="${k}" src="telas/${s}.png" style="opacity:${k ? 0 : 1}">`).join('')}
+          ${(it.aneis ?? []).map((a, k) => `<div class="anel" data-a="${k}" style="left:${a.r[0]}px;top:${a.r[1]}px;width:${a.r[2]}px;height:${a.r[3]}px;opacity:0"></div>`).join('')}
+        </div></div></div>`;
+    },
+    anima: (el, it, t) => {
+      entra(el, easeOut(prog(t, it.at ?? .3, .9)), { dy: it.de === 'direita' ? 0 : 70, dx: it.de === 'direita' ? 120 : 0, escala: .97 });
+      const esc0 = it.w / 1200;
+      // câmera: interpola entre os quadros-chave
+      const cam = [{ at: 0, r: [0, 0, 1200, 800] }, ...(it.cam ?? [])];
+      let r = cam[0].r;
+      for (let k = 1; k < cam.length; k++) {
+        const dur = cam[k].dur ?? 1.4;
+        if (t >= cam[k].at) {
+          const e = easeInOut((t - cam[k].at) / dur), a = r;
+          r = a.map((v, j) => v + (cam[k].r[j] - v) * e);
+        }
+      }
+      const z = Math.min(1200 / r[2], 800 / r[3]);
+      let tx = -(r[0] + r[2] / 2) * z + 600, ty = -(r[1] + r[3] / 2) * z + 400;
+      tx = Math.min(0, Math.max(1200 - 1200 * z, tx)); ty = Math.min(0, Math.max(800 - 800 * z, ty));
+      const camada = el.querySelector('.camada');
+      camada.style.transform = `scale(${esc0}) translate(${tx}px, ${ty}px) scale(${z})`;
+      (it.trocas ?? []).forEach((x, k) => { el.querySelector(`img[data-k="${k + 1}"]`).style.opacity = easeInOut(prog(t, x.at, .6)); });
+      (it.aneis ?? []).forEach((a, k) => {
+        const anel = el.querySelector(`.anel[data-a="${k}"]`);
+        const on = easeOut(prog(t, a.at, .5)) * (1 - easeOut(prog(t, a.ate ?? 999, .4)));
+        anel.style.opacity = on;
+        anel.style.borderWidth = `${4 / z / esc0 * .9}px`;
+        const pulso = 1 + Math.sin((t - a.at) * 5) * 0.015;
+        anel.style.transform = `scale(${(1.12 - .12 * easeOut(prog(t, a.at, .5))) * pulso})`;
+      });
+    },
+  },
+  chip: {
+    cria: (it) => `<div class="abs chip ${it.cheio ? 'verde-chip' : ''}" style="left:${it.x}px;top:${it.y}px;${it.tam ? `font-size:${it.tam}px` : ''}">${it.semIcone ? '' : `<span class="ok">${CHECK}</span>`}${it.texto}</div>`,
+    anima: (el, it, t) => {
+      const k = back(prog(t, it.at, .55));
+      el.style.opacity = clamp(k) * (1 - easeOut(prog(t, it.ate ?? 999, .4)));
+      el.style.transform = `translateY(${(1 - clamp(k)) * 18}px) scale(${.85 + .15 * k})`;
+    },
+  },
+  html: {
+    cria: (it) => `<div class="abs" style="left:${it.x}px;top:${it.y}px;${it.estilo ?? ''}">${it.conteudo}</div>`,
+    anima: (el, it, t) => entra(el, back(prog(t, it.at ?? .3, .7)) , { dy: it.dy ?? 40, escala: .92 }),
+  },
+  lista: {
+    // Lista de passos que vão sendo marcados: itens [{ at, texto, detalhe }]
+    cria: (it) => `<div class="abs" style="left:${it.x}px;top:${it.y}px;display:flex;flex-direction:column;gap:22px">
+      ${it.itens.map((i, k) => `<div class="item" data-k="${k}"><span class="bola">${CHECK}</span><div>${i.texto}${i.detalhe ? `<small>${i.detalhe}</small>` : ''}</div></div>`).join('')}</div>`,
+    anima: (el, it, t) => {
+      it.itens.forEach((i, k) => {
+        const row = el.querySelector(`[data-k="${k}"]`), bola = row.querySelector('.bola');
+        entra(row, easeOut(prog(t, (it.at ?? .3) + k * .18, .6)), { dx: -40, dy: 0 });
+        const ativo = t >= i.at && (k === it.itens.length - 1 || t < it.itens[k + 1].at);
+        const feito = easeOut(prog(t, i.at, .4));
+        bola.style.background = feito > .5 ? 'var(--verde-lima)' : '#fff';
+        bola.style.borderColor = feito > .5 ? 'var(--verde-lima)' : '#d6dcd8';
+        bola.querySelector('svg').style.opacity = feito;
+        row.style.boxShadow = ativo ? '0 0 0 3px var(--verde-lima), 0 18px 40px rgba(23,36,28,.12)' : '';
+        row.style.transform += ` scale(${ativo ? 1.03 : 1})`;
+      });
+    },
+  },
+};
+
+/* ---------- montagem ---------- */
+const palco = document.getElementById('palco');
+let CENAS = [];
+function monta(roteiro) {
+  let t0 = 0;
+  CENAS = roteiro.map((c) => {
+    const el = document.createElement('div');
+    el.className = `cena ${c.fundo ?? 'branca'}`;
+    if (c.fundo === 'verde') ondas(el); else linhas(el);
+    el.insertAdjacentHTML('beforeend', c.itens.map((it) => TIPOS[it.tipo].cria(it)).join(''));
+    const nos = [...el.children].slice(1);
+    palco.appendChild(el);
+    const cena = { ...c, el, nos, t0 };
+    t0 += c.dur;
+    return cena;
+  });
+  window.DURACAO = t0;
+}
+const TRANS = 0.5;
+window.render = (T) => {
+  CENAS.forEach((c, k) => {
+    const t = T - c.t0;
+    const visivel = t >= 0 && t < c.dur + TRANS;
+    c.el.style.display = visivel ? 'block' : 'none';
+    if (!visivel) return;
+    c.el.style.opacity = k === 0 ? 1 - easeOut(prog(T, DURACAO - 1.2, 1.2)) * 0 : easeOut(prog(t, 0, TRANS));
+    if (c.fundo === 'verde') desenhaOndas(c.el, T); else desenhaLinhas(c.el, T);
+    c.itens.forEach((it, i) => TIPOS[it.tipo].anima(c.nos[i], it, t));
+  });
+  // escurece para o branco no fim
+  palco.style.opacity = 1 - easeInOut(prog(T, DURACAO - 0.9, 0.9));
+};
+
+const nome = new URLSearchParams(location.search).get('roteiro') ?? 'ong';
+const s = document.createElement('script');
+s.src = `roteiro-${nome}.js`;
+s.onload = async () => {
+  monta(window.ROTEIRO);
+  await document.fonts.ready;
+  await Promise.all([...document.images].map((i) => i.decode().catch(() => {})));
+  window.PRONTO = true;
+  const t = new URLSearchParams(location.search).get('t');
+  render(t ? +t : 0);
+};
+document.head.appendChild(s);
+</script>
+</body>
+</html>

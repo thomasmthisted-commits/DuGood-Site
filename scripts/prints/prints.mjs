@@ -121,13 +121,17 @@ function funcao(nome, corpo, perfil) {
       return { claimed: 0 };
     case 'getPublicDonationStats':
       return { total: 48750 };
+    case 'accountAccess':
+      return D.acessos(corpo, perfil);
     default:
       return null;
   }
 }
 
 const filtro = process.argv[2] ?? '';
-const jobs = JSON.parse(readFileSync(new URL('./trabalhos.json', import.meta.url))).filter((j) => j.nome.startsWith(filtro));
+// TRABALHOS: outra lista de prints (ex.: os do vídeo tutorial, scripts/tutorial/telas.json)
+const listaJobs = process.env.TRABALHOS ? new URL(process.env.TRABALHOS, `file://${process.cwd()}/`) : new URL('./trabalhos.json', import.meta.url);
+const jobs = JSON.parse(readFileSync(listaJobs)).filter((j) => j.nome.startsWith(filtro));
 await gerarCameras();
 const navegador = { executablePath: process.env.CHROMIUM_PATH || undefined };
 const semCamera = await chromium.launch(navegador);
@@ -164,7 +168,8 @@ for (const job of jobs) {
     const json = (dados, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(dados ?? {}) });
     if (caminho.includes('/analytics/') || caminho.includes('/app-logs/')) return json({});
     if (caminho.includes('/public-settings/')) return json({ id: 'demo', public_settings: { auth_required: false } });
-    if (caminho.endsWith('/entities/User/me')) return json(D.pessoas[job.perfil]);
+    // "deslogado": ninguém entrou (tela de login)
+    if (caminho.endsWith('/entities/User/me')) return job.deslogado ? json({ message: 'Unauthorized' }, 401) : json(D.pessoas[job.perfil]);
     const ent = caminho.match(/\/entities\/([A-Za-z]+)(?:\/([^/]+))?$/);
     if (ent) {
       const [, nome, id] = ent;
@@ -193,13 +198,20 @@ for (const job of jobs) {
   const p = await ctx.newPage();
   const erros = [];
   p.on('pageerror', (e) => erros.push(String(e).slice(0, 200)));
-  await p.goto(`${APP}${job.url}${job.url.includes('?') ? '&' : '?'}access_token=demo`, { waitUntil: 'networkidle' });
+  await p.goto(job.deslogado ? `${APP}${job.url}` : `${APP}${job.url}${job.url.includes('?') ? '&' : '?'}access_token=demo`, { waitUntil: 'networkidle' });
   await p.waitForTimeout(1500);
   for (const passo of job.passos ?? []) {
     if (passo.clicar) await p.getByText(passo.clicar, { exact: passo.exato ?? false }).first().click();
     if (passo.botao) await p.getByRole('button', { name: new RegExp(passo.botao, 'i') }).first().click();
     if (passo.seletor) await p.locator(passo.seletor).first().click();
     if (passo.rolar) await p.mouse.wheel(0, passo.rolar);
+    // "substituir": troca um texto da tela (ex.: o endereço local do app pelo endereço público no link de cadastro)
+    if (passo.substituir) await p.evaluate(([de, para]) => {
+      const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      while (w.nextNode()) if (w.currentNode.nodeValue.includes(de)) w.currentNode.nodeValue = w.currentNode.nodeValue.replaceAll(de, para);
+      for (const i of document.querySelectorAll('input, textarea')) if (i.value.includes(de)) i.value = i.value.replaceAll(de, para);
+    }, passo.substituir);
+    if (passo.preencher) await p.locator(passo.preencher.seletor).first().fill(passo.preencher.texto);
     await p.waitForTimeout(passo.esperar ?? 1200);
   }
   if (job.pdf) {
