@@ -218,6 +218,10 @@ for (const job of jobs) {
     if (passo.seletor) await p.locator(passo.seletor).first().click();
     // "ver": rola a tela até um texto (dentro de modais também)
     if (passo.ver) await p.getByText(passo.ver, { exact: passo.exato ?? false }).first().scrollIntoViewIfNeeded();
+    // "mostrar": deixa visível o que uma animação deixou parado no começo (o relógio do navegador fica fixo)
+    if (passo.mostrar) await p.evaluate((sel) => {
+      for (const el of document.querySelectorAll(`${sel}, ${sel} *`)) { el.style.opacity = '1'; el.style.transform = 'none'; }
+    }, passo.mostrar);
     if (passo.mouse) await p.mouse.move(...passo.mouse);
     if (passo.rolar) await p.mouse.wheel(0, passo.rolar);
     // "substituir": troca um texto da tela (ex.: o endereço local do app pelo endereço público no link de cadastro)

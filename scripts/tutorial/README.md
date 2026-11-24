@@ -37,3 +37,11 @@ vídeo afirma precisa existir no app (veja o CLAUDE.md do repositório `dugood`)
 Junto). O guia usa o mesmo estilo do da ONG e as imagens comuns de `guia-ong/img`. Entrar, Termos de Parceria (aceite
 no painel), equipe e link de staff, configurações, perfil, conta Stripe, os dois modelos de evento (100% para uma
 instituição ou venda em seu nome com contribuição social), a página do evento, a portaria e o financeiro.
+
+## Lojistas parceiros
+
+`roteiro-lojista.js` (vídeo, `node scripts/tutorial/render.mjs lojista`) e `guia-lojista/` (PDF,
+`node scripts/tutorial/guia-lojista/gerar-pdf.mjs`), com as telas de `telas-lojista.json` (Café Exemplo). Entrar,
+Termos de Parceria (aceite no painel), equipe e idioma, informações da loja, como o doador desbloqueia (pontos,
+níveis e medalhas), cadastrar o benefício e as formas de resgate, o scanner na loja, clientes e QR codes de doação.
+Modais com animação saem com `"mostrar"` nos prints (o relógio do navegador fica parado e a animação não termina).

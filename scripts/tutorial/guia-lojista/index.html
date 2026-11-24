@@ -1,0 +1,530 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia do lojista na DuGood</title>
+<meta name="description" content="Primeiros passos do lojista parceiro no painel da DuGood, um assunto por página: entrar, termos, equipe, informações da loja, benefícios, validação na loja, clientes e QR codes de doação.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<!--
+  Guia de onboarding para lojistas parceiros, um assunto por página (no PDF, cada .pagina começa numa folha nova e
+  precisa caber nela). Mesmo conteúdo do vídeo tutorial (roteiro-lojista.js). Estilo igual ao do guia da ONG
+  (guia-ong/index.html); imagens comuns (logo, mascotes, fundo) vêm de guia-ong/img. Telas com dados fictícios
+  (Café Exemplo). Tudo o que está aqui precisa existir no app (repositório dugood).
+  Gerar o PDF: node scripts/tutorial/guia-lojista/gerar-pdf.mjs
+-->
+<style>
+  :root {
+    --branco: #ffffff; --nevoa: #f6f8f7; --cinza-1: #eef1ef; --linha: #e2e7e4;
+    --tinta: #17241c; --tinta-suave: #56635b; --tinta-fraca: #8a958e;
+    --verde-escuro: #1b571b; --verde: #09a673; --verde-claro: #e6f6ee; --verde-claro-2: #d2efe0;
+    --onda-1: #7be83a; --onda-2: #57bc2d; --onda-3: #45a425; --onda-veu: rgb(17 62 17 / 0.55);
+    --titulo: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --raio: 18px; --raio-p: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--branco); color: var(--tinta); font-family: var(--texto); font-size: 15.5px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--titulo); line-height: 1.2; margin: 0; color: var(--tinta); }
+  a { color: var(--verde); }
+  p { margin: 0 0 0.7em; }
+  ul, ol { margin: 0 0 0.7em; padding-left: 1.2em; }
+  li { margin: 0.25em 0; }
+  strong { color: var(--tinta); }
+  .caminho { font-weight: 600; color: var(--verde-escuro); background: var(--verde-claro); padding: 0.05em 0.45em; border-radius: 6px; white-space: nowrap; }
+
+  /* Capa */
+  .capa { position: relative; overflow: hidden; color: #fff; background: linear-gradient(135deg, var(--onda-1), var(--onda-2) 45%, var(--onda-3)); min-height: 100vh; display: flex; flex-direction: column; padding: clamp(28px, 6vw, 64px) clamp(16px, 6vw, 72px); }
+  .capa::before { content: ''; position: absolute; inset: 0; background: url('../guia-ong/img/fundo-verde.jpg') center top / cover no-repeat; }
+  .capa::after { content: ''; position: absolute; inset: 0; background: var(--onda-veu); }
+  .capa > * { position: relative; z-index: 1; }
+  .capa__logo { width: 160px; display: block; }
+  .capa__meio { margin: auto 0; max-width: 600px; padding: 48px 0; }
+  .capa__rotulo { display: inline-block; font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: rgb(255 255 255 / 0.16); border: 1px solid rgb(255 255 255 / 0.3); padding: 5px 12px; border-radius: 999px; margin-bottom: 20px; }
+  .capa h1 { color: #fff; font-size: clamp(38px, 6.4vw, 62px); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 18px; }
+  .capa__sub { font-size: clamp(17px, 2.2vw, 20px); color: rgb(255 255 255 / 0.92); max-width: 500px; margin: 0; }
+  .capa__mascote { position: absolute; right: clamp(8px, 6vw, 80px); bottom: clamp(60px, 9vw, 110px); width: clamp(140px, 22vw, 240px); z-index: 1; }
+  .capa__rodape { display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 13.5px; color: rgb(255 255 255 / 0.85); }
+
+  /* Páginas */
+  main { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+  .pagina { padding-top: 64px; }
+  .topo { display: flex; align-items: center; gap: 20px; padding-bottom: 14px; margin-bottom: 16px; border-bottom: 2px solid var(--verde-claro-2); }
+  .topo img { width: 80px; flex: none; }
+  .num { font-family: var(--titulo); font-weight: 700; font-size: 12.5px; color: var(--verde); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 4px; }
+  .pagina h2 { font-size: clamp(25px, 3.4vw, 30px); font-weight: 800; letter-spacing: -0.015em; }
+  .pagina h3 { font-size: 16.5px; font-weight: 700; margin: 18px 0 8px; }
+  .lead { font-size: 16.5px; color: var(--tinta-suave); }
+
+  .resumo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 12px 0 4px; }
+  .caixa { border-radius: var(--raio-p); padding: 10px 16px; font-size: 14px; }
+  .caixa b { display: block; font-family: var(--titulo); font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--verde); margin-bottom: 3px; }
+  .caixa--onde { background: var(--verde-claro); border: 1px solid var(--verde-claro-2); }
+  .caixa--quem { background: var(--nevoa); border: 1px solid var(--linha); }
+
+  .numerada { list-style: none; padding: 0; counter-reset: n; margin: 8px 0 12px; }
+  .numerada li { position: relative; padding-left: 40px; margin: 10px 0; counter-increment: n; }
+  .numerada li::before { content: counter(n); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--verde); color: #fff; display: grid; place-items: center; font-family: var(--titulo); font-weight: 800; font-size: 13px; }
+  .numerada li span { display: block; color: var(--tinta-suave); font-size: 14px; }
+
+  .destaque { position: relative; overflow: hidden; border-radius: var(--raio); padding: 18px 24px; margin: 16px 0; color: #fff; background: linear-gradient(135deg, var(--onda-1), var(--onda-2) 45%, var(--onda-3)); }
+  .destaque::before { content: ''; position: absolute; inset: 0; background: url('../guia-ong/img/fundo-verde.jpg') center / cover no-repeat; }
+  .destaque::after { content: ''; position: absolute; inset: 0; background: var(--onda-veu); }
+  .destaque > * { position: relative; z-index: 1; }
+  .destaque h3 { color: #fff; margin: 0 0 6px; font-size: 18px; }
+  .destaque p { margin: 0; color: rgb(255 255 255 / 0.93); }
+  .destaque strong { color: #fff; }
+  .dica { position: relative; background: var(--verde-claro); border: 1px solid var(--verde-claro-2); border-radius: var(--raio-p); padding: 11px 16px 11px 48px; margin: 12px 0; font-size: 14px; }
+  .dica::before { content: '!'; position: absolute; left: 14px; top: 11px; width: 22px; height: 22px; border-radius: 50%; background: var(--verde); color: #fff; font-family: var(--titulo); font-weight: 800; font-size: 13px; display: grid; place-items: center; }
+  .dica p:last-child { margin-bottom: 0; }
+  .dica--cinza { background: var(--nevoa); border-color: var(--linha); }
+  .dica--cinza::before { background: var(--tinta-fraca); }
+
+  figure { margin: 12px 0 14px; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid var(--linha); border-radius: var(--raio-p); }
+  figcaption { font-size: 12.5px; color: var(--tinta-fraca); text-align: center; margin-top: 6px; }
+  .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  .duas--texto { grid-template-columns: 1.15fr 0.85fr; }
+  .duas figure { margin-top: 2px; }
+
+  .tabela { width: 100%; margin: 10px 0 12px; border: 1px solid var(--linha); border-radius: var(--raio-p); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  th, td { text-align: left; vertical-align: top; padding: 7px 12px; border-bottom: 1px solid var(--linha); }
+  th { background: var(--nevoa); font-family: var(--titulo); font-weight: 700; font-size: 12.5px; color: var(--tinta-suave); }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child { font-weight: 600; }
+  .selo { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .selo--cinza { background: var(--cinza-1); color: var(--tinta-suave); }
+  .selo--verde { background: var(--verde-claro-2); color: var(--verde-escuro); }
+  .selo--cheio { background: var(--verde); color: #fff; }
+
+  .indice { list-style: none; padding: 0; margin: 10px 0; display: grid; grid-template-columns: 1fr 1fr; gap: 7px 20px; counter-reset: i; }
+  .indice li { counter-increment: i; display: flex; gap: 12px; align-items: baseline; padding: 7px 12px; background: var(--nevoa); border: 1px solid var(--linha); border-radius: 10px; margin: 0; font-size: 14px; }
+  .indice li::before { content: counter(i, decimal-leading-zero); font-family: var(--titulo); font-weight: 800; color: var(--verde); font-size: 13px; }
+  .indice a { color: var(--tinta); text-decoration: none; font-weight: 600; }
+
+  .checklist { list-style: none; padding: 0; margin: 8px 0; }
+  .checklist li { position: relative; padding-left: 30px; margin: 8px 0; }
+  .checklist li::before { content: ''; position: absolute; left: 0; top: 3px; width: 17px; height: 17px; border-radius: 5px; border: 2px solid var(--verde); }
+  .checklist small { display: block; color: var(--tinta-suave); font-size: 13.5px; }
+
+  .faq-item { padding: 9px 0; border-bottom: 1px solid var(--linha); }
+  .faq-item h3 { font-size: 15px; margin: 0 0 3px; }
+  .faq-item p { color: var(--tinta-suave); margin: 0; font-size: 14px; }
+  .contato { display: flex; gap: 22px; align-items: center; background: var(--nevoa); border: 1px solid var(--linha); border-radius: var(--raio); padding: 18px 24px; margin-top: 18px; }
+  .contato img { width: 80px; flex: none; }
+  .contato h3 { margin: 0 0 4px; }
+  .contato p { margin: 0; color: var(--tinta-suave); }
+
+  @media (max-width: 640px) {
+    .duas, .duas--texto, .resumo, .indice { grid-template-columns: 1fr; }
+    .capa__mascote { opacity: 0.35; }
+    .contato { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* Impressão / PDF (A4): cada .pagina começa numa folha nova */
+  @page { size: A4; margin: 14mm 15mm 16mm; }
+  @page :first { margin: 0; }
+  @media print {
+    body { font-size: 10pt; line-height: 1.5; }
+    .capa { min-height: 297mm; height: 297mm; padding: 22mm 20mm; }
+    .capa__mascote { right: 18mm; bottom: 30mm; width: 62mm; opacity: 1; }
+    main { max-width: none; padding: 0; }
+    .pagina { break-before: page; padding-top: 0; }
+    .lead { font-size: 10.8pt; }
+    .numerada li span, .caixa, .dica, table, .faq-item p, .checklist small { font-size: 9.2pt; }
+    figure img { max-height: 88mm; width: auto; max-width: 100%; margin: 0 auto; }
+    figure.baixa img { max-height: 62mm; }
+    #antes .indice { grid-template-columns: 1fr 1fr 1fr; gap: 6px 12px; }
+    #antes .indice li { padding: 6px 10px; font-size: 9pt; }
+    #painel figure.baixa img { max-height: 50mm; }
+    #painel .duas figure img { max-height: 70mm; }
+    #termo-ong figure img { max-height: 42mm; }
+    #termo-ong .numerada li { margin: 6px 0; }
+    #termo-ong figcaption { display: none; }
+    #termo-ong figure { margin: 6px 0 8px; }
+    #termo-ong td, #termo-ong th { padding: 5px 12px; }
+    #termo-ong h3 { margin-top: 10px; }
+    .duas figure img { max-height: 105mm; }
+    .tabela, tr, figure, .dica, .destaque, .contato, .numerada li { break-inside: avoid; }
+    a { text-decoration: none; }
+  }
+</style>
+</head>
+<body>
+<header class="capa">
+  <img class="capa__logo" src="../guia-ong/img/logo-branco.png" alt="DuGood">
+  <div class="capa__meio">
+    <span class="capa__rotulo">Guia para lojistas parceiros</span>
+    <h1>Boas-vindas à DuGood</h1>
+    <p class="capa__sub">O passo a passo para a sua loja entrar no painel, cadastrar benefícios para quem doa e receber novos clientes.</p>
+  </div>
+  <img class="capa__mascote" src="../guia-ong/img/acenando.png" alt="">
+  <div class="capa__rodape">
+    <span>Versão de novembro de 2026</span>
+    <span>As telas deste guia usam dados fictícios</span>
+    <span>dugood.com.br</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- 01 -->
+  <section class="pagina" id="antes">
+    <div class="topo"><img src="../guia-ong/img/coracao.png" alt=""><div><div class="num">01 · Antes de começar</div><h2>Como usar este guia</h2></div></div>
+    <p class="lead">A DuGood é a plataforma de doações onde quem doa para causas sociais ganha pontos e desbloqueia benefícios de lojas parceiras. A sua loja oferece um desconto ou brinde, aparece para uma comunidade que doa e recebe novos clientes. Este guia explica, um assunto por página, tudo o que é preciso para começar.</p>
+    <p>Na primeira vez, leia na ordem. Depois, use como consulta. O mesmo conteúdo está no vídeo tutorial que acompanha este guia.</p>
+    <h3>Neste guia</h3>
+    <ol class="indice">
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#entrar">Entrar no painel</a></li>
+      <li><a href="#termos">Aceitar os Termos de Parceria</a></li>
+      <li><a href="#equipe">Convidar a equipe</a></li>
+      <li><a href="#niveis">O que cada pessoa vê ou edita</a></li>
+      <li><a href="#painel">O menu, a Visão geral e o idioma</a></li>
+      <li><a href="#loja">Informações da loja</a></li>
+      <li><a href="#desbloqueio">Como o doador desbloqueia</a></li>
+      <li><a href="#cadastrar">Cadastrar um benefício</a></li>
+      <li><a href="#resgate">Formas de resgate</a></li>
+      <li><a href="#validar">Validar na loja</a></li>
+      <li><a href="#clientes">Clientes</a></li>
+      <li><a href="#doacoes">QR codes de doação</a></li>
+      <li><a href="#duvidas">Dúvidas frequentes</a></li>
+    </ol>
+    <h3>Tenha à mão</h3>
+    <ul class="checklist">
+      <li><strong>O link de cadastro da loja</strong><small>Enviado pela equipe da DuGood. É por ele que a primeira pessoa entra no painel.</small></li>
+      <li><strong>O logo e os dados da loja</strong><small>Logo quadrado, uma descrição curta, contato, endereço e site.</small></li>
+      <li><strong>A ideia do benefício</strong><small>Um desconto ou brinde, como será resgatado (na loja, por cupom ou pelo site) e até quando vale.</small></li>
+      <li><strong>Um celular com câmera na loja</strong><small>Para ler o QR Code dos clientes, se o benefício for resgatado na loja.</small></li>
+    </ul>
+    <div class="destaque">
+      <h3>Para a loja, a DuGood não custa nada</h3>
+      <p>Lojas parceiras <strong>não pagam nada</strong> para estar na plataforma, e o painel é grátis. A loja só entrega o benefício que ela mesma escolheu.</p>
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section class="pagina" id="entrar">
+    <div class="topo"><img src="../guia-ong/img/celular.png" alt=""><div><div class="num">02 · Entrar no painel</div><h2>O primeiro acesso, pelo link de cadastro</h2></div></div>
+    <p class="lead">A entrada no painel da loja é sempre pelo <strong>link de cadastro</strong> que a DuGood mandou. É ele que liga a sua conta ao painel da sua loja.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b>O link de cadastro que a DuGood mandou por e-mail ou WhatsApp.</div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>Primeiro, quem vai cuidar do painel (vira o administrador). Depois, o resto da equipe.</div>
+    </div>
+    <div class="duas duas--texto">
+      <div>
+        <h3>Passo a passo</h3>
+        <ol class="numerada">
+          <li><strong>Abra o link de cadastro.</strong><span>Funciona no computador e no celular. A tela de entrada da DuGood abre.</span></li>
+          <li><strong>Entre com Google, Apple ou e-mail e senha.</strong><span>Se você já usa a DuGood para doar, pode usar a mesma conta.</span></li>
+          <li><strong>Sem conta? Clique em Cadastrar.</strong><span>Informe e-mail, telefone, CPF e uma senha. Um código chega no seu e-mail: digite-o para confirmar.</span></li>
+          <li><strong>Aceite os Termos de Parceria.</strong><span>Na primeira entrada, eles aparecem no próprio painel (veja a próxima página).</span></li>
+        </ol>
+      </div>
+      <figure><img src="../guia-ong/img/login.jpg" alt="Tela de entrada da DuGood"><figcaption>A tela de entrada</figcaption></figure>
+    </div>
+    <h3>Quem entra primeiro vira o administrador</h3>
+    <p>A primeira pessoa que entra pelo link vira o <strong>administrador do painel</strong>: tem acesso a tudo e decide quem mais entra. Quem entra depois pelo mesmo link <strong>pede acesso</strong>, e o administrador recebe um aviso por e-mail para aprovar (página 04).</p>
+    <div class="dica">
+      <p><strong>Combine quem entra primeiro.</strong> O ideal é que seja quem vai cuidar dos benefícios no dia a dia. A administração pode ser passada para outra pessoa depois.</p>
+    </div>
+    <div class="dica dica--cinza">
+      <p><strong>Um e-mail, um painel.</strong> Cada conta da DuGood fica ligada a um painel só. Se a pessoa já usa o e-mail no painel de uma ONG, de um organizador ou de outra loja, precisa entrar com outro e-mail.</p>
+    </div>
+  </section>
+
+  <!-- 03 -->
+  <section class="pagina" id="termos">
+    <div class="topo"><img src="../guia-ong/img/livro.png" alt=""><div><div class="num">03 · Aceitar os Termos de Parceria</div><h2>O acordo da loja com a DuGood</h2></div></div>
+    <p class="lead">Na primeira vez que entra no painel, cada pessoa vê os <strong>Termos de Parceria — Lojista DuGood</strong>. O aceite é feito no próprio painel, em poucos segundos, e só aparece uma vez para cada pessoa.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b>Abre sozinho na primeira entrada no painel.</div>
+      <div class="caixa caixa--quem"><b>Quem aceita</b>Cada pessoa da equipe, na primeira vez que entra.</div>
+    </div>
+    <div class="duas duas--texto">
+      <div>
+        <h3>O que os termos dizem</h3>
+        <ol class="numerada">
+          <li><strong>Uso da imagem e da marca.</strong><span>Você autoriza a DuGood a usar o nome, o logo e a identidade visual da loja na plataforma, em materiais de divulgação, nas redes sociais e em campanhas de impacto social. A autorização é gratuita, não exclusiva e vale enquanto a parceria estiver ativa.</span></li>
+          <li><strong>Entrega dos benefícios.</strong><span>A loja se compromete a entregar os benefícios cadastrados a quem tem direito, manter as informações atualizadas, ativar, pausar ou editar os benefícios quando precisar, não apresentar como ativo um benefício pausado e avisar a DuGood se não puder cumprir um benefício já oferecido.</span></li>
+        </ol>
+        <h3>Para aceitar</h3>
+        <p>Leia o texto, marque as duas opções no fim e clique em <strong>Aceitar e continuar</strong>. O painel abre em seguida.</p>
+      </div>
+      <figure><img src="img/termos.jpg" alt="Termos de Parceria do lojista"><figcaption>Os Termos de Parceria, na primeira entrada</figcaption></figure>
+    </div>
+    <div class="dica">
+      <p><strong>Quer encerrar a parceria?</strong> A autorização de uso da marca pode ser revogada pedindo o encerramento da parceria à equipe da DuGood.</p>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section class="pagina" id="equipe">
+    <div class="topo"><img src="../guia-ong/img/abraco.png" alt=""><div><div class="num">04 · Convidar a equipe</div><h2>Mais gente cuidando do painel</h2></div></div>
+    <p class="lead">Cada pessoa da equipe (atendentes, gerentes, marketing) entra com a própria conta, pelo mesmo link de cadastro da loja. Assim cada um tem o seu login, e você controla quem entra e o que cada um pode fazer, sem compartilhar senha.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Configurações › Controle de acessos</span> (botão Configurações, no rodapé do menu).</div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>Só o administrador do painel vê esta aba.</div>
+    </div>
+    <figure><img src="img/acessos.jpg" alt="Controle de acessos: link de cadastro e pessoas da equipe"><figcaption>O link de cadastro e a lista de pessoas</figcaption></figure>
+    <h3>Passo a passo</h3>
+    <ol class="numerada">
+      <li><strong>Copie o link de cadastro.</strong><span>Clique em Copiar e mande para a pessoa como preferir, ou use Enviar no WhatsApp.</span></li>
+      <li><strong>A pessoa entra pelo link.</strong><span>Ela entra com a conta dela (ou cria uma). O painel ainda não abre: fica o pedido de acesso.</span></li>
+      <li><strong>Você recebe o aviso e aprova.</strong><span>Chega um e-mail para o administrador, e o pedido aparece em Controle de acessos e nas Pendências da Visão geral. Clique em Aprovar ou Recusar.</span></li>
+      <li><strong>Pronto: a pessoa já pode usar o painel.</strong><span>Quem é aprovado começa podendo editar tudo. Para limitar, veja a próxima página.</span></li>
+    </ol>
+    <div class="dica">
+      <p><strong>O link foi parar onde não devia?</strong> Clique em <strong>Gerar novo link</strong>. O antigo para de funcionar na hora, e quem já tem acesso continua com acesso.</p>
+    </div>
+  </section>
+
+  <!-- 05 -->
+  <section class="pagina" id="niveis">
+    <div class="topo"><img src="../guia-ong/img/ferramentas.png" alt=""><div><div class="num">05 · O que cada pessoa vê ou edita</div><h2>Acesso por bloco do menu</h2></div></div>
+    <p class="lead">Nem todo mundo precisa ver tudo: um atendente que só lê o QR Code dos clientes não precisa mudar os benefícios, por exemplo. Para cada pessoa, você escolhe o acesso a cada bloco do menu: <strong>Início, Benefícios, Doações e Conta</strong>.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Configurações › Controle de acessos</span>, abaixo do nome de cada pessoa.</div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>O administrador do painel.</div>
+    </div>
+    <div class="tabela"><table>
+      <thead><tr><th style="width:22%">Nível</th><th>O que acontece para a pessoa</th></tr></thead>
+      <tbody>
+        <tr><td>Sem acesso</td><td>O bloco some do menu dela, como se não existisse.</td></tr>
+        <tr><td>Ver</td><td>Ela vê as telas do bloco, com um aviso de que o acesso é só para ver, e não consegue salvar nada.</td></tr>
+        <tr><td>Editar</td><td>Ela vê e muda tudo no bloco. É o padrão para quem acabou de ser aprovado.</td></tr>
+      </tbody>
+    </table></div>
+    <figure><img src="img/acessos-blocos.jpg" alt="Escolha de Sem acesso, Ver ou Editar em cada bloco"><figcaption>Neste exemplo, Pedro edita tudo e só vê a Conta</figcaption></figure>
+    <h3>Um administrador por painel</h3>
+    <ul>
+      <li>Cada painel tem <strong>um administrador só</strong>. Ele tem acesso a tudo e é o único que vê o Controle de acessos.</li>
+      <li><strong>Passar administração:</strong> quando a pessoa responsável muda, o administrador passa o papel para outra pessoa da equipe.</li>
+      <li><strong>Bloquear, liberar e excluir:</strong> bloquear tira o acesso na hora, e dá para liberar de novo depois. Excluir tira a pessoa da lista: se ela entrar pelo link outra vez, vira um pedido novo.</li>
+    </ul>
+    <div class="dica">
+      <p><strong>Alguém saiu da equipe?</strong> Bloqueie ou exclua o acesso da pessoa no mesmo dia.</p>
+    </div>
+  </section>
+
+  <!-- 06 -->
+  <section class="pagina" id="painel">
+    <div class="topo"><img src="../guia-ong/img/lupa.png" alt=""><div><div class="num">06 · O menu, a Visão geral e o idioma</div><h2>Onde fica cada coisa</h2></div></div>
+    <div class="duas duas--texto">
+      <div class="tabela" style="margin-top:2px"><table>
+        <thead><tr><th style="width:30%">Bloco</th><th>O que tem</th></tr></thead>
+        <tbody>
+          <tr><td>Início</td><td>Visão geral: benefícios ativos, desbloqueios, usos na loja, clientes, pendências e desbloqueios por mês.</td></tr>
+          <tr><td>Benefícios</td><td>Meus benefícios (criar, editar, pausar e o scanner) e Clientes.</td></tr>
+          <tr><td>Doações</td><td>QR Codes de doação, quando uma ONG escolhe a loja para validar doações.</td></tr>
+          <tr><td>Conta</td><td>Informações da loja.</td></tr>
+        </tbody>
+      </table></div>
+      <figure><img src="img/menu-lateral.jpg" alt="Menu lateral do painel do lojista"><figcaption>O menu do lojista</figcaption></figure>
+    </div>
+    <h3>A Visão geral</h3>
+    <figure class="baixa"><img src="img/geral.jpg" alt="Visão geral do lojista"><figcaption>Início › Visão geral</figcaption></figure>
+    <p>É a primeira tela do painel. Mostra os números da loja, as <strong>Pendências</strong> (pedidos de acesso, benefícios pausados ou vencidos), os desbloqueios por mês e os últimos clientes. No começo, mostra o que falta: completar as informações da loja, cadastrar o primeiro benefício e deixar um benefício no ar.</p>
+    <h3>Idioma</h3>
+    <p>Em <span class="caminho">Configurações › Idioma</span>, cada pessoa escolhe ver o painel em <strong>português, inglês ou espanhol</strong>. Vale só para quem escolheu, em todos os aparelhos.</p>
+    <div class="dica">
+      <p><strong>Ficou com dúvida em alguma tela?</strong> Clique em <strong>Como usar esta tela</strong>, ao lado do título. Os tutoriais completos ficam em <strong>Tutoriais</strong>, no rodapé do menu.</p>
+    </div>
+  </section>
+
+  <!-- 07 -->
+  <section class="pagina" id="loja">
+    <div class="topo"><img src="../guia-ong/img/presente.png" alt=""><div><div class="num">07 · Informações da loja</div><h2>Como a loja aparece para quem doa</h2></div></div>
+    <p class="lead">As informações da loja aparecem para os doadores junto com os seus benefícios. Uma loja bem apresentada, com logo, descrição e contato, faz o doador querer usar o benefício.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Conta › Informações da loja</span></div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>Quem tem acesso para editar o bloco Conta.</div>
+    </div>
+    <div class="duas duas--texto">
+      <div>
+        <h3>O que preencher</h3>
+        <ul>
+          <li><strong>Logo da loja:</strong> aparece nos cards de todos os seus benefícios. Use uma imagem quadrada, com fundo branco ou transparente.</li>
+          <li><strong>Sobre a loja:</strong> os seus produtos, diferenciais e propósito.</li>
+          <li><strong>Contato:</strong> e-mail, telefone, WhatsApp (com DDI e DDD, sem espaços, por exemplo 5511999999999), Instagram, endereço e site.</li>
+        </ul>
+        <p>Use o lápis ao lado de cada parte para editar e clique em <strong>Salvar</strong>.</p>
+      </div>
+      <figure><img src="img/loja.jpg" alt="Conta, Informações da loja"><figcaption>Conta › Informações da loja</figcaption></figure>
+    </div>
+    <div class="dica">
+      <p><strong>Capriche no logo.</strong> É a primeira coisa que o doador vê no benefício. Se você não enviar um, o app usa um ícone padrão.</p>
+    </div>
+  </section>
+
+  <!-- 08 -->
+  <section class="pagina" id="desbloqueio">
+    <div class="topo"><img src="../guia-ong/img/trofeu.png" alt=""><div><div class="num">08 · Como o doador desbloqueia</div><h2>Pontos, níveis e medalhas</h2></div></div>
+    <p class="lead">Quem doa pela DuGood ganha pontos e conquistas. O seu benefício fica liberado para quem chegou a um nível ou ganhou uma medalha que você escolhe. Assim a loja recompensa quem faz o bem.</p>
+    <h3>O caminho até a sua loja</h3>
+    <ol class="numerada">
+      <li><strong>A pessoa doa para uma causa no app.</strong><span>Cada real doado vale um ponto.</span></li>
+      <li><strong>Ela sobe de nível ou ganha uma medalha.</strong><span>Os níveis vêm dos pontos; as medalhas, das doações em cada categoria de causa.</span></li>
+      <li><strong>O benefício da sua loja é desbloqueado.</strong><span>Ele aparece em Seus Benefícios, no app da pessoa.</span></li>
+      <li><strong>Ela usa o benefício.</strong><span>Na loja, pelo QR Code, ou com um cupom ou link (página 10).</span></li>
+    </ol>
+    <div class="duas">
+      <div>
+        <h3>Os níveis</h3>
+        <div class="tabela"><table>
+          <thead><tr><th>Nível</th><th>Pontos</th></tr></thead>
+          <tbody>
+            <tr><td>Bronze</td><td>a partir de 5</td></tr>
+            <tr><td>Prata</td><td>a partir de 100</td></tr>
+            <tr><td>Ouro</td><td>a partir de 500</td></tr>
+            <tr><td>Platina</td><td>a partir de 2.000</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div>
+        <h3>As medalhas</h3>
+        <p>Cada categoria de causa (educação, saúde, animais, esportes…) tem a sua medalha, ganha quando a pessoa soma <strong>R$ 200 em doações</strong> naquela categoria.</p>
+        <p>Um benefício por medalha atrai quem apoia causas ligadas à sua loja: um pet shop pode liberar o desconto para quem tem a medalha de animais, por exemplo.</p>
+      </div>
+    </div>
+    <div class="dica">
+      <p><strong>Quanto mais alto o nível, mais exclusivo.</strong> Um benefício de Bronze chega a quase todos que doam; um de Platina, só a quem já doou bastante. Você pode ter benefícios em níveis diferentes.</p>
+    </div>
+  </section>
+
+  <!-- 09 -->
+  <section class="pagina" id="cadastrar">
+    <div class="topo"><img src="../guia-ong/img/festa.png" alt=""><div><div class="num">09 · Cadastrar um benefício</div><h2>Um desconto ou brinde em poucos campos</h2></div></div>
+    <p class="lead">Em <span class="caminho">Benefícios › Meus benefícios</span>, clique em <strong>Novo Benefício</strong>. Depois de criado, o benefício já aparece para os doadores no app.</p>
+    <div class="duas duas--texto">
+      <div class="tabela" style="margin-top:2px"><table>
+        <thead><tr><th style="width:36%">Campo</th><th>O que colocar</th></tr></thead>
+        <tbody>
+          <tr><td>Descrição</td><td>O que a pessoa ganha, de forma clara. Ex.: 15% de desconto em compras acima de R$ 100.</td></tr>
+          <tr><td>Valor do desconto</td><td>O destaque do card. Ex.: 15% ou R$ 20.</td></tr>
+          <tr><td>Limite de usos por usuário</td><td>Quantas vezes cada pessoa pode usar.</td></tr>
+          <tr><td>Válido até</td><td>A data em que o benefício deixa de valer.</td></tr>
+          <tr><td>Forma de resgate</td><td>QR Code, cupom ou link (página 10).</td></tr>
+          <tr><td>Tipo de desbloqueio</td><td>Por nível (Bronze, Prata, Ouro, Platina) ou por medalhas de categoria.</td></tr>
+          <tr><td>Logo e categoria</td><td>O logo da marca e a categoria do benefício.</td></tr>
+        </tbody>
+      </table></div>
+      <figure><img src="img/novo-beneficio.jpg" alt="Formulário de novo benefício"><figcaption>Novo Benefício</figcaption></figure>
+    </div>
+    <div class="dica">
+      <p><strong>Escreva o benefício como você explicaria no balcão.</strong> Diga o que a pessoa ganha e as condições (valor mínimo, produtos, dias). Assim não há dúvida na hora de usar.</p>
+    </div>
+    <div class="dica dica--cinza">
+      <p><strong>Só cadastre o que a loja consegue entregar.</strong> É o compromisso dos Termos de Parceria: se algo mudar, edite ou pause o benefício.</p>
+    </div>
+  </section>
+
+  <!-- 10 -->
+  <section class="pagina" id="resgate">
+    <div class="topo"><img src="../guia-ong/img/ingresso.png" alt=""><div><div class="num">10 · Formas de resgate</div><h2>Na loja, por cupom ou pelo site</h2></div></div>
+    <p class="lead">A forma de resgate diz como a pessoa usa o benefício. Escolha a que combina com a sua loja: atendimento no balcão, loja on-line ou as duas.</p>
+    <div class="tabela"><table>
+      <thead><tr><th style="width:26%">Forma</th><th>Como funciona</th><th style="width:26%">Melhor para</th></tr></thead>
+      <tbody>
+        <tr><td>QR Code</td><td>A pessoa mostra o QR Code do benefício no app, e a sua equipe lê com o scanner do painel (página 11). O uso fica registrado e conta no limite por pessoa.</td><td>Lojas físicas, restaurantes, cafés.</td></tr>
+        <tr><td>Cupom de desconto</td><td>Quando a pessoa desbloqueia, o app mostra o código do cupom (ex.: DUGOOD15), que ela usa na compra.</td><td>Lojas on-line com cupom.</td></tr>
+        <tr><td>Link de direcionamento</td><td>A pessoa é levada a um link do seu site (ex.: loja.com/dugood), onde o desconto é aplicado.</td><td>Sites com uma página própria para a parceria.</td></tr>
+      </tbody>
+    </table></div>
+    <figure><img src="img/beneficios.jpg" alt="Benefícios, Meus benefícios"><figcaption>Benefícios › Meus benefícios: o scanner e os seus benefícios</figcaption></figure>
+    <h3>Cuidar dos benefícios</h3>
+    <ul>
+      <li><strong>Editar:</strong> muda qualquer campo do benefício.</li>
+      <li><strong>Pausar e Reativar:</strong> tira o benefício do ar por um tempo (por exemplo, numa reforma) e põe de volta depois.</li>
+      <li><strong>Deletar:</strong> apaga o benefício.</li>
+      <li><strong>Vencidos:</strong> depois da data de validade, a Visão geral avisa para renovar ou remover.</li>
+    </ul>
+  </section>
+
+  <!-- 11 -->
+  <section class="pagina" id="validar">
+    <div class="topo"><img src="../guia-ong/img/joinha.png" alt=""><div><div class="num">11 · Validar na loja</div><h2>O cliente mostra o QR, você escaneia</h2></div></div>
+    <p class="lead">Nos benefícios com QR Code, o cliente abre o benefício no app e mostra o QR Code na hora de pagar. A sua equipe lê pelo celular, confere e registra o uso. Assim ninguém usa o benefício mais vezes do que o combinado.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Benefícios › Meus benefícios</span>, Scanner de Benefícios, no topo.</div>
+      <div class="caixa caixa--quem"><b>Quem faz</b>Quem atende, com acesso ao bloco Benefícios.</div>
+    </div>
+    <figure><img src="img/scanner.jpg" alt="Scanner de benefícios: benefício encontrado"><figcaption>Benefício encontrado, com os usos restantes</figcaption></figure>
+    <h3>Passo a passo</h3>
+    <ol class="numerada">
+      <li><strong>Abra o scanner no celular.</strong><span>Clique em Iniciar Scanner e permita o uso da câmera.</span></li>
+      <li><strong>Aponte para o QR Code do cliente.</strong><span>Aparecem quem é o cliente, o benefício e quantos usos ainda restam.</span></li>
+      <li><strong>Confira e clique em Aceitar Leitura.</strong><span>O uso fica registrado e entra em Clientes. Para ler outro, use Novo Scan.</span></li>
+      <li><strong>Aplique o desconto ou entregue o brinde.</strong><span>Do jeito descrito no benefício.</span></li>
+    </ol>
+    <div class="dica">
+      <p><strong>Deixe a câmera liberada.</strong> Abra o scanner uma vez no celular do caixa antes do primeiro atendimento, para o navegador já ter a permissão.</p>
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section class="pagina" id="clientes">
+    <div class="topo"><img src="../guia-ong/img/abraco.png" alt=""><div><div class="num">12 · Clientes</div><h2>Quem passou pela loja</h2></div></div>
+    <p class="lead">Cada benefício validado na loja traz o cliente para a sua lista. Você vê quem são, de onde vêm e quantas vezes voltaram: informação para o marketing e para a agenda ESG da loja.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Benefícios › Clientes</span></div>
+      <div class="caixa caixa--quem"><b>Quem usa</b>Quem tem acesso ao bloco Benefícios.</div>
+    </div>
+    <figure><img src="img/clientes.jpg" alt="Benefícios, Clientes"><figcaption>Composição dos clientes e a lista</figcaption></figure>
+    <h3>O que tem na tela</h3>
+    <ul>
+      <li><strong>Composição dos clientes:</strong> por estado (região), por faixa etária e por escolaridade.</li>
+      <li><strong>A lista:</strong> cada cliente com contato, número de validações, benefícios usados e a última visita. Ordene por mais recente, mais validações ou mais benefícios.</li>
+      <li><strong>Enviar WhatsApp:</strong> fala direto com o cliente, quando ele tem telefone cadastrado.</li>
+    </ul>
+    <div class="dica">
+      <p><strong>Use com cuidado.</strong> Os dados são de pessoas que usaram o benefício da sua loja. Use para se relacionar com elas, sem repassar para terceiros.</p>
+    </div>
+  </section>
+
+  <!-- 13 -->
+  <section class="pagina" id="doacoes">
+    <div class="topo"><img src="../guia-ong/img/balao.png" alt=""><div><div class="num">13 · QR codes de doação</div><h2>Quando a loja valida doações de uma ONG</h2></div></div>
+    <p class="lead">Uma ONG pode escolher a sua loja como parceira para validar as doações de uma causa ou de um evento: por exemplo, quem doa retira na loja um kit ou um brinde. Nesses casos, quem doou recebe por e-mail um QR code, que a sua equipe lê no painel.</p>
+    <div class="resumo">
+      <div class="caixa caixa--onde"><b>Onde</b><span class="caminho">Doações › QR Codes de doação</span></div>
+      <div class="caixa caixa--quem"><b>Quando</b>Só quando uma ONG associa a sua loja a uma causa ou evento.</div>
+    </div>
+    <figure><img src="img/doacoes.jpg" alt="Doações, QR Codes de doação"><figcaption>Doações › QR Codes de doação</figcaption></figure>
+    <h3>Passo a passo</h3>
+    <ol class="numerada">
+      <li><strong>Clique em Iniciar Scanner.</strong><span>Na tela Validar QR Code de Doação.</span></li>
+      <li><strong>Leia o QR code que a pessoa recebeu por e-mail.</strong><span>Aparecem quem doou e o valor doado.</span></li>
+      <li><strong>Confirme.</strong><span>A doação fica validada e entra no Histórico de QR Codes de Doação, com os validados e os pendentes.</span></li>
+    </ol>
+    <div class="dica dica--cinza">
+      <p><strong>A tela está vazia?</strong> É normal: ela só tem algo quando uma ONG associa a sua loja a uma causa ou evento. A DuGood avisa quando isso for combinado.</p>
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section class="pagina" id="duvidas">
+    <div class="topo"><img src="../guia-ong/img/acenando.png" alt=""><div><div class="num">14 · Dúvidas frequentes</div><h2>Perguntas que sempre aparecem</h2></div></div>
+    <div class="faq-item"><h3>A loja paga alguma coisa?</h3><p>Não. Lojas parceiras não pagam nada para estar na DuGood, e o painel é grátis. A loja entrega só o benefício que ela escolheu.</p></div>
+    <div class="faq-item"><h3>O benefício precisa ser aprovado?</h3><p>Não. Depois de criado, ele já aparece para os doadores no app. Você pode editar, pausar ou apagar quando quiser.</p></div>
+    <div class="faq-item"><h3>Quem pode usar o benefício?</h3><p>Quem doa pela DuGood e chegou ao nível ou à medalha que você escolheu, até o limite de usos por pessoa e a data de validade.</p></div>
+    <div class="faq-item"><h3>O scanner não abre a câmera.</h3><p>Permita o uso da câmera no navegador do celular e abra o scanner de novo. Use o celular que fica no caixa e teste antes do atendimento.</p></div>
+    <div class="faq-item"><h3>O cliente diz que tem o benefício, mas o QR não aparece.</h3><p>O benefício precisa estar desbloqueado no app dele, ativo (não pausado) e dentro da validade, e ele não pode ter passado do limite de usos.</p></div>
+    <div class="faq-item"><h3>Alguém da equipe entrou, mas o painel não abre.</h3><p>O pedido de acesso precisa ser aprovado pelo administrador em Configurações › Controle de acessos. Se a pessoa já aparece com acesso, confira os blocos dela.</p></div>
+    <div class="faq-item"><h3>O administrador saiu da loja.</h3><p>Se ele ainda consegue entrar, use Passar administração para outra pessoa da equipe. Se não consegue, fale com a DuGood.</p></div>
+    <div class="faq-item"><h3>Posso usar o mesmo e-mail em dois painéis?</h3><p>Não. Cada conta fica ligada a um painel só. Use outro e-mail para o outro painel.</p></div>
+    <div class="contato">
+      <img src="../guia-ong/img/joinha.png" alt="">
+      <div>
+        <h3>Conte com a gente</h3>
+        <p>Ficou alguma dúvida? Fale com a DuGood: <a href="mailto:comercial@dugood.com.br">comercial@dugood.com.br</a> · WhatsApp <a href="https://wa.me/5511994299400">(11) 99429-9400</a></p>
+      </div>
+    </div>
+  </section>
+
+</main>
+</body>
+</html>

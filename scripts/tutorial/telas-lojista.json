@@ -1,0 +1,107 @@
+[
+ {
+  "nome": "loj-termos",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=geral",
+  "usuario": {
+   "merchant_consent_accepted": false
+  },
+  "passos": [
+   {
+    "esperar": 1500
+   },
+   {
+    "mostrar": ".fixed.inset-0",
+    "esperar": 500
+   }
+  ]
+ },
+ {
+  "nome": "loj-geral",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=geral"
+ },
+ {
+  "nome": "loj-acessos",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=acessos",
+  "passos": [
+   {
+    "substituir": [
+     "http://127.0.0.1:5173",
+     "https://dugood.com.br"
+    ],
+    "esperar": 300
+   }
+  ]
+ },
+ {
+  "nome": "loj-acessos-blocos",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=acessos",
+  "passos": [
+   {
+    "substituir": [
+     "http://127.0.0.1:5173",
+     "https://dugood.com.br"
+    ],
+    "esperar": 300
+   },
+   {
+    "rolar": 500
+   }
+  ]
+ },
+ {
+  "nome": "loj-configuracoes",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=configuracoes"
+ },
+ {
+  "nome": "loj-beneficios",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=beneficios"
+ },
+ {
+  "nome": "loj-novo-beneficio",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=beneficios",
+  "passos": [
+   {
+    "botao": "Novo Benefício",
+    "esperar": 1500
+   },
+   {
+    "mostrar": "[role=dialog]",
+    "esperar": 400
+   }
+  ]
+ },
+ {
+  "nome": "loj-scanner",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=beneficios",
+  "camera": "beneficio",
+  "passos": [
+   {
+    "botao": "Iniciar Scanner",
+    "esperar": 5000
+   }
+  ]
+ },
+ {
+  "nome": "loj-clientes",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=beneficios.clientes"
+ },
+ {
+  "nome": "loj-doacoes",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=doacoes"
+ },
+ {
+  "nome": "loj-loja",
+  "perfil": "lojista",
+  "url": "/MerchantDashboard?view=loja"
+ }
+]
