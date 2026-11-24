@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Guia da ONG na DuGood</title>
+<meta name="description" content="Primeiros passos da ONG no painel da DuGood: entrar, assinar o termo, equipe e acessos, configurações e como começar a receber doações.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<!--
+  Guia de onboarding para ONGs (o mesmo conteúdo do vídeo tutorial, roteiro-ong.js). Telas do app com dados
+  fictícios (Instituto Exemplo). Tudo o que está aqui precisa existir no app (repositório dugood).
+  Gerar o PDF: node scripts/tutorial/guia-ong/gerar-pdf.mjs
+-->
+<style>
+  :root {
+    --branco: #ffffff; --nevoa: #f6f8f7; --cinza-1: #eef1ef; --linha: #e2e7e4;
+    --tinta: #17241c; --tinta-suave: #56635b; --tinta-fraca: #8a958e;
+    --verde-escuro: #1b571b; --verde: #09a673; --verde-claro: #e6f6ee; --verde-claro-2: #d2efe0;
+    --onda-1: #7be83a; --onda-2: #57bc2d; --onda-3: #45a425; --onda-veu: rgb(17 62 17 / 0.55);
+    --titulo: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --texto: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --raio: 20px; --raio-p: 12px;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; background: var(--branco); color: var(--tinta); font-family: var(--texto); font-size: 15.5px; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+  h1, h2, h3 { font-family: var(--titulo); line-height: 1.2; margin: 0; color: var(--tinta); }
+  a { color: var(--verde); }
+  p { margin: 0 0 0.85em; }
+  ul, ol { margin: 0 0 0.85em; padding-left: 1.25em; }
+  li { margin: 0.25em 0; }
+  strong { color: var(--tinta); }
+  .caminho { font-weight: 600; color: var(--verde-escuro); background: var(--verde-claro); padding: 0.05em 0.45em; border-radius: 6px; white-space: nowrap; }
+
+  /* Capa */
+  .capa { position: relative; overflow: hidden; color: #fff; background: linear-gradient(135deg, var(--onda-1), var(--onda-2) 45%, var(--onda-3)); min-height: 100vh; display: flex; flex-direction: column; padding: clamp(28px, 6vw, 64px) clamp(16px, 6vw, 72px); }
+  .capa::before { content: ''; position: absolute; inset: 0; background: url('img/fundo-verde.jpg') center top / cover no-repeat; }
+  .capa::after { content: ''; position: absolute; inset: 0; background: var(--onda-veu); }
+  .capa > * { position: relative; z-index: 1; }
+  .capa__logo { width: 160px; display: block; }
+  .capa__meio { margin: auto 0; max-width: 620px; padding: 48px 0; }
+  .capa__rotulo { display: inline-block; font-size: 12.5px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; background: rgb(255 255 255 / 0.16); border: 1px solid rgb(255 255 255 / 0.3); padding: 5px 12px; border-radius: 999px; margin-bottom: 20px; }
+  .capa h1 { color: #fff; font-size: clamp(38px, 6.4vw, 62px); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 18px; }
+  .capa__sub { font-size: clamp(17px, 2.2vw, 20px); color: rgb(255 255 255 / 0.92); max-width: 520px; margin: 0; }
+  .capa__mascote { position: absolute; right: clamp(8px, 6vw, 80px); bottom: clamp(60px, 9vw, 110px); width: clamp(140px, 22vw, 240px); z-index: 1; }
+  .capa__rodape { display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 13.5px; color: rgb(255 255 255 / 0.85); }
+
+  /* Conteúdo */
+  main { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+  .secao { padding-top: 56px; }
+  .secao__topo { display: flex; align-items: center; gap: 18px; margin-bottom: 14px; }
+  .secao__topo img { width: 74px; flex: none; }
+  .secao__num { font-family: var(--titulo); font-weight: 700; font-size: 13px; color: var(--verde); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 4px; }
+  .secao h2 { font-size: clamp(25px, 3.4vw, 31px); font-weight: 800; letter-spacing: -0.015em; }
+  .secao h3 { font-size: 18px; font-weight: 700; margin: 26px 0 10px; }
+  .lead { font-size: 17px; color: var(--tinta-suave); }
+  .indice { background: var(--nevoa); border: 1px solid var(--linha); border-radius: var(--raio); padding: 22px 26px; margin-top: 48px; }
+  .indice h2 { font-size: 16px; margin-bottom: 10px; }
+  .indice ol { columns: 2; column-gap: 32px; margin: 0; }
+  .indice a { color: var(--tinta); text-decoration: none; }
+
+  .passos { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin: 20px 0; counter-reset: passo; }
+  .passos li { background: var(--nevoa); border: 1px solid var(--linha); border-radius: var(--raio-p); padding: 16px 16px 14px; margin: 0; counter-increment: passo; font-size: 14.5px; color: var(--tinta-suave); }
+  .passos li::before { content: counter(passo); display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--verde-claro-2); color: var(--verde-escuro); font-family: var(--titulo); font-weight: 800; font-size: 14px; margin-bottom: 10px; }
+  .passos strong { display: block; margin-bottom: 4px; font-family: var(--titulo); }
+
+  .numerada { list-style: none; padding: 0; counter-reset: n; margin: 14px 0 18px; }
+  .numerada li { position: relative; padding-left: 40px; margin: 12px 0; counter-increment: n; }
+  .numerada li::before { content: counter(n); position: absolute; left: 0; top: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--verde); color: #fff; display: grid; place-items: center; font-family: var(--titulo); font-weight: 800; font-size: 13px; }
+
+  .destaque { position: relative; overflow: hidden; border-radius: var(--raio); padding: 24px 26px; margin: 24px 0; color: #fff; background: linear-gradient(135deg, var(--onda-1), var(--onda-2) 45%, var(--onda-3)); }
+  .destaque::before { content: ''; position: absolute; inset: 0; background: url('img/fundo-verde.jpg') center / cover no-repeat; }
+  .destaque::after { content: ''; position: absolute; inset: 0; background: var(--onda-veu); }
+  .destaque > * { position: relative; z-index: 1; }
+  .destaque h3 { color: #fff; margin: 0 0 8px; font-size: 19px; }
+  .destaque p { margin: 0; color: rgb(255 255 255 / 0.93); }
+  .destaque strong { color: #fff; }
+  .nota { background: var(--verde-claro); border: 1px solid var(--verde-claro-2); border-radius: var(--raio-p); padding: 14px 18px; margin: 18px 0; font-size: 14.5px; }
+  .nota p:last-child, .nota ul:last-child { margin-bottom: 0; }
+  .nota--cinza { background: var(--nevoa); border-color: var(--linha); }
+
+  figure { margin: 18px 0 22px; }
+  figure img { display: block; width: 100%; height: auto; border: 1px solid var(--linha); border-radius: var(--raio-p); box-shadow: 0 1px 2px rgb(23 36 28 / 0.04), 0 10px 26px rgb(23 36 28 / 0.07); }
+  figure.estreita img { max-width: 440px; margin: 0 auto; }
+  figure.media img { max-width: 620px; margin: 0 auto; }
+  figcaption { font-size: 13px; color: var(--tinta-fraca); text-align: center; margin-top: 8px; }
+  .duas { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: start; }
+  .duas figure { margin-top: 4px; }
+
+  .tabela { width: 100%; overflow-x: auto; margin: 12px 0 20px; border: 1px solid var(--linha); border-radius: var(--raio-p); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; vertical-align: top; padding: 10px 14px; border-bottom: 1px solid var(--linha); }
+  th { background: var(--nevoa); font-family: var(--titulo); font-weight: 700; font-size: 13px; color: var(--tinta-suave); }
+  tr:last-child td { border-bottom: 0; }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+  .selo { display: inline-block; font-size: 12.5px; font-weight: 600; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+  .selo--cinza { background: var(--cinza-1); color: var(--tinta-suave); }
+  .selo--verde { background: var(--verde-claro-2); color: var(--verde-escuro); }
+  .selo--cheio { background: var(--verde); color: #fff; }
+
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { position: relative; padding-left: 32px; margin: 12px 0; }
+  .checklist li::before { content: ''; position: absolute; left: 0; top: 3px; width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--verde); }
+  .checklist small { display: block; color: var(--tinta-suave); font-size: 13.5px; }
+
+  .faq h3 { font-size: 16px; margin: 20px 0 6px; }
+  .faq p { color: var(--tinta-suave); }
+  .contato { display: flex; gap: 24px; align-items: center; background: var(--nevoa); border: 1px solid var(--linha); border-radius: var(--raio); padding: 24px 26px; margin-top: 24px; }
+  .contato img { width: 96px; flex: none; }
+  .contato h3 { margin: 0 0 6px; }
+  .contato p { margin: 0; color: var(--tinta-suave); }
+  footer { border-top: 1px solid var(--linha); margin-top: 64px; padding-top: 20px; font-size: 13px; color: var(--tinta-fraca); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  footer img { height: 26px; }
+  @media (max-width: 640px) {
+    .indice ol { columns: 1; }
+    .duas { grid-template-columns: 1fr; }
+    .capa__mascote { opacity: 0.35; }
+    .contato { flex-direction: column; align-items: flex-start; }
+    td:first-child { white-space: normal; }
+  }
+
+  /* Impressão / PDF (A4) */
+  @page { size: A4; margin: 16mm 15mm 18mm; }
+  @page :first { margin: 0; }
+  @media print {
+    body { font-size: 10.5pt; }
+    .capa { min-height: 297mm; height: 297mm; break-after: page; padding: 22mm 20mm; }
+    .capa__mascote { right: 18mm; bottom: 30mm; width: 62mm; opacity: 1; }
+    main { max-width: none; padding: 0; }
+    .indice { margin-top: 0; }
+    .secao { padding-top: 0; margin-top: 34px; }
+    figure img { max-width: 132mm; margin: 0 auto; }
+    figure.media img { max-width: 112mm; }
+    figure.estreita img { max-width: 70mm; }
+    .duas figure img { max-width: 100%; }
+    .passos li { padding: 12px 14px 10px; }
+    .quebra { break-before: page; margin-top: 0; }
+    .passos { grid-template-columns: repeat(3, 1fr); }
+    .nota, .destaque, .passos li, .contato, tr, figure, .checklist li, .numerada li, .faq-item { break-inside: avoid; }
+    .secao__topo, h2, h3 { break-after: avoid; }
+    figure img { box-shadow: none; }
+    a { text-decoration: none; }
+    footer { margin-top: 32px; }
+  }
+</style>
+</head>
+<body>
+<header class="capa">
+  <img class="capa__logo" src="img/logo-branco.png" alt="DuGood">
+  <div class="capa__meio">
+    <span class="capa__rotulo">Guia para ONGs</span>
+    <h1>Bem-vinda à DuGood</h1>
+    <p class="capa__sub">O passo a passo para a sua instituição entrar no painel, assinar o termo, organizar a equipe e começar a receber doações.</p>
+  </div>
+  <img class="capa__mascote" src="img/acenando.png" alt="">
+  <div class="capa__rodape">
+    <span>Versão de novembro de 2026 · telas com dados fictícios</span>
+    <span>dugood.com.br</span>
+  </div>
+</header>
+
+<main>
+  <nav class="indice" aria-label="Índice">
+    <h2>Neste guia</h2>
+    <ol>
+      <li><a href="#antes">Antes de começar</a></li>
+      <li><a href="#entrar">Entrar no painel</a></li>
+      <li><a href="#termo">Assinar o termo de entrada</a></li>
+      <li><a href="#equipe">Equipe e Controle de acessos</a></li>
+      <li><a href="#configuracoes">Configurações</a></li>
+      <li><a href="#painel">Conhecendo o painel</a></li>
+      <li><a href="#primeiros">Primeiros passos para receber doações</a></li>
+      <li><a href="#duvidas">Dúvidas frequentes</a></li>
+    </ol>
+  </nav>
+
+  <section class="secao" id="antes">
+    <div class="secao__num">1 · Antes de começar</div>
+    <h2>O caminho até a primeira doação</h2>
+    <p class="lead">Em poucos passos o painel da instituição fica pronto. Este guia segue a mesma ordem do vídeo tutorial.</p>
+    <ol class="passos">
+      <li><strong>Entrar</strong>Pelo link de cadastro que a DuGood mandou para a instituição.</li>
+      <li><strong>Assinar o termo</strong>O contrato de entrada, assinado pela internet (DocuSign).</li>
+      <li><strong>Organizar a equipe</strong>Quem entra no painel e o que cada pessoa vê ou edita.</li>
+      <li><strong>Configurar</strong>Os avisos por e-mail e o idioma do painel.</li>
+      <li><strong>Conhecer o painel</strong>O menu, a Visão geral e onde fica cada coisa.</li>
+      <li><strong>Começar a captar</strong>Perfil, pagamentos e a primeira causa no ar.</li>
+    </ol>
+    <h3>Tenha à mão</h3>
+    <ul class="checklist">
+      <li><strong>O link de cadastro da instituição</strong><small>Enviado pela equipe da DuGood. É por ele que a primeira pessoa entra.</small></li>
+      <li><strong>Acesso ao e-mail da instituição</strong><small>O termo de entrada chega nesse e-mail, e os avisos do painel também.</small></li>
+      <li><strong>O responsável legal da instituição</strong><small>É quem assina o termo de entrada.</small></li>
+      <li><strong>Os dados da instituição e a conta bancária</strong><small>Para o perfil e para ativar os pagamentos com a Stripe.</small></li>
+    </ul>
+    <div class="destaque">
+      <h3>A ONG recebe 100% das doações</h3>
+      <p>A DuGood <strong>não cobra taxa</strong> da instituição nem de quem doa, e as ferramentas do painel são grátis. Só a Stripe, que processa os pagamentos, cobra as tarifas dela, que você vê no painel antes de escolher os meios de pagamento.</p>
+    </div>
+  </section>
+
+  <section class="secao" id="entrar">
+    <div class="secao__topo"><img src="img/celular.png" alt=""><div><div class="secao__num">2 · Entrar no painel</div><h2>Abra o link e entre com a sua conta</h2></div></div>
+    <div class="duas">
+      <div>
+        <ol class="numerada">
+          <li>Abra o <strong>link de cadastro</strong> que a DuGood mandou.</li>
+          <li>Entre com <strong>Google</strong>, <strong>Apple</strong> ou <strong>e-mail e senha</strong>.</li>
+          <li>Ainda não tem conta? Clique em <strong>Cadastrar</strong>, informe e-mail, telefone, CPF e senha e digite o código que chega no seu e-mail.</li>
+          <li>Pronto: o painel da instituição abre.</li>
+        </ol>
+      </div>
+      <figure class="estreita"><img src="img/login.jpg" alt="Tela de entrada da DuGood com Google, Apple ou e-mail e senha"><figcaption>A tela de entrada</figcaption></figure>
+    </div>
+    <h3>Quem entra primeiro vira o administrador</h3>
+    <p>A primeira pessoa que entra pelo link vira o <strong>administrador do painel</strong>. Quem entra depois pelo mesmo link <strong>pede acesso</strong>: o administrador recebe um aviso por e-mail e aprova (veja <a href="#equipe">Equipe e Controle de acessos</a>).</p>
+    <div class="nota nota--cinza">
+      <p><strong>Use um e-mail por painel.</strong> Uma conta da DuGood fica ligada a um painel só. Se a pessoa já usa o e-mail em outro painel (de outra ONG, de uma loja ou de um organizador de eventos), ela precisa entrar com outro e-mail.</p>
+    </div>
+  </section>
+
+  <section class="secao" id="termo">
+    <div class="secao__topo"><img src="img/livro.png" alt=""><div><div class="secao__num">3 · Assinar o termo de entrada</div><h2>O contrato da instituição com a DuGood</h2></div></div>
+    <p class="lead">O <strong>Termo de Captação de Causa Comum</strong> é um termo único da instituição e vale para todas as causas e eventos comuns. Ele é necessário para começar a criar causas e eventos na DuGood.</p>
+    <ol class="numerada">
+      <li>No menu, abra <span class="caminho">Instituição › Documentos</span> e clique em <strong>Assinar</strong> no Termo de Captação de Causa Comum.</li>
+      <li>A DuGood manda um <strong>e-mail do DocuSign</strong> com o link de assinatura para o <strong>e-mail da instituição</strong>.</li>
+      <li>O <strong>responsável legal</strong> abre o e-mail, revisa e assina o documento.</li>
+      <li>Depois, o termo segue para a <strong>assinatura da DuGood</strong>. Com as duas assinaturas, o termo assinado fica disponível em Documentos.</li>
+    </ol>
+    <div class="duas">
+      <figure><img src="img/documentos.jpg" alt="Instituição, Documentos: termo pendente com o botão Assinar"><figcaption>Instituição › Documentos</figcaption></figure>
+      <figure><img src="img/termo-email.jpg" alt="Aviso de e-mail enviado pelo DocuSign com o link de assinatura"><figcaption>O aviso de que o e-mail foi enviado</figcaption></figure>
+    </div>
+    <h3>Como acompanhar</h3>
+    <div class="tabela"><table>
+      <thead><tr><th>Situação no painel</th><th>O que significa</th></tr></thead>
+      <tbody>
+        <tr><td><span class="selo selo--cinza">Pendente</span></td><td>O termo ainda não foi assinado pela instituição. Clique em Assinar para receber o e-mail.</td></tr>
+        <tr><td><span class="selo selo--verde">Aguardando assinatura da DuGood</span></td><td>A instituição já assinou. Falta só a assinatura do representante legal da DuGood.</td></tr>
+        <tr><td><span class="selo selo--cheio">Assinado</span></td><td>Tudo certo. O termo assinado fica em Instituição › Documentos.</td></tr>
+      </tbody>
+    </table></div>
+    <div class="nota">
+      <p><strong>O e-mail não chegou?</strong> Confira a caixa de spam e se o e-mail da instituição está certo em <span class="caminho">Instituição › Perfil</span>. Se precisar, fale com a DuGood.</p>
+    </div>
+    <p>Na mesma tela você também pode enviar os <strong>documentos institucionais</strong> (estatuto, cartão CNPJ, ata). Eles não são obrigatórios para criar causas, mas agilizam a análise da DuGood. Projetos com incentivo fiscal têm um termo próprio, um por projeto, na mesma tela.</p>
+  </section>
+
+  <section class="secao" id="equipe">
+    <div class="secao__topo"><img src="img/abraco.png" alt=""><div><div class="secao__num">4 · Equipe e Controle de acessos</div><h2>Quem entra e o que cada pessoa faz</h2></div></div>
+    <p class="lead">Fica em <span class="caminho">Configurações › Controle de acessos</span> (botão Configurações, no rodapé do menu). Só o administrador do painel vê esta aba.</p>
+    <figure><img src="img/acessos.jpg" alt="Controle de acessos: link de cadastro e pessoas da equipe"><figcaption>O link de cadastro e as pessoas da equipe</figcaption></figure>
+    <h3>Convidar a equipe</h3>
+    <ol class="numerada">
+      <li>Clique em <strong>Copiar</strong> para copiar o link de cadastro da instituição, ou em <strong>Enviar no WhatsApp</strong>.</li>
+      <li>A pessoa entra pelo link (ou cria a conta) e o pedido de acesso aparece para você, com aviso por e-mail.</li>
+      <li>Clique em <strong>Aprovar</strong> ou <strong>Recusar</strong>. Pedidos pendentes também aparecem nas Pendências da Visão geral.</li>
+    </ol>
+    <h3>O que cada pessoa vê ou edita</h3>
+    <p>Quem é aprovado começa podendo editar tudo. Para cada bloco do menu (Início, Captação, Eventos, CRM e campanhas, Incentivos fiscais, Instituição e Financeiro), escolha:</p>
+    <div class="tabela"><table>
+      <thead><tr><th>Nível</th><th>O que acontece</th></tr></thead>
+      <tbody>
+        <tr><td>Sem acesso</td><td>O bloco some do menu da pessoa.</td></tr>
+        <tr><td>Ver</td><td>A pessoa vê as telas do bloco, com um aviso de que é só para ver, e não consegue salvar nada.</td></tr>
+        <tr><td>Editar</td><td>A pessoa vê e muda tudo no bloco. É o padrão.</td></tr>
+      </tbody>
+    </table></div>
+    <figure><img src="img/acessos-blocos.jpg" alt="Escolha de Sem acesso, Ver ou Editar em cada bloco do menu"><figcaption>Sem acesso, Ver ou Editar, bloco por bloco</figcaption></figure>
+    <h3>Um administrador por painel</h3>
+    <ul>
+      <li>Cada painel tem <strong>um administrador só</strong>. Ele tem acesso a tudo, vê o Controle de acessos e salva as notificações.</li>
+      <li>Para trocar de administrador (por exemplo, quando alguém sai da instituição), use <strong>Passar administração</strong> ao lado da pessoa.</li>
+      <li>Você pode <strong>bloquear</strong>, <strong>liberar</strong> de novo ou <strong>excluir</strong> o acesso de alguém quando quiser.</li>
+      <li><strong>Gerar novo link</strong> faz o link atual parar de funcionar. Quem já tem acesso continua com acesso.</li>
+    </ul>
+  </section>
+
+  <section class="secao" id="configuracoes">
+    <div class="secao__topo"><img src="img/ferramentas.png" alt=""><div><div class="secao__num">5 · Configurações</div><h2>Avisos por e-mail e idioma</h2></div></div>
+    <h3>Notificações</h3>
+    <p>Em <span class="caminho">Configurações › Notificações</span>, escolha como a instituição recebe os avisos por e-mail. Eles vão para o e-mail de contato da instituição, e só o administrador muda essas preferências.</p>
+    <div class="duas">
+      <div class="tabela" style="margin-top:4px"><table>
+        <thead><tr><th>Aviso</th><th>Opções</th></tr></thead>
+        <tbody>
+          <tr><td>Quando alguém doar</td><td rowspan="3">A cada vez, resumo diário, resumo semanal (segunda-feira), resumo mensal (dia 1) ou nunca</td></tr>
+          <tr><td>Inscrição em evento<br>da instituição</td></tr>
+          <tr><td>Inscrição em evento de<br>terceiro em prol dela</td></tr>
+        </tbody>
+      </table></div>
+      <figure><img src="img/notificacoes.jpg" alt="Configurações, Notificações"><figcaption>Configurações › Notificações</figcaption></figure>
+    </div>
+    <ul>
+      <li><strong>Desligar todas as notificações da plataforma</strong> corta os avisos de doação e inscrição e os resumos.</li>
+      <li>Avisos operacionais, como pedidos de acesso e eventos para aprovar, <strong>chegam sempre</strong>.</li>
+      <li>Sem nada escolhido, vale <strong>a cada vez</strong> para tudo.</li>
+    </ul>
+    <h3>Idioma</h3>
+    <p>Em <span class="caminho">Configurações › Idioma</span>, cada pessoa escolhe ver o painel em <strong>português, inglês ou espanhol</strong>. Vale só para quem escolheu, neste e nos outros aparelhos em que entrar.</p>
+    <figure class="media"><img src="img/idioma.jpg" alt="Configurações, Idioma: português, inglês ou espanhol"></figure>
+  </section>
+
+  <section class="secao" id="painel">
+    <div class="secao__topo"><img src="img/lupa.png" alt=""><div><div class="secao__num">6 · Conhecendo o painel</div><h2>Tudo no menu, organizado por blocos</h2></div></div>
+    <figure><img src="img/menu.jpg" alt="Painel da ONG com o menu lateral aberto e a Visão geral"><figcaption>O menu lateral e a Visão geral</figcaption></figure>
+    <div class="tabela"><table>
+      <thead><tr><th>Bloco do menu</th><th>O que tem</th></tr></thead>
+      <tbody>
+        <tr><td>Início</td><td>Visão geral: arrecadado, doações, doadores, pendências e arrecadação por mês.</td></tr>
+        <tr><td>Captação</td><td>Suas causas, doações institucionais (direto para a instituição) e doações recorrentes (mensais).</td></tr>
+        <tr><td>Eventos</td><td>Eventos com inscrição que vira doação, leitura dos ingressos na portaria e como funciona.</td></tr>
+        <tr><td>CRM e campanhas</td><td>CRM (calendário, tarefas e réguas de contato), doadores, composição da base, campanhas com link e QR e sorteios e leilões.</td></tr>
+        <tr><td>Incentivos fiscais</td><td>Dados fiscais, projetos incentivados, doações incentivadas e recibos.</td></tr>
+        <tr><td>Instituição</td><td>Perfil (a página pública da instituição), documentos e o widget para o site.</td></tr>
+        <tr><td>Financeiro</td><td>Extrato, pagamentos (Stripe, meios de pagamento e repasses) e relatórios mensais.</td></tr>
+      </tbody>
+    </table></div>
+    <p>No rodapé do menu ficam <strong>Configurações</strong> e <strong>Tutoriais</strong>.</p>
+    <h3>Visão geral</h3>
+    <p>É a primeira tela do painel: os números da instituição, as <strong>Pendências</strong> (pedidos de acesso, termos para assinar, causas em análise…) e a arrecadação por mês. Comece o dia por ela.</p>
+    <div class="nota">
+      <p><strong>Ficou com dúvida em alguma tela?</strong> Clique em <strong>Como usar esta tela</strong>, ao lado do título: um passo a passo curto mostra o que cada parte faz. Os tutoriais completos ficam em <strong>Tutoriais</strong>, no menu.</p>
+    </div>
+  </section>
+
+  <section class="secao" id="primeiros">
+    <div class="secao__topo"><img src="img/joinha.png" alt=""><div><div class="secao__num">7 · Primeiros passos</div><h2>Para começar a receber doações</h2></div></div>
+    <p class="lead">A Visão geral mostra o que falta. Nesta ordem:</p>
+    <h3>1. Complete o perfil</h3>
+    <p>Em <span class="caminho">Instituição › Perfil</span>: logo, descrição, endereço, telefone e fotos. É assim que os doadores veem a página da instituição na DuGood.</p>
+    <h3>2. Ative os pagamentos</h3>
+    <p>Em <span class="caminho">Financeiro › Pagamentos</span>, conecte a conta Stripe da instituição (uma vez só). Sem ela não é possível publicar causas. Na mesma tela:</p>
+    <ul>
+      <li>escolha os <strong>meios de pagamento</strong> aceitos (cartão e Pix, e o boleto, se quiser), vendo a tarifa da Stripe de cada um;</li>
+      <li>escolha a <strong>frequência dos repasses</strong> para a conta bancária (diário, semanal, mensal ou sob demanda);</li>
+      <li>use <strong>Abrir painel da Stripe</strong> para ver os recebimentos e trocar a conta bancária.</li>
+    </ul>
+    <figure class="media"><img src="img/pagamentos.jpg" alt="Financeiro, Pagamentos: painel da Stripe e meios de pagamento aceitos"><figcaption>Financeiro › Pagamentos</figcaption></figure>
+    <h3>3. Assine o termo de entrada</h3>
+    <p>Se ainda não assinou, veja a <a href="#termo">seção 3</a>.</p>
+    <h3>4. Crie a primeira causa</h3>
+    <p>Em <span class="caminho">Captação › Suas causas</span>, clique em <strong>Nova Causa</strong>: título, descrição, meta e imagem. Envie para a aprovação da DuGood e, quando for aprovada, <strong>ative</strong> para ela aparecer no app. Eventos funcionam do mesmo jeito, em <span class="caminho">Eventos</span>.</p>
+    <figure class="media"><img src="img/causas.jpg" alt="Captação, Suas causas, com o botão Nova Causa"></figure>
+    <h3>5. Divulgue e acompanhe</h3>
+    <ul>
+      <li>Compartilhe o link da causa e use <span class="caminho">CRM e campanhas › Campanhas</span> para links e QR codes rastreados.</li>
+      <li>Coloque a página da instituição no seu site com o <span class="caminho">Instituição › Widget para o site</span>.</li>
+      <li>Acompanhe quem doa em <span class="caminho">CRM e campanhas › Doadores</span> e o dinheiro em <span class="caminho">Financeiro › Extrato</span>.</li>
+    </ul>
+    <div class="nota nota--cinza">
+      <p><strong>Projetos com incentivo fiscal</strong> (Lei Rouanet, FIA, PRONON etc.) usam também <span class="caminho">Incentivos fiscais › Dados fiscais</span>. Só é preciso preencher se a instituição tiver esses projetos.</p>
+    </div>
+  </section>
+
+  <section class="secao" id="duvidas">
+    <div class="secao__num">8 · Dúvidas frequentes</div>
+    <h2>Perguntas que sempre aparecem</h2>
+    <div class="faq">
+      <div class="faq-item"><h3>Quanto a DuGood cobra?</h3><p>Nada. A DuGood não cobra taxa da instituição nem de quem doa, e as ferramentas do painel são grátis. A Stripe cobra as tarifas dela por pagamento, que aparecem em Financeiro › Pagamentos.</p></div>
+      <div class="faq-item"><h3>O e-mail do termo não chegou.</h3><p>Confira a caixa de spam e se o e-mail da instituição está certo em Instituição › Perfil. Se continuar sem chegar, fale com a DuGood, que confere o envio.</p></div>
+      <div class="faq-item"><h3>Alguém da equipe entrou, mas não vê o painel.</h3><p>O pedido de acesso precisa ser aprovado pelo administrador em Configurações › Controle de acessos. Se a pessoa já aparece com acesso, confira os blocos dela: um bloco em "Sem acesso" some do menu.</p></div>
+      <div class="faq-item"><h3>A pessoa que era administradora saiu da instituição.</h3><p>Se ela ainda consegue entrar, use Passar administração para outra pessoa da equipe. Se não, fale com a DuGood.</p></div>
+      <div class="faq-item"><h3>O link de cadastro foi parar onde não devia.</h3><p>Em Controle de acessos, clique em Gerar novo link. O antigo para de funcionar, e quem já tem acesso continua com acesso. Pedidos de quem você não conhece podem ser recusados.</p></div>
+      <div class="faq-item"><h3>Por que minha causa ainda não aparece no app?</h3><p>Toda causa passa pela análise da DuGood. Enquanto isso, ela fica "Em análise" na Visão geral. Depois de aprovada, falta ativar. Para publicar, o perfil precisa estar completo e os pagamentos ativados.</p></div>
+    </div>
+    <div class="contato">
+      <img src="img/acenando.png" alt="">
+      <div>
+        <h3>Conte com a gente</h3>
+        <p>Fale com a DuGood: <a href="mailto:comercial@dugood.com.br">comercial@dugood.com.br</a> · WhatsApp <a href="https://wa.me/5511994299400">(11) 99429-9400</a></p>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>

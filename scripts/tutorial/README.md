@@ -23,3 +23,9 @@ causa, doadores e extrato).
 Para organizadores e lojistas: tire as telas do painel deles (`telas-organizador.json`, perfil `organizador` ou
 `lojista` nos prints), copie o roteiro da ONG para `roteiro-organizador.js` e troque textos e telas. Tudo o que o
 vídeo afirma precisa existir no app (veja o CLAUDE.md do repositório `dugood`).
+
+## Guia em PDF
+
+`guia-ong/` tem o mesmo conteúdo do vídeo num documento (HTML e PDF, A4, visual do guia da API de parceiros):
+`guia-ong/index.html` e `node scripts/tutorial/guia-ong/gerar-pdf.mjs` (gera `DuGood-Guia-da-ONG.pdf`). As imagens em
+`guia-ong/img/` são recortes das telas de `telas/`. Ao mudar o vídeo ou o app, atualize o guia e gere o PDF de novo.
