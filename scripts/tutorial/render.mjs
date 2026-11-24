@@ -42,8 +42,14 @@ mkdirSync(dirname(saida), { recursive: true });
 // Trilha: começo do filme até "corte", depois o fim do filme (cruzando 3 s), para terminar junto com o vídeo
 const fimFilme = Number(execFileSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', trilha]).toString());
 const cruz = 3;
-const corte = Math.min(fimFilme, 62);
-const inicioFim = Math.max(0, fimFilme - (duracao - corte + cruz));
+// Vídeo mais longo que a trilha: o segundo trecho começa cedo (8 s, depois da abertura) e o corte vai mais adiante
+let corte = Math.min(fimFilme, 62);
+let inicioFim = fimFilme - (duracao - corte + cruz);
+if (inicioFim < 8) {
+  inicioFim = 8;
+  corte = duracao - (fimFilme - inicioFim) + cruz;
+  if (corte > fimFilme - 5) throw new Error('vídeo longo demais para a trilha (mais que o dobro do filme)');
+}
 const audio = duracao <= fimFilme
   ? `[1:a]atrim=0:${duracao},afade=t=out:st=${duracao - 3}:d=3[a]`
   : `[1:a]atrim=0:${corte}[a1];[1:a]atrim=${inicioFim},asetpts=PTS-STARTPTS[a2];[a1][a2]acrossfade=d=${cruz}[a]`;
@@ -53,7 +59,7 @@ const ff = spawn('ffmpeg', [
   '-i', trilha,
   '-filter_complex', `${audio};[a]volume=0.9[aout]`, '-map', '0:v', '-map', '[aout]',
   '-c:v', 'libx264', '-preset', 'slow', '-crf', '21', '-pix_fmt', 'yuv420p', '-tune', 'animation',
-  '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart', saida,
+  '-c:a', 'aac', '-b:a', '160k', '-t', String(duracao), '-movflags', '+faststart', saida,
 ], { stdio: ['pipe', 'inherit', 'inherit'] });
 
 const total = Math.round(duracao * FPS);
